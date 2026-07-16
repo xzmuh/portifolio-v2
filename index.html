@@ -103,7 +103,7 @@
   .experience-pin { height: 100vh; display: flex; align-items: center; overflow: hidden; }
   .experience_track { display: flex; flex-wrap: nowrap; align-items: stretch; will-change: transform; }
   .experience_panel { flex: none; width: 100vw; box-sizing: border-box; padding: 0 4rem; display: flex; align-items: center; justify-content: center; }
-  .experience_card { position: relative; width: 100%; max-width: 50em; background: rgba(0,0,0,.035); border: 1px solid rgba(0,0,0,.08); border-radius: 1.5em; padding: 4em 5em; overflow: hidden; display: flex; flex-direction: column; align-items: flex-start; }
+  .experience_card { position: relative; width: 100%; max-width: 50em; overflow: hidden; display: flex; flex-direction: column; align-items: flex-start; }
   .experience_card--split { max-width: 88em; display: grid; grid-template-columns: 1fr 1fr; gap: 4em; align-items: start; }
   .experience_index { position: absolute; top: -.2em; right: .2em; font-family: "DM Serif Display", serif; font-size: 9em; font-weight: 700; color: var(--red); opacity: .08; line-height: 1; pointer-events: none; }
   .experience_col-left, .experience_col-right { position: relative; z-index: 1; width: 100%; }
@@ -123,7 +123,7 @@
     .experience-pin { height: auto; overflow: visible; }
     .experience_track { overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; padding: 0 1.25rem 1.75rem; gap: 1rem; }
     .experience_panel { flex: 0 0 88vw; width: 88vw; padding: 2em 0; scroll-snap-align: center; justify-content: flex-start; }
-    .experience_card, .experience_card--split { grid-template-columns: 1fr; padding: 2.25em 1.75em; gap: 1.75em; max-width: none; }
+    .experience_card, .experience_card--split { grid-template-columns: 1fr; gap: 1.75em; max-width: none; }
     .experience_company { font-size: 2.1em; }
     .experience_index { font-size: 5em; }
     .experience_desc, .experience_list, .experience_stack { max-width: none; }
@@ -898,22 +898,27 @@
     ScrollTrigger.matchMedia({
       "(min-width: 768px)": function () {
         var getScrollAmount = function () { return track.scrollWidth - window.innerWidth; };
-        var tween = gsap.to(track, {
-          x: function () { return -getScrollAmount(); },
-          ease: "none",
+        var moveLen = getScrollAmount() * 0.55;
+        var holdLen = window.innerHeight * 0.5;
+        var moveFrac = moveLen / (moveLen + holdLen);
+
+        var tl = gsap.timeline({
           scrollTrigger: {
             trigger: pinWrap,
             start: "top top",
-            end: function () { return "+=" + getScrollAmount() * 0.55; },
+            end: function () { return "+=" + (moveLen + holdLen); },
             scrub: 0.4,
             pin: true,
             invalidateOnRefresh: true,
             anticipatePin: 1
           }
         });
+        tl.to(track, { x: function () { return -getScrollAmount(); }, ease: "none", duration: moveFrac })
+          .to({}, { duration: 1 - moveFrac });
+
         return function () {
-          if (tween.scrollTrigger) tween.scrollTrigger.kill();
-          tween.kill();
+          if (tl.scrollTrigger) tl.scrollTrigger.kill();
+          tl.kill();
           gsap.set(track, { clearProps: "transform" });
         };
       }
