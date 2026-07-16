@@ -100,11 +100,6 @@
   }
 
   .section.experience { padding-top: 0; padding-bottom: 0; }
-  .experience-pin { position: relative; height: 100vh; overflow: hidden; }
-  .experience_panel { position: absolute; inset: 0; box-sizing: border-box; padding: 0 4rem; display: flex; align-items: center; justify-content: center; }
-  .experience_panel.experience_intro { z-index: 1; background: #fff; color: #0b0b0b; }
-  .experience_panel--gray { z-index: 2; background: #45414d; color: #fff; clip-path: inset(0 0 0 100%); will-change: clip-path; }
-  .experience_panel--dark { z-index: 3; background: #0b0b0b; color: #fff; clip-path: inset(0 0 0 100%); will-change: clip-path; }
   .experience_card { position: relative; width: 100%; max-width: 50em; overflow: hidden; display: flex; flex-direction: column; align-items: flex-start; }
   .experience_card--split { max-width: 88em; display: grid; grid-template-columns: 1fr 1fr; gap: 4em; align-items: start; }
   .experience_card--reverse .experience_col-left { order: 2; }
@@ -123,8 +118,20 @@
   .experience_stack { display: flex; flex-wrap: wrap; gap: .6em; max-width: none; }
   .experience_stack span { border: 1px solid currentColor; opacity: .8; border-radius: 2em; padding: .3em 1em; font-size: .95em; font-weight: 500; }
 
+  @media (min-width: 768px) {
+    .experience-pin { position: relative; height: 100vh; overflow: hidden; }
+    .experience_panel { position: absolute; inset: 0; box-sizing: border-box; padding: 0 4rem; display: flex; align-items: center; justify-content: center; }
+    .experience_panel.experience_intro { z-index: 1; background: #fff; color: #0b0b0b; }
+    .experience_panel--gray { z-index: 2; background: #45414d; color: #fff; clip-path: inset(0 0 0 100%); will-change: clip-path; }
+    .experience_panel--dark { z-index: 3; background: #0b0b0b; color: #fff; clip-path: inset(0 0 0 100%); will-change: clip-path; }
+  }
+
   @media (max-width: 767px) {
-    .experience_panel { padding: 0 1.75rem; overflow-y: auto; }
+    .experience-pin { display: flex; flex-direction: column; }
+    .experience_panel { position: static; box-sizing: border-box; padding: 4em 1.75rem; }
+    .experience_panel.experience_intro { background: #fff; color: #0b0b0b; }
+    .experience_panel--gray { background: #45414d; color: #fff; }
+    .experience_panel--dark { background: #0b0b0b; color: #fff; }
     .experience_card, .experience_card--split { grid-template-columns: 1fr; gap: 1.75em; max-width: none; }
     .experience_card--reverse .experience_col-left, .experience_card--reverse .experience_col-right { order: initial; }
     .experience_company { font-size: 2.1em; }
@@ -214,19 +221,6 @@
     transition: transform 600ms cubic-bezier(.19, 1, .22, 1) 100ms;
   }
 
-  .service:nth-child(odd) .service_list p:nth-child(3n + 1) {
-    padding-left: 2em;
-  }
-  .service:nth-child(odd) .service_list p:nth-child(2n + 2) {
-    padding-left: 4em;
-  }
-
-  .service:nth-child(even) .service_list p:nth-child(3n + 2) {
-    padding-left: 2em;
-  }
-  .service:nth-child(even) .service_list p:nth-child(4n + 1) {
-    padding-left: 4em;
-  }
 
 
 
@@ -970,6 +964,7 @@
 
   (function setupExperienceScroll() {
     if (!window.gsap || !window.ScrollTrigger) return;
+    if (window.innerWidth < 768) return;
     var pinWrap = document.querySelector('.experience-pin');
     var panelGray = document.querySelector('.experience_panel--gray');
     var panelDark = document.querySelector('.experience_panel--dark');
