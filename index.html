@@ -82,20 +82,26 @@
 
   .about-stair-item {
     max-width: 32em;
+    width: 100%;
+  }
+
+  .about-stairs .about-stair-item.stair-1 {
+    align-self: flex-start;
   }
 
   .about-stairs .about-stair-item.stair-2 {
-    margin-left: 12%;
+    align-self: center;
   }
 
   .about-stairs .about-stair-item.stair-3 {
-    margin-left: 24%;
+    align-self: flex-end;
   }
 
   @media (max-width: 767px) {
+    .about-stairs .about-stair-item.stair-1,
     .about-stairs .about-stair-item.stair-2,
     .about-stairs .about-stair-item.stair-3 {
-      margin-left: 0;
+      align-self: flex-start;
     }
   }
 
@@ -206,6 +212,9 @@
     }
     .service:nth-child(even) .service_list p {
        transform: translate3d(50%,0,0);
+    }
+    .service {
+      grid-template-columns: 1fr 1fr;
     }
   }
 </style></head><body data-barba="wrapper"><main data-barba-namespace="home-page" data-barba="container" class="main-wrapper home-page"><div class="globals"><div class="global-css w-embed"><style>
@@ -997,7 +1006,7 @@
     ScrollTrigger.create({
       trigger: pinWrap,
       start: "top top",
-      end: "+=10",
+      end: "+=" + Math.round(window.innerHeight * 1.5),
       pin: true,
       onEnter: function () { active = true; freezePage(); },
       onEnterBack: function () { active = true; index = maxIndex; gsap.set(steps, { clipPath: "inset(0 0 0 0%)" }); freezePage(); },
