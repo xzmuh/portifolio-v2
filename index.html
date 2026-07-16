@@ -103,8 +103,8 @@
   .experience-pin { position: relative; height: 100vh; overflow: hidden; }
   .experience_panel { position: absolute; inset: 0; box-sizing: border-box; padding: 0 4rem; display: flex; align-items: center; justify-content: center; }
   .experience_panel.experience_intro { z-index: 1; background: #fff; color: #0b0b0b; }
-  .experience_panel--gray { z-index: 2; background: #8a8a8a; color: #fff; clip-path: inset(0 0 0 100%); will-change: clip-path; }
-  .experience_panel--dark { z-index: 3; background: #0b0b0b; color: #fff; clip-path: inset(0 0 0 100%); will-change: clip-path; }
+  .experience_panel--gray { z-index: 2; background: #45414d; color: #fff; --red: #c9b8ff; clip-path: inset(0 0 0 100%); will-change: clip-path; }
+  .experience_panel--dark { z-index: 3; background: #0b0b0b; color: #fff; --red: #c9b8ff; clip-path: inset(0 0 0 100%); will-change: clip-path; }
   .experience_card { position: relative; width: 100%; max-width: 50em; overflow: hidden; display: flex; flex-direction: column; align-items: flex-start; }
   .experience_card--split { max-width: 88em; display: grid; grid-template-columns: 1fr 1fr; gap: 4em; align-items: start; }
   .experience_card--reverse .experience_col-left { order: 2; }
@@ -143,6 +143,8 @@
 
   .service:nth-child(even) .service-content { order: 2; }
   .service:nth-child(even) .service_list { order: 1; }
+  .service:nth-child(even) .service_list:before { left: auto; right: 0; }
+  .service:nth-child(even) .service_list:after { right: auto; left: 100%; }
 
   .service_list:before {
     transform: scale3d(1,0,1);
@@ -400,7 +402,7 @@
     <section id="works" class="section projects">
         <div class="container works">
             <div data-w-id="f6585821-a33f-a5b0-aed3-c9632f41658b" class="flow-grid">
-                <div id="w-node-_038df902-d38f-1fde-9319-2b890bce257f-4b175c0b" class="ticker forwards projects">
+                <div id="w-node-_038df902-d38f-1fde-9319-2b890bce257f-4b175c0b" class="ticker slow projects">
                     <div class="ticker_track">
                         <div class="ticker_group">
                             <h2 class="section_heading ticker-text">Projetos em destaque</h2>
