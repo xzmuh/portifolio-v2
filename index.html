@@ -106,11 +106,15 @@
   }
 
   .section.experience { padding-top: 0; padding-bottom: 0; }
+  .experience-pin { height: 100vh; display: flex; align-items: center; overflow: hidden; }
+  .experience_track { display: flex; flex-wrap: nowrap; align-items: stretch; will-change: transform; }
+  .experience_panel { flex: none; width: 100vw; box-sizing: border-box; padding: 0 4rem; display: flex; align-items: center; justify-content: center; }
   .experience_card { position: relative; width: 100%; max-width: 50em; overflow: hidden; display: flex; flex-direction: column; align-items: flex-start; }
   .experience_card--split { max-width: 88em; display: grid; grid-template-columns: 1fr 1fr; gap: 4em; align-items: start; }
   .experience_card--reverse .experience_col-left { order: 2; }
   .experience_card--reverse .experience_col-right { order: 1; }
-  .experience_index { position: absolute; top: -.2em; right: .2em; font-family: "DM Serif Display", serif; font-size: 9em; font-weight: 700; color: var(--red); opacity: .15; line-height: 1; pointer-events: none; }
+  .experience-pin { background-color: #fff; color: var(--black); }
+  .experience_index { position: absolute; top: -.2em; right: .2em; font-family: "DM Serif Display", serif; font-size: 9em; font-weight: 700; color: var(--red); opacity: .08; line-height: 1; pointer-events: none; }
   .experience_col-left, .experience_col-right { position: relative; z-index: 1; width: 100%; }
   .experience_eyebrow { color: var(--red); font-weight: 500; letter-spacing: .05em; text-transform: uppercase; font-size: 1.1em; margin-bottom: 1em; }
   .experience_period { display: block; color: var(--red); font-weight: 500; font-size: 1.15em; margin-bottom: .5em; }
@@ -124,20 +128,8 @@
   .experience_stack { display: flex; flex-wrap: wrap; gap: .6em; max-width: none; }
   .experience_stack span { border: 1px solid currentColor; opacity: .8; border-radius: 2em; padding: .3em 1em; font-size: .95em; font-weight: 500; }
 
-  @media (min-width: 768px) {
-    .experience-pin { position: relative; height: 100vh; overflow: hidden; }
-    .experience_panel { position: absolute; inset: 0; box-sizing: border-box; padding: 0 4rem; display: flex; align-items: center; justify-content: center; }
-    .experience_panel.experience_intro { z-index: 1; background: #fff; color: #0b0b0b; }
-    .experience_panel--gray { z-index: 2; background: #45414d; color: #fff; clip-path: inset(0 0 0 100%); will-change: clip-path; }
-    .experience_panel--dark { z-index: 3; background: #0b0b0b; color: #fff; clip-path: inset(0 0 0 100%); will-change: clip-path; }
-  }
-
   @media (max-width: 767px) {
-    .experience-pin { display: flex; flex-direction: column; }
-    .experience_panel { position: static; box-sizing: border-box; padding: 4em 1.75rem; }
-    .experience_panel.experience_intro { background: #fff; color: #0b0b0b; }
-    .experience_panel--gray { background: #45414d; color: #fff; }
-    .experience_panel--dark { background: #0b0b0b; color: #fff; }
+    .experience_panel { padding: 0 1.75rem; }
     .experience_card, .experience_card--split { grid-template-columns: 1fr; gap: 1.75em; max-width: none; }
     .experience_card--reverse .experience_col-left, .experience_card--reverse .experience_col-right { order: initial; }
     .experience_company { font-size: 2.1em; }
@@ -775,7 +767,7 @@
   <span class="grow-text">
     imersão. 
   </span>
-</p></div></div></div></section><section id="experience" class="section light experience"><div class="experience-pin">
+</p></div></div></div></section><section id="experience" class="section light experience"><div class="experience-pin"><div class="experience_track">
     <div class="experience_panel experience_intro">
         <div class="experience_card">
             <span class="experience_index">00</span>
@@ -784,7 +776,7 @@
             <p class="section_body small opacity-70">Role para conhecer as empresas onde já trabalhei e o que fiz em cada uma.</p>
         </div>
     </div>
-    <div class="experience_panel experience_panel--gray">
+    <div class="experience_panel">
         <div class="experience_card experience_card--split">
             <span class="experience_index">01</span>
             <div class="experience_col-left">
@@ -806,7 +798,7 @@
             </div>
         </div>
     </div>
-    <div class="experience_panel experience_panel--dark">
+    <div class="experience_panel">
         <div class="experience_card experience_card--split experience_card--reverse">
             <span class="experience_index">02</span>
             <div class="experience_col-left">
@@ -827,7 +819,7 @@
             </div>
         </div>
     </div>
-</div></section><footer id="contact" data-w-id="5be8c815-6575-3e1b-39d1-56c8914fa363" class="section contact"><div class="container footer-content"><div class="section_content"><p id="w-node-_5be8c815-6575-3e1b-39d1-56c8914fa366-914fa363" class="section_body footer">Vamos construir algo juntos?</p><a data-w-id="5be8c815-6575-3e1b-39d1-56c8914fa368" href="mailto:murilo_agudos@hotmail.com" class="email_link w-inline-block"><div class="email_text">murilo_agudos@hotmail.com</div><div class="cta-underline"></div></a><a href="https://www.linkedin.com/in/murilo-trigo-6205b3190/" target="_blank" class="email_link w-inline-block" style="margin-top:0.4em;"><div class="email_text" style="font-size:2.2em;">LinkedIn</div><div class="cta-underline"></div></a></div></div><div class="footer-tickers"><div class="footer-ticker-group"><div class="ticker giant opacity-75"><div class="ticker_track"><div class="ticker_group"><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Vou adorar trabalhar com você</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Podemos falar sobre tecnologia</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Ou sobre os objetivos do seu negócio</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Ou sobre a vida</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Você decide.</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Me manda uma mensagem</div></div><div class="ticker_group"><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Vou adorar trabalhar com você</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Podemos falar sobre tecnologia</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Ou sobre os objetivos do seu negócio</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Ou sobre a vida</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Você decide.</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Me manda uma mensagem</div></div></div></div></div></div></footer></div></main><script src="js/vendor/gsap.min.js"></script><script src="js/vendor/ScrollTrigger.min.js"></script><script src="js/interactions-data.js"></script><script src="js/animations.js"></script><script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@0.2.28/bundled/lenis.js"></script>
+</div></div></section><footer id="contact" data-w-id="5be8c815-6575-3e1b-39d1-56c8914fa363" class="section contact"><div class="container footer-content"><div class="section_content"><p id="w-node-_5be8c815-6575-3e1b-39d1-56c8914fa366-914fa363" class="section_body footer">Vamos construir algo juntos?</p><a data-w-id="5be8c815-6575-3e1b-39d1-56c8914fa368" href="mailto:murilo_agudos@hotmail.com" class="email_link w-inline-block"><div class="email_text">murilo_agudos@hotmail.com</div><div class="cta-underline"></div></a><a href="https://www.linkedin.com/in/murilo-trigo-6205b3190/" target="_blank" class="email_link w-inline-block" style="margin-top:0.4em;"><div class="email_text" style="font-size:2.2em;">LinkedIn</div><div class="cta-underline"></div></a></div></div><div class="footer-tickers"><div class="footer-ticker-group"><div class="ticker giant opacity-75"><div class="ticker_track"><div class="ticker_group"><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Vou adorar trabalhar com você</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Podemos falar sobre tecnologia</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Ou sobre os objetivos do seu negócio</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Ou sobre a vida</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Você decide.</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Me manda uma mensagem</div></div><div class="ticker_group"><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Vou adorar trabalhar com você</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Podemos falar sobre tecnologia</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Ou sobre os objetivos do seu negócio</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Ou sobre a vida</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Você decide.</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Me manda uma mensagem</div></div></div></div></div></div></footer></div></main><script src="js/vendor/gsap.min.js"></script><script src="js/vendor/ScrollTrigger.min.js"></script><script src="js/interactions-data.js"></script><script src="js/animations.js"></script><script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@0.2.28/bundled/lenis.js"></script>
 <!--
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.3/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.3/Flip.min.js"></script>
@@ -846,7 +838,6 @@
     touchMultiplier: 2,
     infinite: false,
   })
-  window.lenis = lenis;
 
   if (window.ScrollTrigger) {
     lenis.on('scroll', ScrollTrigger.update)
@@ -973,88 +964,43 @@
 
   (function setupExperienceScroll() {
     if (!window.gsap || !window.ScrollTrigger) return;
-    if (window.innerWidth < 768) return;
     var pinWrap = document.querySelector('.experience-pin');
-    var panelGray = document.querySelector('.experience_panel--gray');
-    var panelDark = document.querySelector('.experience_panel--dark');
-    if (!pinWrap || !panelGray || !panelDark) return;
+    var track = document.querySelector('.experience_track');
+    if (!pinWrap || !track) return;
 
-    var steps = [panelGray, panelDark];
-    var maxIndex = steps.length;
-    var index = 0;
-    var animating = false;
-    var active = false;
+    ScrollTrigger.matchMedia({
+      "all": function () {
+        var getScrollAmount = function () { return track.scrollWidth - window.innerWidth; };
+        var moveLen = getScrollAmount() * 0.55;
+        var holdLen = window.innerHeight * 0.5;
+        var moveFrac = moveLen / (moveLen + holdLen);
 
-    gsap.set(steps, { clipPath: "inset(0 0 0 100%)" });
+        var tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: pinWrap,
+            start: "top top",
+            end: function () { return "+=" + (moveLen + holdLen); },
+            scrub: 0.4,
+            pin: true,
+            invalidateOnRefresh: true,
+            anticipatePin: 1
+          }
+        });
+        gsap.set(pinWrap, { backgroundColor: "#ffffff", color: "#0b0b0b" });
 
-    function goTo(next) {
-      if (animating || next === index || next < 0 || next > maxIndex) return;
-      animating = true;
-      var forward = next > index;
-      var panel = forward ? steps[next - 1] : steps[index - 1];
-      gsap.to(panel, {
-        clipPath: forward ? "inset(0 0 0 0%)" : "inset(0 0 0 100%)",
-        duration: 0.6,
-        ease: "power2.inOut",
-        onComplete: function () { index = next; animating = false; }
-      });
-    }
+        tl.to(track, { x: function () { return -getScrollAmount(); }, ease: "none", duration: moveFrac }, 0)
+          .to(pinWrap, { backgroundColor: "#8a8a8a", color: "#ffffff", ease: "none", duration: moveFrac / 2 }, 0)
+          .to(pinWrap, { backgroundColor: "#0b0b0b", color: "#ffffff", ease: "none", duration: moveFrac / 2 }, moveFrac / 2)
+          .to({}, { duration: 1 - moveFrac }, moveFrac);
 
-    function freezePage() { if (window.lenis) window.lenis.stop(); }
-    function unfreezePage() { if (window.lenis) window.lenis.start(); }
-
-    function snapIn() {
-      if (window.lenis) window.lenis.scrollTo(pinWrap, { immediate: true });
-    }
-
-    ScrollTrigger.create({
-      trigger: pinWrap,
-      start: "top bottom-=150",
-      end: "top top",
-      onEnter: snapIn,
-      onEnterBack: snapIn
-    });
-
-    ScrollTrigger.create({
-      trigger: pinWrap,
-      start: "top top",
-      end: "+=" + Math.round(window.innerHeight * 1.5),
-      pin: true,
-      onEnter: function () { active = true; freezePage(); },
-      onEnterBack: function () { active = true; index = maxIndex; gsap.set(steps, { clipPath: "inset(0 0 0 0%)" }); freezePage(); },
-      onLeave: function () { active = false; unfreezePage(); },
-      onLeaveBack: function () { active = false; index = 0; gsap.set(steps, { clipPath: "inset(0 0 0 100%)" }); unfreezePage(); }
-    });
-
-    function handleStep(deltaY, e) {
-      if (!active) return;
-      var goingDown = deltaY > 0;
-      if (goingDown && index >= maxIndex) { unfreezePage(); return; }
-      if (!goingDown && index <= 0) { unfreezePage(); return; }
-      if (goingDown && index < maxIndex) {
-        e.preventDefault();
-        e.stopPropagation();
-        goTo(index + 1);
-      } else if (!goingDown && index > 0) {
-        e.preventDefault();
-        e.stopPropagation();
-        goTo(index - 1);
+        return function () {
+          if (tl.scrollTrigger) tl.scrollTrigger.kill();
+          tl.kill();
+          gsap.set(pinWrap, { clearProps: "backgroundColor,color" });
+          gsap.set(track, { clearProps: "transform" });
+        };
       }
-    }
-
-    window.addEventListener('wheel', function (e) { handleStep(e.deltaY, e); }, { passive: false, capture: true });
-
-    var touchStartY = null;
-    window.addEventListener('touchstart', function (e) {
-      touchStartY = e.touches[0].clientY;
-    }, { passive: true, capture: true });
-    window.addEventListener('touchmove', function (e) {
-      if (!active || touchStartY === null) return;
-      var dy = touchStartY - e.touches[0].clientY;
-      if (Math.abs(dy) < 40) return;
-      handleStep(dy, e);
-      if (e.defaultPrevented) touchStartY = e.touches[0].clientY;
-    }, { passive: false, capture: true });
+    });
   })();
 
   /*
