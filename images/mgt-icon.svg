@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-labelledby="title">
+  <title id="title">MGT</title>
+  <rect width="100" height="100" rx="22" fill="#0a0e12"/>
+  <path d="M25 78 L25 25 L50 54 L75 25 L75 78" fill="none" stroke="#d7ff3f" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
