@@ -120,9 +120,7 @@
   .experience_stack span { border: 1px solid currentColor; opacity: .8; border-radius: 2em; padding: .3em 1em; font-size: .95em; font-weight: 500; }
 
   @media (max-width: 767px) {
-    .experience-pin { height: auto; overflow: visible; }
-    .experience_track { overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; padding: 0 1.25rem 1.75rem; gap: 1rem; }
-    .experience_panel { flex: 0 0 88vw; width: 88vw; padding: 2em 0; scroll-snap-align: center; justify-content: flex-start; }
+    .experience_panel { padding: 0 1.75rem; }
     .experience_card, .experience_card--split { grid-template-columns: 1fr; gap: 1.75em; max-width: none; }
     .experience_company { font-size: 2.1em; }
     .experience_index { font-size: 5em; }
@@ -896,7 +894,7 @@
     if (!pinWrap || !track) return;
 
     ScrollTrigger.matchMedia({
-      "(min-width: 768px)": function () {
+      "all": function () {
         var getScrollAmount = function () { return track.scrollWidth - window.innerWidth; };
         var moveLen = getScrollAmount() * 0.55;
         var holdLen = window.innerHeight * 0.5;
