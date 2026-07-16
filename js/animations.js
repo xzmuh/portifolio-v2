@@ -114,25 +114,39 @@
   }
 
   // ---- Continuous (GENERAL_CONTINUOUS_ACTION / SCROLL_PROGRESS) ----
+  // Real tweens between consecutive keyframes, not discrete .set() jumps,
+  // so ScrollTrigger's scrub produces a smooth in-between motion instead of
+  // an abrupt pop the instant a keyframe position is crossed.
   function buildScrollScrubTimeline(actionList, triggerEl) {
     var pg = actionList.continuousParameterGroups && actionList.continuousParameterGroups[0];
     if (!pg) return null;
+    var groups = (pg.continuousActionGroups || []).slice().sort(function (a, b) { return a.keyframe - b.keyframe; });
+    if (!groups.length) return null;
     var tl = gsap.timeline({ paused: true });
-    var maxKeyframe = 0;
-    pg.continuousActionGroups.forEach(function (g) { if (g.keyframe > maxKeyframe) maxKeyframe = g.keyframe; });
-    if (maxKeyframe === 0) maxKeyframe = 100;
 
-    pg.continuousActionGroups.forEach(function (group) {
-      var pos = (group.keyframe / 100) * (maxKeyframe / 100) * 1; // seconds-as-percent scale (0..1 timeline)
-      var posSeconds = group.keyframe / 100; // place keyframes on a 0..1 second timeline by percent
+    // establish the first keyframe's values instantly (the resting state)
+    groups[0].actionItems.forEach(function (item) {
+      var els = resolveTargets(item.config.target, triggerEl);
+      if (!els.length) return;
+      var vars = {};
+      applyActionItemToVars(item, vars);
+      gsap.set(els, vars);
+    });
+
+    var prevPos = 0;
+    for (var i = 1; i < groups.length; i++) {
+      var group = groups[i];
+      var pos = group.keyframe / 100;
+      var segDuration = Math.max(0.001, pos - prevPos);
       group.actionItems.forEach(function (item) {
         var els = resolveTargets(item.config.target, triggerEl);
         if (!els.length) return;
-        var vars = { duration: 0.001, ease: "none" };
+        var vars = { duration: segDuration, ease: gsapEase(item.config.easing) };
         applyActionItemToVars(item, vars);
-        tl.set(els, vars, posSeconds);
+        tl.to(els, vars, prevPos);
       });
-    });
+      prevPos = pos;
+    }
     return tl;
   }
 
