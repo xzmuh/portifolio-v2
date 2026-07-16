@@ -107,7 +107,8 @@
   .experience_card--split { max-width: 88em; display: grid; grid-template-columns: 1fr 1fr; gap: 4em; align-items: start; }
   .experience_card--reverse .experience_col-left { order: 2; }
   .experience_card--reverse .experience_col-right { order: 1; }
-  .experience-pin { background-color: #fff; color: var(--black); }
+  .experience-pin { background-color: #fff; color: var(--black); position: relative; }
+  .experience_wipe { position: absolute; top: 0; bottom: 0; width: 6vw; background: var(--red); opacity: 0; z-index: 5; pointer-events: none; transform: translate3d(-20vw,0,0) skewX(-12deg); }
   .experience_index { position: absolute; top: -.2em; right: .2em; font-family: "DM Serif Display", serif; font-size: 9em; font-weight: 700; color: var(--red); opacity: .08; line-height: 1; pointer-events: none; }
   .experience_col-left, .experience_col-right { position: relative; z-index: 1; width: 100%; }
   .experience_eyebrow { color: var(--red); font-weight: 500; letter-spacing: .05em; text-transform: uppercase; font-size: 1.1em; margin-bottom: 1em; }
@@ -136,21 +137,42 @@
     transform: translate3d(-200%,0,0);
   }
 
+  .service:nth-child(even) .service_list p {
+    transform: translate3d(200%,0,0);
+  }
+
   .service_list:before {
     transform: scale3d(1,0,1);
   }
-  
+
   .img-reveal_wrap, .hero_heading-track {
   	opacity: 0;
   }
-  
+
   .w-editor .img-reveal_wrap, .w-editor .hero_heading-track {
   	opacity: 1;
+  }
+
+  .about-stair-item {
+    opacity: 0;
+    transform: translate3d(0, 1.5em, 0);
+    transition: opacity 900ms cubic-bezier(.19, 1, .22, 1), transform 900ms cubic-bezier(.19, 1, .22, 1);
+  }
+
+  .about-stair-item.stair-2 { transition-delay: 120ms; }
+  .about-stair-item.stair-3 { transition-delay: 240ms; }
+
+  .about-stair-item.reveal {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
   }
 
   @media (max-width:767px){
     .service_list p {
        transform: translate3d(-50%,0,0);
+    }
+    .service:nth-child(even) .service_list p {
+       transform: translate3d(50%,0,0);
     }
   }
 </style></head><body data-barba="wrapper"><main data-barba-namespace="home-page" data-barba="container" class="main-wrapper home-page"><div class="globals"><div class="global-css w-embed"><style>
@@ -163,7 +185,7 @@
     font-size: 1.5em;
     padding: .75em 0;
     width: auto;
-    transition: transform 1500ms cubic-bezier(.19, 1, .22, 1) 750ms;
+    transition: transform 600ms cubic-bezier(.19, 1, .22, 1) 100ms;
   }
 
   .service:nth-child(odd) .service_list p:nth-child(3n + 1) {
@@ -724,7 +746,7 @@
   <span class="grow-text">
     imersão. 
   </span>
-</p></div></div></div></section><section id="experience" class="section light experience"><div class="experience-pin"><div class="experience_track">
+</p></div></div></div></section><section id="experience" class="section light experience"><div class="experience-pin"><div class="experience_wipe"></div><div class="experience_track">
     <div class="experience_panel experience_intro">
         <div class="experience_card">
             <span class="experience_index">00</span>
@@ -872,7 +894,7 @@
     });
 
     //service list anim
-    const items = document.querySelectorAll(".service_list p, .service_list");
+    const items = document.querySelectorAll(".service_list p, .service_list, .about-stair-item");
 
     items.forEach(item => {
       new IntersectionObserver((entries, observer) => { 
@@ -895,6 +917,7 @@
     if (!window.gsap || !window.ScrollTrigger) return;
     var pinWrap = document.querySelector('.experience-pin');
     var track = document.querySelector('.experience_track');
+    var wipe = document.querySelector('.experience_wipe');
     if (!pinWrap || !track) return;
 
     ScrollTrigger.matchMedia({
@@ -903,24 +926,47 @@
         var moveLen = getScrollAmount() * 0.55;
         var holdLen = window.innerHeight * 0.5;
         var moveFrac = moveLen / (moveLen + holdLen);
+        var stepFrac = moveFrac / 2;
+
+        gsap.set(pinWrap, { backgroundColor: "#ffffff", color: "#0b0b0b" });
 
         var tl = gsap.timeline({
           scrollTrigger: {
             trigger: pinWrap,
             start: "top top",
             end: function () { return "+=" + (moveLen + holdLen); },
-            scrub: 0.4,
+            scrub: 0.15,
             pin: true,
             invalidateOnRefresh: true,
-            anticipatePin: 1
+            anticipatePin: 1,
+            snap: {
+              snapTo: [0, stepFrac, moveFrac, 1],
+              duration: { min: 0.2, max: 0.45 },
+              ease: "power2.inOut"
+            }
           }
         });
-        gsap.set(pinWrap, { backgroundColor: "#ffffff", color: "#0b0b0b" });
 
         tl.to(track, { x: function () { return -getScrollAmount(); }, ease: "none", duration: moveFrac }, 0)
-          .to(pinWrap, { backgroundColor: "#8a8a8a", color: "#ffffff", ease: "none", duration: moveFrac / 2 }, 0)
-          .to(pinWrap, { backgroundColor: "#0b0b0b", color: "#ffffff", ease: "none", duration: moveFrac / 2 }, moveFrac / 2)
+          .to(pinWrap, { backgroundColor: "#8a8a8a", color: "#ffffff", ease: "none", duration: stepFrac }, 0)
+          .to(pinWrap, { backgroundColor: "#0b0b0b", color: "#ffffff", ease: "none", duration: stepFrac }, stepFrac)
           .to({}, { duration: 1 - moveFrac }, moveFrac);
+
+        var lastStep = -1;
+        tl.eventCallback("onUpdate", function () {
+          var p = tl.progress();
+          var idx = p < stepFrac ? 0 : (p < moveFrac ? 1 : 2);
+          if (idx !== lastStep) {
+            if (lastStep !== -1 && wipe) {
+              gsap.killTweensOf(wipe);
+              gsap.fromTo(wipe,
+                { x: "-20vw", opacity: 1 },
+                { x: "120vw", opacity: 0, duration: 0.45, ease: "power2.inOut" }
+              );
+            }
+            lastStep = idx;
+          }
+        });
 
         return function () {
           if (tl.scrollTrigger) tl.scrollTrigger.kill();
