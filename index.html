@@ -1,0 +1,491 @@
+<!DOCTYPE html><!-- Last Published: Fri Aug 09 2024 03:56:40 GMT+0000 (Coordinated Universal Time) --><html data-wf-domain="darrenharroff.webflow.io" data-wf-page="60ebc127983d7faf4b175c0b" data-wf-site="60ebc127983d7f86c1175c0a" lang="en"><head><meta charset="utf-8"/><title>Murilo Gonzales Trigo | Desenvolvedor Full Stack</title><meta content="Murilo Gonzales Trigo é desenvolvedor Full Stack especializado em sites e sistemas web eficientes, seguros e preparados para crescer com o negócio." name="description"/><meta content="Murilo Gonzales Trigo | Desenvolvedor Full Stack" property="og:title"/><meta content="Murilo Gonzales Trigo é desenvolvedor Full Stack especializado em sites e sistemas web eficientes, seguros e preparados para crescer com o negócio." property="og:description"/><meta content="images/mgt-graphic.svg" property="og:image"/><meta content="Murilo Gonzales Trigo | Desenvolvedor Full Stack" name="twitter:title"/><meta content="Murilo Gonzales Trigo é desenvolvedor Full Stack especializado em sites e sistemas web eficientes, seguros e preparados para crescer com o negócio." name="twitter:description"/><meta content="images/mgt-graphic.svg" name="twitter:image"/><meta property="og:type" content="website"/><meta content="summary_large_image" name="twitter:card"/><meta content="width=device-width, initial-scale=1" name="viewport"/><link href="https://cdn.prod.website-files.com/60ebc127983d7f86c1175c0a/css/darrenharroff.webflow.aa752cfa8.min.css" rel="stylesheet" type="text/css"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link href="https://fonts.gstatic.com" rel="preconnect" crossorigin="anonymous"/><script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js" type="text/javascript"></script><script type="text/javascript">WebFont.load({  google: {    families: ["DM Serif Display:regular","Roboto:300,regular,500,700,900"]  }});</script><script type="text/javascript">!function(o,c){var n=c.documentElement,t=" w-mod-";n.className+=t+"js",("ontouchstart"in o||o.DocumentTouch&&c instanceof DocumentTouch)&&(n.className+=t+"touch")}(window,document);</script><link href="images/mgt-graphic.svg" rel="shortcut icon" type="image/svg+xml"/><link href="images/mgt-graphic.svg" rel="apple-touch-icon"/><style>
+
+
+  .fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right:0;
+    width:100%;
+  }
+
+  .hero_img-wrap {
+  	opacity: 0;
+  }
+  
+  .active-flip-item {z-index: 2;}
+
+  .w-webflow-badge {
+    display: none !important;
+  }
+
+</style><style>
+  .service_list p {
+    transform: translate3d(-200%,0,0);
+  }
+
+  .service_list:before {
+    transform: scale3d(1,0,1);
+  }
+  
+  .img-reveal_wrap, .hero_heading-track {
+  	opacity: 0;
+  }
+  
+  .w-editor .img-reveal_wrap, .w-editor .hero_heading-track {
+  	opacity: 1;
+  }
+
+  @media (max-width:767px){
+    .service_list p {
+       transform: translate3d(-50%,0,0);
+    }
+  }
+</style></head><body data-barba="wrapper"><main data-barba-namespace="home-page" data-barba="container" class="main-wrapper home-page"><div class="globals"><div class="global-css w-embed"><style>
+
+  .no-point {
+    pointer-events: none;
+  }
+
+  .service_list p {
+    font-size: 1.5em;
+    padding: .75em 0;
+    width: auto;
+    transition: transform 1500ms cubic-bezier(.19, 1, .22, 1) 750ms;
+  }
+
+  .service:nth-child(odd) .service_list p:nth-child(3n + 1) {
+    padding-left: 2em;
+  }
+  .service:nth-child(odd) .service_list p:nth-child(2n + 2) {
+    padding-left: 4em;
+  }
+
+  .service:nth-child(even) .service_list p:nth-child(3n + 2) {
+    padding-left: 2em;
+  }
+  .service:nth-child(even) .service_list p:nth-child(4n + 1) {
+    padding-left: 4em;
+  }
+
+
+
+  .service_list p.reveal {
+    transform: translate3d(0%,0,0);
+  }
+
+  .service_list:before {
+    content: "";
+    display: block;
+    width: 3px;
+    height: 100%;
+    background: #000;
+    transform-origin: top;
+    transition: transform 2000ms cubic-bezier(.19, 1, .22, 1) 500ms;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 2;
+  }
+  .service_list:after {
+    content: "";
+    display: block;
+    width: 100vw;
+    height: 100%;
+    background: #fff;
+    position: absolute;
+    right: 100%;
+    top: 0;
+    bottom: 0;
+    z-index: 1;
+  }
+
+  .service_list.reveal:before{
+    transform: scale3d(1,1,1);
+  }
+
+  .custom-cursor_wrap, .img-span_img-outer{
+    pointer-events: none;
+  }
+
+  .cursor.cta-grow .cursor_arrow, .cursor.grow .cursor_arrow{
+    opacity:1;
+  }
+   .cursor.blur-grow .cursor_arrow{
+    opacity:0;
+  }
+
+  @keyframes rotate {
+    from {transform: rotate(0deg);}
+    to {transform: rotate(360deg);}
+  }
+
+
+
+  .cursor.blur-grow .cursor-text{
+    display: block;
+    opacity:1;
+    animation: rotate 10s linear infinite;
+  }
+
+  body:hover .cursor {
+    opacity: 1;
+  }
+
+  .section_body.large.about > .grow-text:nth-child(odd){
+    transform-origin: bottom right !important;
+  }
+
+  .section_body.large.about > .grow-text:nth-child(3n + 2){
+    transform-origin: center left !important;
+  }
+
+  @media (max-width:767px){
+    .service_list p {
+      width: 200vw;
+    }
+  }
+
+
+
+  @keyframes tickerForwards {
+
+    from {transform: translate3d(0%, 0, 0);}
+    to {transform: translate3d(-100%, 0, 0);}
+
+  }
+
+  .ticker.forwards .ticker_group {
+    animation: tickerForwards 25s linear infinite;
+  }
+
+  .ticker.slow .ticker_group {
+    animation: tickerForwards 45s linear infinite;
+  }
+
+  .ticker.giant .ticker_group {
+    animation: tickerForwards 200s linear infinite;
+  }
+
+  @keyframes tickerBackwards {
+
+    from {transform: translate3d(0%, 0, 0);}
+    to {transform: translate3d(100%, 0, 0);}
+
+  }
+
+  .ticker.reverse .ticker_group {
+    animation: tickerBackwards 25s linear infinite;
+  }
+
+  .img-span{
+    display: inline-flex;
+  }
+
+  @media (min-width:1700px){
+    body {
+      font-size: 17px;
+    }
+  }
+
+</style></div></div><header class="header difference"><div class="container"><div class="navbar_inner"><a href="/" aria-current="page" class="logo_link w-inline-block w--current"><img src="images/mgt-graphic.svg" loading="eager" alt="MGT Logo" class="navbar_logo"/></a><nav class="nav"><a href="#works" class="nav_link">Projetos.</a><a href="#skills" class="nav_link">Tecnologias.</a><a href="#about" class="nav_link">Sobre.</a><a href="#" class="nav_link">Contato.</a></nav></div></div></header><div id="luxy" data-barba="container" data-barba-namespace="home-page" class="page-wrapper"><section id="home" data-w-id="04dcac28-e0ae-953e-2822-13c173886ed8" class="section hero"><div class="container hero-container"><div class="hero_inner"><div style="opacity:0" class="img-reveal_wrap hero_img-wrap"><div class="img-reveal_block dark"></div><img src="eu.jpeg" loading="eager" alt="Murilo Gonzales Trigo" class="img-reveal_img hero_image"/></div><div class="hero_heading-wrap"></div><div class="hero_heading-wrap"><div class="hero_heading-all"><div style="-webkit-transform:translate3d(-100vw, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(-100vw, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(-100vw, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(-100vw, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);opacity:0" class="hero_heading-track heading-1"><div class="hero_heading-inner heading-1"><div class="hero_heading heading-1"><div>Murilo</div></div></div></div><div style="-webkit-transform:translate3d(100vw, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(100vw, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(100vw, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(100vw, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);opacity:0" class="hero_heading-track heading-2"><div class="hero_heading-inner heading-2"><div class="hero_heading heading-2"><div>Gonzales</div></div></div></div><div style="-webkit-transform:translate3d(-100vw, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(-100vw, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(-100vw, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(-100vw, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);opacity:0" class="hero_heading-track heading-3"><div class="hero_heading-inner heading-3"><div class="hero_heading heading-3"><div>Full Stack</div></div></div></div><div style="-webkit-transform:translate3d(100vw, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(100vw, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(100vw, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(100vw, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);opacity:0" class="hero_heading-track heading-4"><div class="hero_heading-inner heading-4"><div class="hero_heading heading-4"><div>Developer</div></div></div></div></div></div></div></div></section><section class="section intro"><div class="container small"><div class="section_content"><h1 id="w-node-_62899e0b-fbee-f876-8be2-69d93ce781d5-4b175c0b" class="section_body large intro">Olá.<span class="emoji">👋</span> Eu sou <a href="https://github.com/xzmuh" target="_blank" class="inline-link white">Full Stack <em>Developer</em>,</a> com mais de 5 anos de experiência criando sites e sistemas web. Gosto de ajudar negócios a crescer com soluções eficientes, seguras e bem estruturadas.</h1><p id="w-node-_9f3f3223-5878-20eb-144c-2a6d6eb0b722-4b175c0b" class="section_body intro">Transformo regras de negócio complexas em soluções web seguras, eficientes e escaláveis — da ideia ao produto digital.<br/></p></div></div></section><section id="works" class="section projects"><div class="container works"><div data-w-id="f6585821-a33f-a5b0-aed3-c9632f41658b" class="flow-grid"><div id="w-node-_038df902-d38f-1fde-9319-2b890bce257f-4b175c0b" class="ticker forwards projects"><div class="ticker_track"><div class="ticker_group"><h2 class="section_heading ticker-text">Projetos em destaque</h2><div class="section_heading ticker-text"> • </div></div><div class="ticker_group"><div class="section_heading ticker-text">Projetos em destaque</div><div class="section_heading ticker-text"> • </div></div></div></div><div id="w-node-_632c353c-3a0e-0c65-c1ca-de559a821920-4b175c0b" data-w-id="632c353c-3a0e-0c65-c1ca-de559a821920" class="project_item vsds w-dyn-list"><div role="list" class="w-dyn-items"><div role="listitem" class="works-item w-dyn-item"><a href="https://tecnoglassbrasil.com.br" class="project_wrap w-inline-block"><img id="w-node-_6bafd87a-d994-c9da-b3aa-0e6480e00949-4b175c0b" loading="lazy" width="1000" src="images/mgt-graphic.svg" alt="Tecnoglass" class="project_image"/><div id="w-node-_6bafd87a-d994-c9da-b3aa-0e6480e0094b-4b175c0b" class="project_info"><h3 id="w-node-_6bafd87a-d994-c9da-b3aa-0e6480e0094c-4b175c0b" class="project_name item-name">Tecnoglass</h3><div id="w-node-_6bafd87a-d994-c9da-b3aa-0e6480e0094e-4b175c0b" class="project_desc">Site institucional para a Tecnoglass Brasil</div></div></a><link rel="prefetch" href="https://tecnoglassbrasil.com.br"/></div></div></div><div id="w-node-ff3e8412-0a37-3eff-8c20-2de0518a68e7-4b175c0b" class="project_item tmm w-dyn-list"><div role="list" class="w-dyn-items"><div role="listitem" class="works-item w-dyn-item"><a href="https://github.com/xzmuh/mini-chat-ia" class="project_wrap medium w-inline-block"><img id="w-node-ff3e8412-0a37-3eff-8c20-2de0518a68eb-4b175c0b" loading="lazy" width="800" src="images/mgt-graphic.svg" alt="Mini Chat IA" class="project_image"/><div id="w-node-ff3e8412-0a37-3eff-8c20-2de0518a68ec-4b175c0b" class="project_darken"></div><div id="w-node-ff3e8412-0a37-3eff-8c20-2de0518a68ed-4b175c0b" class="project_info"><h3 id="w-node-ff3e8412-0a37-3eff-8c20-2de0518a68ee-4b175c0b" class="project_name item-name">Mini Chat IA</h3><div id="w-node-ff3e8412-0a37-3eff-8c20-2de0518a68ef-4b175c0b" class="project_desc">Backend em TypeScript para conversas e integração com serviços de IA</div></div></a><link rel="prefetch" href="https://github.com/xzmuh/mini-chat-ia"/></div></div></div><div id="w-node-cc5274d2-0126-6461-0282-265aa0bee7be-4b175c0b" class="project_item bkz w-dyn-list"><div role="list" class="w-dyn-items"><div role="listitem" class="works-item w-dyn-item"><a href="https://github.com/xzmuh/mini-chat-ia-front" class="project_wrap small w-inline-block"><img id="w-node-cc5274d2-0126-6461-0282-265aa0bee7c2-4b175c0b" loading="lazy" width="400" src="images/mgt-graphic.svg" alt="Mini Chat IA Front" class="project_image"/><div id="w-node-cc5274d2-0126-6461-0282-265aa0bee7c3-4b175c0b" class="project_darken"></div><div id="w-node-cc5274d2-0126-6461-0282-265aa0bee7c4-4b175c0b" class="project_info"><h3 id="w-node-cc5274d2-0126-6461-0282-265aa0bee7c5-4b175c0b" class="project_name item-name">Mini Chat IA Front</h3><div id="w-node-cc5274d2-0126-6461-0282-265aa0bee7c6-4b175c0b" class="project_desc">Interface em TypeScript para conversa e experiência em tempo real</div></div></a><link rel="prefetch" href="https://github.com/xzmuh/mini-chat-ia-front"/></div></div></div><div id="w-node-_51cb5d12-54e3-7db2-71d5-1ca996ae2c1a-4b175c0b" class="project_item bbq w-dyn-list"><div role="list" class="w-dyn-items"><div role="listitem" class="works-item w-dyn-item"><a href="https://github.com/xzmuh/User-crud-with-Jwt" class="project_wrap medium w-inline-block"><img id="w-node-_51cb5d12-54e3-7db2-71d5-1ca996ae2c1e-4b175c0b" loading="lazy" width="300" src="images/mgt-graphic.svg" alt="User CRUD com JWT" class="project_image"/><div id="w-node-_51cb5d12-54e3-7db2-71d5-1ca996ae2c1f-4b175c0b" class="project_darken"></div><div id="w-node-_51cb5d12-54e3-7db2-71d5-1ca996ae2c20-4b175c0b" class="project_info"><h3 id="w-node-_51cb5d12-54e3-7db2-71d5-1ca996ae2c21-4b175c0b" class="project_name item-name">User CRUD com JWT</h3><div id="w-node-_51cb5d12-54e3-7db2-71d5-1ca996ae2c22-4b175c0b" class="project_desc">CRUD em PHP com autenticação JWT e controle de acesso</div></div></a><link rel="prefetch" href="https://github.com/xzmuh/User-crud-with-Jwt"/></div></div></div><div id="w-node-_31353db0-b592-3a3d-f0b0-8a650926bbd9-4b175c0b" class="project_item pli w-dyn-list"><div role="list" class="w-dyn-items"><div role="listitem" class="works-item w-dyn-item"><a href="https://github.com/xzmuh/bot-automacao-cadastro" class="project_wrap medium w-inline-block"><img id="w-node-_31353db0-b592-3a3d-f0b0-8a650926bbdd-4b175c0b" loading="lazy" width="650" src="images/mgt-graphic.svg" alt="Bot de Automação" class="project_image"/><div id="w-node-_31353db0-b592-3a3d-f0b0-8a650926bbde-4b175c0b" class="project_darken"></div><div id="w-node-_31353db0-b592-3a3d-f0b0-8a650926bbdf-4b175c0b" class="project_info"><h3 id="w-node-_31353db0-b592-3a3d-f0b0-8a650926bbe0-4b175c0b" class="project_name item-name">Bot de Automação</h3><div id="w-node-_31353db0-b592-3a3d-f0b0-8a650926bbe1-4b175c0b" class="project_desc">Bot em Python para automatizar cadastros e fluxos repetitivos</div></div></a><link rel="prefetch" href="https://github.com/xzmuh/bot-automacao-cadastro"/></div></div></div><div id="w-node-fd648bfc-adf0-5649-2433-140a1df7f614-4b175c0b" class="project_item ej w-dyn-list"><div role="list" class="w-dyn-items"><div role="listitem" class="works-item w-dyn-item"><a href="https://github.com/xzmuh/character-remove" class="project_wrap small w-inline-block"><img id="w-node-fd648bfc-adf0-5649-2433-140a1df7f618-4b175c0b" loading="lazy" width="400" src="images/mgt-graphic.svg" alt="Character Remove" class="project_image"/><div id="w-node-fd648bfc-adf0-5649-2433-140a1df7f619-4b175c0b" class="project_darken"></div><div id="w-node-fd648bfc-adf0-5649-2433-140a1df7f61a-4b175c0b" class="project_info"><h3 id="w-node-fd648bfc-adf0-5649-2433-140a1df7f61b-4b175c0b" class="project_name item-name">Character Remove</h3><div id="w-node-fd648bfc-adf0-5649-2433-140a1df7f61c-4b175c0b" class="project_desc">Utilitário JavaScript para tratamento de textos</div></div></a><link rel="prefetch" href="https://github.com/xzmuh/character-remove"/></div></div></div><div id="w-node-_93a15993-008c-52a8-866e-a4c297483cc5-4b175c0b" class="project_item mwa w-dyn-list"><div role="list" class="w-dyn-items"><div role="listitem" class="works-item w-dyn-item"><a href="https://github.com/xzmuh" class="project_wrap small w-inline-block"><img id="w-node-_93a15993-008c-52a8-866e-a4c297483cc9-4b175c0b" loading="lazy" width="400" src="images/mgt-graphic.svg" alt="GitHub — xzmuh" class="project_image"/><div id="w-node-_93a15993-008c-52a8-866e-a4c297483cca-4b175c0b" class="project_darken"></div><div id="w-node-_93a15993-008c-52a8-866e-a4c297483ccb-4b175c0b" class="project_info"><h3 id="w-node-_93a15993-008c-52a8-866e-a4c297483ccc-4b175c0b" class="project_name item-name">GitHub — xzmuh</h3><div id="w-node-_93a15993-008c-52a8-866e-a4c297483ccd-4b175c0b" class="project_desc">Outros projetos e experimentos de desenvolvimento</div></div></a><link rel="prefetch" href="https://github.com/xzmuh"/></div></div></div></div></div></section><section id="skills" class="section light"><div class="container small"><div class="section_content"><div class="ticker forwards"><div class="ticker_track"><div class="ticker_group"><h2 class="section_heading ticker-text">Minhas <span class="serif">skills</span></h2><div class="section_heading ticker-text"> • </div><div class="section_heading ticker-text">Tecnologias que uso</div><div class="section_heading ticker-text"> • </div><div class="section_heading ticker-text">Soluções que desenvolvo</div><div class="section_heading ticker-text"> • </div></div><div class="ticker_group"><div class="section_heading ticker-text">Minhas <span class="serif">skills</span></div><div class="section_heading ticker-text"> • </div><div class="section_heading ticker-text">Tecnologias que uso</div><div class="section_heading ticker-text"> • </div><div class="section_heading ticker-text">Soluções que desenvolvo</div><div class="section_heading ticker-text"> • </div></div></div></div></div><div class="services_collection w-dyn-list"><div role="list" class="services_list w-dyn-items"><div role="listitem" class="service w-dyn-item"><div id="w-node-_01758bed-6d3e-85a3-b81e-5b450a659ff2-4b175c0b" class="service-content"><h3 class="service_title">Engenharia de Software.</h3><div id="w-node-f2352a34-d7ef-66c5-d1ec-ed372072b75d-4b175c0b" class="section_body small service-desc w-richtext"><p>Desenvolvimento e manutenção de sistemas ERP voltados para processos fiscais, tributários e operacionais. Transformo regras de negócio complexas em soluções seguras e escaláveis, da leitura de documentos fiscais a APIs internas.</p></div></div><div id="w-node-dd9341d7-13df-2998-3032-e5d9ce9833ab-4b175c0b" class="service_list w-richtext"><p>Regras de Negócio</p><p>Sistemas ERP</p><p>NF-e &amp; SPED</p><p>Dashboards</p><p>APIs Internas</p></div></div><div role="listitem" class="service w-dyn-item"><div id="w-node-_01758bed-6d3e-85a3-b81e-5b450a659ff2-4b175c0b" class="service-content"><h3 class="service_title">Frontend Responsivo.</h3><div id="w-node-f2352a34-d7ef-66c5-d1ec-ed372072b75d-4b175c0b" class="section_body small service-desc w-richtext"><p>Criação de sites responsivos e bem estruturados, com foco em apresentação profissional, boa experiência de navegação e adaptação para diferentes dispositivos.</p></div></div><div id="w-node-dd9341d7-13df-2998-3032-e5d9ce9833ab-4b175c0b" class="service_list w-richtext"><p>HTML5</p><p>CSS3</p><p>JavaScript</p><p>Sites Responsivos</p><p>Boa UX</p></div></div><div role="listitem" class="service w-dyn-item"><div id="w-node-_01758bed-6d3e-85a3-b81e-5b450a659ff2-4b175c0b" class="service-content"><h3 class="service_title">Full Stack Development.</h3><div id="w-node-f2352a34-d7ef-66c5-d1ec-ed372072b75d-4b175c0b" class="section_body small service-desc w-richtext"><p>Construção de sistemas eficientes de ponta a ponta, unindo backend e frontend. Uso Node.js, NestJS, PHP e TypeScript para entregar aplicações rápidas, seguras e prontas para crescer.</p></div></div><div id="w-node-dd9341d7-13df-2998-3032-e5d9ce9833ab-4b175c0b" class="service_list w-richtext"><p>Node.js</p><p>NestJS</p><p>PHP</p><p>TypeScript</p><p>APIs REST</p></div></div><div role="listitem" class="service w-dyn-item"><div id="w-node-_01758bed-6d3e-85a3-b81e-5b450a659ff2-4b175c0b" class="service-content"><h3 class="service_title">Dados &amp; Integrações.</h3><div id="w-node-f2352a34-d7ef-66c5-d1ec-ed372072b75d-4b175c0b" class="section_body small service-desc w-richtext"><p>Criação de dashboards, relatórios gerenciais e consultas otimizadas para grandes volumes de dados, além de integrações e processos internos que conectam sistemas com segurança.</p></div></div><div id="w-node-dd9341d7-13df-2998-3032-e5d9ce9833ab-4b175c0b" class="service_list w-richtext"><p>PostgreSQL</p><p>MySQL</p><p>Consultas Otimizadas</p><p>Integrações</p></div></div></div></div></div></section><section class="section call-to-action_mid"><div class="container small"><div class="section_content"><a href="#contact" id="w-node-f3dc6715-e1c3-c222-48ca-c01fb00eb123-4b175c0b" data-w-id="f3dc6715-e1c3-c222-48ca-c01fb00eb123" class="ticker forwards cta w-inline-block"><div class="ticker_track"><div class="ticker_group"><div class="section_heading ticker-text">Vamos construir algo juntos?</div><div class="section_heading ticker-text"> • </div><div class="section_heading ticker-text serif">Clique aqui para dizer oi</div><div class="section_heading ticker-text"> • </div><div class="section_heading ticker-text">É um botão, eu prometo</div><div class="section_heading ticker-text"> • </div></div><div class="ticker_group"><div class="section_heading ticker-text">Vamos construir algo juntos?</div><div class="section_heading ticker-text"> • </div><div class="section_heading ticker-text serif">Clique aqui para dizer oi</div><div class="section_heading ticker-text"> • </div><div class="section_heading ticker-text">É um botão, eu prometo</div><div class="section_heading ticker-text"> • </div></div></div><div style="-webkit-transform:translate3d(0, 105%, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(0, 105%, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(0, 105%, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(0, 105%, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0)" class="cta-ticker_overlay"></div></a></div></div></section><section id="about" data-w-id="23362570-771b-0c45-251f-7b311e606ac5" class="section about"><div class="container small about"><div class="section_content"><h2 id="w-node-_23362570-771b-0c45-251f-7b311e606ac7-4b175c0b" data-w-id="23362570-771b-0c45-251f-7b311e606ac7" style="-webkit-transform:translate3d(0, 1em, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 3deg);-moz-transform:translate3d(0, 1em, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 3deg);-ms-transform:translate3d(0, 1em, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 3deg);transform:translate3d(0, 1em, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 3deg);opacity:0" class="section_heading">Um pouco <em>sobre</em> mim.</h2><p id="w-node-_98a14f7d-fdb7-2633-ed68-c96352d5cbba-4b175c0b" class="section_body small about-1">Sou desenvolvedor Full Stack há mais de 5 anos. Passei boa parte desse tempo na I-SINC, desenvolvendo e mantendo sistemas ERP voltados para processos fiscais, tributários e operacionais (<em>leitura e integração de NF-e, SPED, dashboards e APIs</em>). Hoje também atuo como freelancer, criando sites institucionais responsivos e bem estruturados para empresas.</p><div id="w-node-_0be5a29a-0c53-3161-ed70-0c1e45cdb5b6-4b175c0b" data-w-id="0be5a29a-0c53-3161-ed70-0c1e45cdb5b6" class="about-text w-embed"><p class="section_body large about">
+  <span class="grow-text">
+    Sou 
+  </span>
+  <span class="grow-text">
+    um
+  </span>
+  <span class="img-span">
+    <span class="img-span_img-outer">
+      <span class="img-span_img-wrap"><span class="img-span_reveal"></span><img class="img-span_img" src="images/mgt-graphic.svg"/></span>
+    </span>
+    <span class="img-span_text">
+      <span class="grow-text">
+        desenvolvedor 
+      </span>
+      <span class="grow-text">
+        dedicado,
+      </span>
+    </span>
+  </span>
+  <span class="img-span">
+    <span class="img-span_img-outer">
+      <span class="img-span_img-wrap"><span class="img-span_reveal"></span><img class="img-span_img" src="images/mgt-graphic.svg"/></span>
+    </span>
+    <span class="img-span_text">
+      <span class="grow-text">
+        curioso,
+      </span>
+    </span>
+  </span>
+  <span class="img-span">
+    <span class="img-span_img-outer">
+      <span class="img-span_img-wrap"><span class="img-span_reveal"></span><img class="img-span_img" src="images/mgt-graphic.svg"/></span>
+    </span>
+    <span class="img-span_text">
+      <span class="grow-text">
+        resolutivo,
+      </span>
+    </span>
+  </span>
+  <span class="img-span">
+    <span class="img-span_img-outer">
+      <span class="img-span_img-wrap"><span class="img-span_reveal"></span><img class="img-span_img" src="images/mgt-graphic.svg"/></span>
+    </span>
+    <span class="img-span_text">
+      <span class="grow-text">
+        apaixonado 
+      </span>
+      <span class="grow-text">
+        por código,
+      </span>
+    </span>
+  </span>
+  <span class="grow-text">
+    e 
+  </span>
+  <span class="grow-text">
+    muitas 
+  </span>
+  <span class="grow-text">
+    outras 
+  </span>
+  <span class="grow-text">
+    coisas. 
+  </span>
+  <span class="grow-text">
+    Em 
+  </span>
+  <span class="grow-text">
+    cada 
+  </span>
+  <span class="grow-text">
+    parte 
+  </span>
+  <span class="grow-text">
+    do 
+  </span>
+  <span class="grow-text">
+    meu 
+  </span>
+  <span class="grow-text">
+    trabalho 
+  </span>
+  <span class="grow-text">
+    - 
+  </span>
+  <span class="grow-text">
+    sou 
+  </span>
+  <span class="grow-text">
+    grato 
+  </span>
+  <span class="grow-text">
+    por 
+  </span>
+  <span class="grow-text">
+    poder 
+  </span>
+  <span class="grow-text">
+    fazer 
+  </span>
+  <span class="grow-text">
+    o 
+  </span>
+  <span class="grow-text">
+    que 
+  </span>
+  <span class="grow-text">
+    eu 
+  </span>
+  <span class="grow-text">
+    faço 
+  </span>
+  <span class="grow-text">
+    todos
+  </span>
+    <span class="grow-text">
+    os
+  </span>
+    <span class="grow-text">
+    dias
+  </span>
+    <span class="grow-text">
+    para
+  </span>
+    <span class="grow-text">
+    ajudar
+  </span>
+    <span class="grow-text">
+    negócios
+  </span>
+    <span class="grow-text">
+    a
+  </span>
+    <span class="grow-text">
+    crescer
+  </span>
+    <span class="grow-text">
+    com
+  </span>
+    <span class="grow-text">
+    sistemas
+  </span>
+    <span class="grow-text">
+    mais
+  </span>
+    <span class="grow-text">
+    seguros,
+  </span>
+    <span class="grow-text">
+    eficientes
+  </span>
+    <span class="grow-text">
+    e escaláveis.
+  </span>
+</p></div></div></div></section><footer id="contact" data-w-id="5be8c815-6575-3e1b-39d1-56c8914fa363" class="section contact"><div class="container footer-content"><div class="section_content"><p id="w-node-_5be8c815-6575-3e1b-39d1-56c8914fa366-914fa363" class="section_body footer">Vamos construir algo juntos?</p><a data-w-id="5be8c815-6575-3e1b-39d1-56c8914fa368" href="mailto:murilo_agudos@hotmail.com" class="email_link w-inline-block"><div class="email_text">murilo_agudos@hotmail.com</div><div class="cta-underline"></div></a></div></div><div class="footer-tickers"><div class="footer-ticker-group"><div class="ticker giant opacity-75"><div class="ticker_track"><div class="ticker_group"><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Vou adorar trabalhar com você</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Podemos falar sobre tecnologia</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Ou sobre os objetivos do seu negócio</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Ou sobre a vida</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Você decide.</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Me manda uma mensagem</div></div><div class="ticker_group"><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Vou adorar trabalhar com você</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Podemos falar sobre tecnologia</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Ou sobre os objetivos do seu negócio</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Ou sobre a vida</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Você decide.</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Me manda uma mensagem</div></div></div></div></div></div></footer></div></main><script src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.5.1.min.dc5e7f18c8.js?site=60ebc127983d7f86c1175c0a" type="text/javascript" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script><script src="https://cdn.prod.website-files.com/60ebc127983d7f86c1175c0a/js/webflow.a0f5e21ca.js" type="text/javascript"></script><script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@0.2.28/bundled/lenis.js"></script>
+<!--
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.3/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.3/Flip.min.js"></script>
+<script src="https://unpkg.com/@barba/core"></script>
+-->
+<script>
+
+  const lenis = new Lenis({
+    duration: 1.4,
+    easing: (t) => Math.min(1, 1 - Math.pow(2, -10 * t)),
+    direction: 'vertical',
+    gestureDirection: 'vertical',
+    smooth: true,
+    mouseMultiplier: 1,
+    smoothTouch: false,
+    touchMultiplier: 2,
+    infinite: false,
+  })
+
+  function raf(time) {
+    lenis.raf(time)
+    requestAnimationFrame(raf)
+  }
+
+  requestAnimationFrame(raf)
+
+  function setCursor() {
+    //custom cursor
+    const cursor = document.querySelector('.cursor');
+
+    const navLinks = document.querySelectorAll('.nav_link, .project_item, .button');
+    navLinks.forEach(l=>{
+      l.addEventListener("mouseenter", e => {
+        cursor.classList.add("grow");
+      });
+      l.addEventListener("mouseleave", e => {
+        cursor.classList.remove("grow");
+      })
+    })
+
+    const ctaLinks = document.querySelectorAll('.cta, .email_link');
+    ctaLinks.forEach(l=>{
+      l.addEventListener("mouseenter", e => {
+        cursor.classList.add("cta-grow");
+      });
+      l.addEventListener("mouseleave", e => {
+        cursor.classList.remove("cta-grow");
+      })
+    });
+
+    const blurLinks = document.querySelectorAll('.project_item');
+    blurLinks.forEach(l=>{
+      l.addEventListener("mouseenter", e => {
+        cursor.classList.add("blur-grow");
+      });
+      l.addEventListener("mouseleave", e => {
+        cursor.classList.remove("blur-grow");
+      })
+    });
+
+    //service list anim
+    const items = document.querySelectorAll(".service_list p, .service_list");
+
+    items.forEach(item => {
+      new IntersectionObserver((entries, observer) => { 
+        entries.forEach(entry => {
+          if(entry.isIntersecting){
+            entry.target.classList.add('reveal');
+          }
+        });
+      },
+                               { 
+        rootMargin: "-15% 0% -15% 0%",
+        threshold: 0
+      }).observe(item);
+    })
+  }
+
+  setCursor();
+  
+  /*
+
+  const duration = 1;
+
+  function resetFull Stack(data) {
+    let parser = new DOMParser();
+    let dom = parser.parseFromString(data.next.html, "text/html");
+    let webflowPageId = $(dom).find("html").attr("data-wf-page");
+    $("html").attr("data-wf-page", webflowPageId);
+    window.Full Stack && window.Full Stack.destroy();
+    window.Full Stack && window.Full Stack.ready();
+    window.Full Stack && window.Full Stack.require("ix2").init();
+    setCursor();
+  }
+
+  function makeItemActive() {
+    let cmsPageName = $(".project-page").find(".item-name").text();
+    $(".w-dyn-item").each(function (index) {
+      if ($(this).find(".item-name").text() === cmsPageName) {
+        $(this).addClass("active-flip-item");
+      }
+    });
+  }
+
+  function flip(outgoing, incoming) {
+    let state = Flip.getState(outgoing.find(".project_image"));
+    incoming.find(".project_image").remove();
+    outgoing.find(".project_image").appendTo(incoming);
+    Flip.from(state, { duration: duration, ease: "power2.inOut" });
+  }
+
+  barba.hooks.after((data) => {
+    resetFull Stack(data);
+    setCursor();
+  });
+
+  barba.init({
+    preventRunning: true,
+    transitions: [
+      {
+        sync: true,
+        from: { namespace: ["home-page"] },
+        to: { namespace: ["project-page"] },
+        leave(data) {
+          let heroContent = data.next.container.children[3].children[0].children[0].children[0].children[0];
+          heroContent.style.opacity = "0";
+        },
+        enter(data) {
+          makeItemActive();
+          $(data.next.container).addClass("fixed");
+          flip($(".active-flip-item"), $(".project_img-wrap"));
+          return gsap.to(data.current.container, { opacity: 0, duration: duration, ease: "power2.inOut" });
+        },
+        afterEnter(data) {
+          $(data.next.container).removeClass("fixed");
+          $(".active-flip-item").removeClass("active-flip-item");
+          $(window).scrollTop(0);
+        }
+      }
+    ]
+  });
+  */
+</script>
+
+</body></html>

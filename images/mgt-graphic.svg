@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1400" role="img" aria-labelledby="title desc">
+  <title id="title">Identidade visual MGT</title>
+  <desc id="desc">Composição gráfica abstrata em preto, branco e verde.</desc>
+  <rect width="1200" height="1400" fill="#111111"/>
+  <circle cx="930" cy="260" r="360" fill="#d7ff3f"/>
+  <path d="M-120 1120 740 260l580 580-860 860z" fill="#eeeae2"/>
+  <path d="M0 1230 860 370" stroke="#111111" stroke-width="28"/>
+  <text x="78" y="1320" fill="#111111" font-family="Arial,Helvetica,sans-serif" font-size="190" font-weight="900" letter-spacing="-18">MGT.</text>
+</svg>
