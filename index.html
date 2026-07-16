@@ -105,6 +105,9 @@
   .experience_panel { flex: none; width: 100vw; box-sizing: border-box; padding: 0 4rem; display: flex; align-items: center; justify-content: center; }
   .experience_card { position: relative; width: 100%; max-width: 50em; overflow: hidden; display: flex; flex-direction: column; align-items: flex-start; }
   .experience_card--split { max-width: 88em; display: grid; grid-template-columns: 1fr 1fr; gap: 4em; align-items: start; }
+  .experience_card--reverse .experience_col-left { order: 2; }
+  .experience_card--reverse .experience_col-right { order: 1; }
+  .experience-pin { background-color: #fff; color: var(--black); }
   .experience_index { position: absolute; top: -.2em; right: .2em; font-family: "DM Serif Display", serif; font-size: 9em; font-weight: 700; color: var(--red); opacity: .08; line-height: 1; pointer-events: none; }
   .experience_col-left, .experience_col-right { position: relative; z-index: 1; width: 100%; }
   .experience_eyebrow { color: var(--red); font-weight: 500; letter-spacing: .05em; text-transform: uppercase; font-size: 1.1em; margin-bottom: 1em; }
@@ -122,6 +125,7 @@
   @media (max-width: 767px) {
     .experience_panel { padding: 0 1.75rem; }
     .experience_card, .experience_card--split { grid-template-columns: 1fr; gap: 1.75em; max-width: none; }
+    .experience_card--reverse .experience_col-left, .experience_card--reverse .experience_col-right { order: initial; }
     .experience_company { font-size: 2.1em; }
     .experience_index { font-size: 5em; }
     .experience_desc, .experience_list, .experience_stack { max-width: none; }
@@ -752,7 +756,7 @@
         </div>
     </div>
     <div class="experience_panel">
-        <div class="experience_card experience_card--split">
+        <div class="experience_card experience_card--split experience_card--reverse">
             <span class="experience_index">02</span>
             <div class="experience_col-left">
                 <span class="experience_period">Mai 2026 — o momento · 3 meses</span>
@@ -911,12 +915,17 @@
             anticipatePin: 1
           }
         });
-        tl.to(track, { x: function () { return -getScrollAmount(); }, ease: "none", duration: moveFrac })
-          .to({}, { duration: 1 - moveFrac });
+        gsap.set(pinWrap, { backgroundColor: "#ffffff", color: "#0b0b0b" });
+
+        tl.to(track, { x: function () { return -getScrollAmount(); }, ease: "none", duration: moveFrac }, 0)
+          .to(pinWrap, { backgroundColor: "#8a8a8a", color: "#ffffff", ease: "none", duration: moveFrac / 2 }, 0)
+          .to(pinWrap, { backgroundColor: "#0b0b0b", color: "#ffffff", ease: "none", duration: moveFrac / 2 }, moveFrac / 2)
+          .to({}, { duration: 1 - moveFrac }, moveFrac);
 
         return function () {
           if (tl.scrollTrigger) tl.scrollTrigger.kill();
           tl.kill();
+          gsap.set(pinWrap, { clearProps: "backgroundColor,color" });
           gsap.set(track, { clearProps: "transform" });
         };
       }
