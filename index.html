@@ -106,14 +106,16 @@
   }
 
   .section.experience { padding-top: 0; padding-bottom: 0; }
-  .experience-pin { height: 100vh; display: flex; align-items: center; overflow: hidden; }
-  .experience_track { display: flex; flex-wrap: nowrap; align-items: stretch; will-change: transform; }
+  .experience-pin { position: relative; height: 100vh; display: flex; align-items: center; overflow: hidden; background-color: #fff; color: var(--black); }
+  .experience_colorwipe { position: absolute; inset: 0; clip-path: inset(0 0 0 100%); will-change: clip-path; }
+  .experience_colorwipe--gray { z-index: 1; background: #8a8a8a; }
+  .experience_colorwipe--dark { z-index: 2; background: #0b0b0b; }
+  .experience_track { position: relative; z-index: 3; display: flex; flex-wrap: nowrap; align-items: stretch; will-change: transform; }
   .experience_panel { flex: none; width: 100vw; box-sizing: border-box; padding: 0 4rem; display: flex; align-items: center; justify-content: center; }
   .experience_card { position: relative; width: 100%; max-width: 50em; overflow: hidden; display: flex; flex-direction: column; align-items: flex-start; }
   .experience_card--split { max-width: 88em; display: grid; grid-template-columns: 1fr 1fr; gap: 4em; align-items: start; }
   .experience_card--reverse .experience_col-left { order: 2; }
   .experience_card--reverse .experience_col-right { order: 1; }
-  .experience-pin { background-color: #fff; color: var(--black); }
   .experience_index { position: absolute; top: -.2em; right: .2em; font-family: "DM Serif Display", serif; font-size: 9em; font-weight: 700; color: var(--red); opacity: .08; line-height: 1; pointer-events: none; }
   .experience_col-left, .experience_col-right { position: relative; z-index: 1; width: 100%; }
   .experience_eyebrow { color: var(--red); font-weight: 500; letter-spacing: .05em; text-transform: uppercase; font-size: 1.1em; margin-bottom: 1em; }
@@ -767,7 +769,7 @@
   <span class="grow-text">
     imersão. 
   </span>
-</p></div></div></div></section><section id="experience" class="section light experience"><div class="experience-pin"><div class="experience_track">
+</p></div></div></div></section><section id="experience" class="section light experience"><div class="experience-pin"><div class="experience_colorwipe experience_colorwipe--gray"></div><div class="experience_colorwipe experience_colorwipe--dark"></div><div class="experience_track">
     <div class="experience_panel experience_intro">
         <div class="experience_card">
             <span class="experience_index">00</span>
@@ -966,7 +968,9 @@
     if (!window.gsap || !window.ScrollTrigger) return;
     var pinWrap = document.querySelector('.experience-pin');
     var track = document.querySelector('.experience_track');
-    if (!pinWrap || !track) return;
+    var wipeGray = document.querySelector('.experience_colorwipe--gray');
+    var wipeDark = document.querySelector('.experience_colorwipe--dark');
+    if (!pinWrap || !track || !wipeGray || !wipeDark) return;
 
     ScrollTrigger.matchMedia({
       "all": function () {
@@ -986,18 +990,21 @@
             anticipatePin: 1
           }
         });
-        gsap.set(pinWrap, { backgroundColor: "#ffffff", color: "#0b0b0b" });
+        gsap.set(pinWrap, { color: "#0b0b0b" });
+        gsap.set([wipeGray, wipeDark], { clipPath: "inset(0 0 0 100%)" });
 
         tl.to(track, { x: function () { return -getScrollAmount(); }, ease: "none", duration: moveFrac }, 0)
-          .to(pinWrap, { backgroundColor: "#8a8a8a", color: "#ffffff", ease: "none", duration: moveFrac / 2 }, 0)
-          .to(pinWrap, { backgroundColor: "#0b0b0b", color: "#ffffff", ease: "none", duration: moveFrac / 2 }, moveFrac / 2)
+          .to(wipeGray, { clipPath: "inset(0 0 0 0%)", ease: "none", duration: moveFrac / 2 }, 0)
+          .to(pinWrap, { color: "#ffffff", ease: "none", duration: moveFrac / 2 }, 0)
+          .to(wipeDark, { clipPath: "inset(0 0 0 0%)", ease: "none", duration: moveFrac / 2 }, moveFrac / 2)
           .to({}, { duration: 1 - moveFrac }, moveFrac);
 
         return function () {
           if (tl.scrollTrigger) tl.scrollTrigger.kill();
           tl.kill();
-          gsap.set(pinWrap, { clearProps: "backgroundColor,color" });
+          gsap.set(pinWrap, { clearProps: "color" });
           gsap.set(track, { clearProps: "transform" });
+          gsap.set([wipeGray, wipeDark], { clearProps: "clipPath" });
         };
       }
     });
