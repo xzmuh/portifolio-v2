@@ -142,7 +142,7 @@
   }
 
   .service:nth-child(even) .service-content { order: 2; }
-  .service:nth-child(even) .service_list { order: 1; }
+  .service:nth-child(even) .service_list { order: 1; padding-left: 0; padding-right: 2rem; align-items: flex-end; }
   .service:nth-child(even) .service_list:after { right: auto; left: 100%; }
 
   .service:before {
@@ -974,39 +974,65 @@
     var panelDark = document.querySelector('.experience_panel--dark');
     if (!pinWrap || !panelGray || !panelDark) return;
 
-    ScrollTrigger.matchMedia({
-      "all": function () {
-        var stepLen = window.innerHeight * 0.8;
-        var moveLen = stepLen * 2;
-        var holdLen = window.innerHeight * 0.5;
-        var moveFrac = moveLen / (moveLen + holdLen);
-        var stepFrac = moveFrac / 2;
+    var steps = [panelGray, panelDark];
+    var maxIndex = steps.length;
+    var index = 0;
+    var animating = false;
+    var active = false;
 
-        gsap.set([panelGray, panelDark], { clipPath: "inset(0 0 0 100%)" });
+    gsap.set(steps, { clipPath: "inset(0 0 0 100%)" });
 
-        var tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: pinWrap,
-            start: "top top",
-            end: function () { return "+=" + (moveLen + holdLen); },
-            scrub: 0.3,
-            pin: true,
-            invalidateOnRefresh: true,
-            anticipatePin: 1
-          }
-        });
+    function goTo(next) {
+      if (animating || next === index || next < 0 || next > maxIndex) return;
+      animating = true;
+      var forward = next > index;
+      var panel = forward ? steps[next - 1] : steps[index - 1];
+      gsap.to(panel, {
+        clipPath: forward ? "inset(0 0 0 0%)" : "inset(0 0 0 100%)",
+        duration: 0.6,
+        ease: "power2.inOut",
+        onComplete: function () { index = next; animating = false; }
+      });
+    }
 
-        tl.to(panelGray, { clipPath: "inset(0 0 0 0%)", ease: "none", duration: stepFrac }, 0)
-          .to(panelDark, { clipPath: "inset(0 0 0 0%)", ease: "none", duration: stepFrac }, stepFrac)
-          .to({}, { duration: 1 - moveFrac }, moveFrac);
-
-        return function () {
-          if (tl.scrollTrigger) tl.scrollTrigger.kill();
-          tl.kill();
-          gsap.set([panelGray, panelDark], { clearProps: "clipPath" });
-        };
-      }
+    ScrollTrigger.create({
+      trigger: pinWrap,
+      start: "top top",
+      end: "+=10",
+      pin: true,
+      onEnter: function () { active = true; },
+      onEnterBack: function () { active = true; index = maxIndex; gsap.set(steps, { clipPath: "inset(0 0 0 0%)" }); },
+      onLeave: function () { active = false; },
+      onLeaveBack: function () { active = false; index = 0; gsap.set(steps, { clipPath: "inset(0 0 0 100%)" }); }
     });
+
+    function handleStep(deltaY, e) {
+      if (!active) return;
+      var goingDown = deltaY > 0;
+      if (goingDown && index < maxIndex) {
+        e.preventDefault();
+        e.stopPropagation();
+        goTo(index + 1);
+      } else if (!goingDown && index > 0) {
+        e.preventDefault();
+        e.stopPropagation();
+        goTo(index - 1);
+      }
+    }
+
+    window.addEventListener('wheel', function (e) { handleStep(e.deltaY, e); }, { passive: false, capture: true });
+
+    var touchStartY = null;
+    window.addEventListener('touchstart', function (e) {
+      touchStartY = e.touches[0].clientY;
+    }, { passive: true, capture: true });
+    window.addEventListener('touchmove', function (e) {
+      if (!active || touchStartY === null) return;
+      var dy = touchStartY - e.touches[0].clientY;
+      if (Math.abs(dy) < 40) return;
+      handleStep(dy, e);
+      if (e.defaultPrevented) touchStartY = e.touches[0].clientY;
+    }, { passive: false, capture: true });
   })();
 
   /*
