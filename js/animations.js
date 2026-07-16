@@ -12,6 +12,12 @@
 
   gsap.registerPlugin(ScrollTrigger);
 
+  // Skewed/transformed text is expensive to rasterize on the CPU unless the
+  // browser promotes the element to its own GPU layer first. Force that
+  // promotion for every tween instead of letting layer creation happen
+  // mid-animation, which is what was causing the frame drops.
+  gsap.defaults({ force3D: true });
+
   var EASE_MAP = {
     "": "none",
     "ease": "power1.inOut",
@@ -210,62 +216,22 @@
     var paramGroups = actionList.continuousParameterGroups || [];
 
     triggerEls.forEach(function (triggerEl) {
-      var axisState = {}; // paramGroupId -> {current, target, resting, axis}
+      var axisState = {}; // paramGroupId -> {current, target, resting, axis, tweens: [{els, prop, a, b, unit}]}
       var cfgList = ev.config || [];
       paramGroups.forEach(function (pg) {
         var cfg = cfgList.filter(function (c) { return c.continuousParameterGroupId === pg.id; })[0] || {};
-        axisState[pg.id] = {
-          current: cfg.restingState !== undefined ? cfg.restingState : 0,
-          target: cfg.restingState !== undefined ? cfg.restingState : 0,
-          resting: cfg.restingState !== undefined ? cfg.restingState : 0,
-          smoothing: cfg.smoothing !== undefined ? cfg.smoothing : 80,
-          axis: pg.type,
-          basedOn: cfg.basedOn || "ELEMENT"
-        };
-      });
 
-      function onMove(e) {
-        var rect = triggerEl.getBoundingClientRect();
-        paramGroups.forEach(function (pg) {
-          var st = axisState[pg.id];
-          var pct;
-          if (pg.type === "MOUSE_X") {
-            pct = ((e.clientX - rect.left) / rect.width) * 100;
-          } else {
-            pct = ((e.clientY - rect.top) / rect.height) * 100;
-          }
-          st.target = Math.max(0, Math.min(100, pct));
-        });
-      }
-
-      triggerEl.addEventListener("mousemove", onMove);
-      triggerEl.addEventListener("mouseleave", function () {
-        paramGroups.forEach(function (pg) { axisState[pg.id].target = axisState[pg.id].resting; });
-      });
-
-      gsap.ticker.add(function () {
-        var changed = false;
-        paramGroups.forEach(function (pg) {
-          var st = axisState[pg.id];
-          var lerpFactor = 1 - Math.min(0.97, st.smoothing / 100);
-          var next = lerp(st.current, st.target, lerpFactor);
-          if (Math.abs(next - st.current) > 0.01) changed = true;
-          st.current = next;
-        });
-        if (!changed) return;
-
-        paramGroups.forEach(function (pg) {
-          var st = axisState[pg.id];
-          var frames = pg.continuousActionGroups || [];
-          if (!frames.length) return;
+        // resolve elements and from/to values ONCE up front - the ticker below
+        // runs every frame and must not touch the DOM or re-parse anything.
+        var tweens = [];
+        var frames = pg.continuousActionGroups || [];
+        if (frames.length) {
           var kf0 = frames[0], kf1 = frames[frames.length - 1];
-          var t = Math.max(0, Math.min(1, st.current / 100));
           kf0.actionItems.forEach(function (item0, idx) {
             var item1 = kf1.actionItems[idx];
             if (!item1) return;
             var els = resolveTargets(item0.config.target, triggerEl);
             if (!els.length) return;
-            var vars = {};
             var v0 = {}, v1 = {};
             applyActionItemToVars(item0, v0);
             applyActionItemToVars(item1, v1);
@@ -274,11 +240,52 @@
               var b = parseFloat(v1[k]);
               if (isNaN(b)) continue;
               var unit = String(v1[k]).replace(/[-\d.]/g, "");
-              vars[k] = lerp(a, b, t) + unit;
+              tweens.push({ els: els, prop: k, a: a, b: b, unit: unit });
             }
-            gsap.set(els, vars);
           });
-        });
+        }
+
+        axisState[pg.id] = {
+          current: cfg.restingState !== undefined ? cfg.restingState : 0,
+          target: cfg.restingState !== undefined ? cfg.restingState : 0,
+          resting: cfg.restingState !== undefined ? cfg.restingState : 0,
+          smoothing: cfg.smoothing !== undefined ? cfg.smoothing : 80,
+          axis: pg.type,
+          tweens: tweens
+        };
+      });
+
+      function onMove(e) {
+        var rect = triggerEl.getBoundingClientRect();
+        for (var id in axisState) {
+          var st = axisState[id];
+          var pct = st.axis === "MOUSE_X"
+            ? ((e.clientX - rect.left) / rect.width) * 100
+            : ((e.clientY - rect.top) / rect.height) * 100;
+          st.target = Math.max(0, Math.min(100, pct));
+        }
+      }
+
+      triggerEl.addEventListener("mousemove", onMove);
+      triggerEl.addEventListener("mouseleave", function () {
+        for (var id in axisState) axisState[id].target = axisState[id].resting;
+      });
+
+      gsap.ticker.add(function () {
+        for (var id in axisState) {
+          var st = axisState[id];
+          var lerpFactor = 1 - Math.min(0.97, st.smoothing / 100);
+          var next = lerp(st.current, st.target, lerpFactor);
+          if (Math.abs(next - st.current) < 0.01) continue;
+          st.current = next;
+          var t = Math.max(0, Math.min(1, st.current / 100));
+          for (var i = 0; i < st.tweens.length; i++) {
+            var tw = st.tweens[i];
+            var vars = {};
+            vars[tw.prop] = lerp(tw.a, tw.b, t) + tw.unit;
+            gsap.set(tw.els, vars);
+          }
+        }
       });
     });
   }
