@@ -142,7 +142,7 @@
   }
 
   .service:nth-child(even) .service-content { order: 2; }
-  .service:nth-child(even) .service_list { order: 1; padding-left: 0; padding-right: 2rem; align-items: flex-end; justify-self: end; }
+  .service:nth-child(even) .service_list { order: 1; width: 100%; padding-left: 0; padding-right: 2rem; align-items: flex-end; text-align: right; }
   .service:nth-child(even) .service_list:after { right: auto; left: 100%; }
 
   .service:before {
@@ -843,6 +843,7 @@
     touchMultiplier: 2,
     infinite: false,
   })
+  window.lenis = lenis;
 
   if (window.ScrollTrigger) {
     lenis.on('scroll', ScrollTrigger.update)
@@ -995,20 +996,25 @@
       });
     }
 
+    function freezePage() { if (window.lenis) window.lenis.stop(); }
+    function unfreezePage() { if (window.lenis) window.lenis.start(); }
+
     ScrollTrigger.create({
       trigger: pinWrap,
       start: "top top",
       end: "+=10",
       pin: true,
-      onEnter: function () { active = true; },
-      onEnterBack: function () { active = true; index = maxIndex; gsap.set(steps, { clipPath: "inset(0 0 0 0%)" }); },
-      onLeave: function () { active = false; },
-      onLeaveBack: function () { active = false; index = 0; gsap.set(steps, { clipPath: "inset(0 0 0 100%)" }); }
+      onEnter: function () { active = true; freezePage(); },
+      onEnterBack: function () { active = true; index = maxIndex; gsap.set(steps, { clipPath: "inset(0 0 0 0%)" }); freezePage(); },
+      onLeave: function () { active = false; unfreezePage(); },
+      onLeaveBack: function () { active = false; index = 0; gsap.set(steps, { clipPath: "inset(0 0 0 100%)" }); unfreezePage(); }
     });
 
     function handleStep(deltaY, e) {
       if (!active) return;
       var goingDown = deltaY > 0;
+      if (goingDown && index >= maxIndex) { unfreezePage(); return; }
+      if (!goingDown && index <= 0) { unfreezePage(); return; }
       if (goingDown && index < maxIndex) {
         e.preventDefault();
         e.stopPropagation();
