@@ -68,10 +68,17 @@
         vars.opacity = c.value;
         break;
       case "STYLE_BACKGROUND_COLOR":
-        vars.backgroundColor = c.globalSwatchId ? undefined : (c.r !== undefined ? "rgba(" + c.r + "," + c.g + "," + c.b + "," + c.a + ")" : undefined);
+        if (c.rValue !== undefined) vars.backgroundColor = "rgba(" + c.rValue + "," + c.gValue + "," + c.bValue + "," + (c.aValue !== undefined ? c.aValue : 1) + ")";
+        break;
+      case "STYLE_TEXT_COLOR":
+        if (c.rValue !== undefined) vars.color = "rgba(" + c.rValue + "," + c.gValue + "," + c.bValue + "," + (c.aValue !== undefined ? c.aValue : 1) + ")";
         break;
       case "STYLE_FILTER":
-        if (c.blur !== undefined) vars.filter = "blur(" + c.blur + (c.blurUnit || "px") + ")";
+        if (c.filters && c.filters.length) {
+          vars.filter = c.filters.map(function (f) {
+            return f.type + "(" + f.value + (f.unit || "") + ")";
+          }).join(" ");
+        }
         break;
       case "STYLE_SIZE":
         if (c.widthValue !== undefined) vars.width = c.widthValue + (c.widthUnit || "px");
