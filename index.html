@@ -155,16 +155,27 @@
 
   .about-stair-item {
     opacity: 0;
-    transform: translate3d(0, 1.5em, 0);
-    transition: opacity 900ms cubic-bezier(.19, 1, .22, 1), transform 900ms cubic-bezier(.19, 1, .22, 1);
+    transform: translate3d(-4em, 0, 0);
+    transition: opacity 450ms cubic-bezier(.19, 1, .22, 1), transform 450ms cubic-bezier(.19, 1, .22, 1);
   }
 
-  .about-stair-item.stair-2 { transition-delay: 120ms; }
-  .about-stair-item.stair-3 { transition-delay: 240ms; }
+  .about-stair-item.stair-2 {
+    transform: translate3d(-1.3em, 0, 0);
+  }
+
+  .about-stair-item.stair-3 {
+    transform: translate3d(4em, 0, 0);
+  }
 
   .about-stair-item.reveal {
     opacity: 1;
     transform: translate3d(0, 0, 0);
+  }
+
+  @media (max-width: 767px) {
+    .about-stair-item, .about-stair-item.stair-2, .about-stair-item.stair-3 {
+      transform: translate3d(0, 1em, 0);
+    }
   }
 
   @media (max-width:767px){
@@ -893,8 +904,21 @@
       })
     });
 
+    //about stairs anim (triggers early so it's done before you scroll past it)
+    const stairItems = document.querySelectorAll(".about-stair-item");
+    stairItems.forEach(item => {
+      new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('reveal');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { rootMargin: "0px 0px -5% 0px", threshold: 0 }).observe(item);
+    });
+
     //service list anim
-    const items = document.querySelectorAll(".service_list p, .service_list, .about-stair-item");
+    const items = document.querySelectorAll(".service_list p, .service_list");
 
     items.forEach(item => {
       new IntersectionObserver((entries, observer) => { 
@@ -935,21 +959,16 @@
             trigger: pinWrap,
             start: "top top",
             end: function () { return "+=" + (moveLen + holdLen); },
-            scrub: 0.15,
+            scrub: 0.3,
             pin: true,
             invalidateOnRefresh: true,
-            anticipatePin: 1,
-            snap: {
-              snapTo: [0, stepFrac, moveFrac, 1],
-              duration: { min: 0.2, max: 0.45 },
-              ease: "power2.inOut"
-            }
+            anticipatePin: 1
           }
         });
 
-        tl.to(track, { x: function () { return -getScrollAmount(); }, ease: "none", duration: moveFrac }, 0)
-          .to(pinWrap, { backgroundColor: "#8a8a8a", color: "#ffffff", ease: "none", duration: stepFrac }, 0)
-          .to(pinWrap, { backgroundColor: "#0b0b0b", color: "#ffffff", ease: "none", duration: stepFrac }, stepFrac)
+        tl.to(track, { x: function () { return -getScrollAmount(); }, ease: "steps(2)", duration: moveFrac }, 0)
+          .to(pinWrap, { backgroundColor: "#8a8a8a", color: "#ffffff", ease: "steps(1)", duration: stepFrac }, 0)
+          .to(pinWrap, { backgroundColor: "#0b0b0b", color: "#ffffff", ease: "steps(1)", duration: stepFrac }, stepFrac)
           .to({}, { duration: 1 - moveFrac }, moveFrac);
 
         var lastStep = -1;
