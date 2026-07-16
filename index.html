@@ -209,7 +209,12 @@
        transform: translate3d(50%,0,0);
     }
     .service {
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+    .service-content, .service_list {
+      min-width: 0;
+      width: 100%;
+      overflow-wrap: break-word;
     }
     #w-node-_01758bed-6d3e-85a3-b81e-5b450a659ff2-4b175c0b,
     #w-node-dd9341d7-13df-2998-3032-e5d9ce9833ab-4b175c0b {
