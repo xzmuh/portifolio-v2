@@ -15,6 +15,14 @@
   
   .active-flip-item {z-index: 2;}
 
+  .header {
+    transition: transform 0.4s cubic-bezier(.19, 1, .22, 1);
+  }
+
+  .header.header--hidden {
+    transform: translateY(-120%);
+  }
+
   .w-webflow-badge {
     display: none !important;
   }
@@ -461,6 +469,19 @@
       e.preventDefault()
       lenis.scrollTo(target, { duration: 1.4 })
     })
+  })
+
+  const headerEl = document.querySelector('.header')
+  let lastScrollY = 0
+  lenis.on('scroll', ({ scroll }) => {
+    if (!headerEl) return
+    const goingDown = scroll > lastScrollY
+    if (goingDown && scroll > 120) {
+      headerEl.classList.add('header--hidden')
+    } else {
+      headerEl.classList.remove('header--hidden')
+    }
+    lastScrollY = scroll
   })
 
   function setCursor() {
