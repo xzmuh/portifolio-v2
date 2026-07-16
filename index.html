@@ -114,9 +114,10 @@
   .experience_panel { flex: none; width: 100vw; box-sizing: border-box; padding: 0 4rem; display: flex; align-items: center; justify-content: center; }
   .experience_card { position: relative; width: 100%; max-width: 50em; overflow: hidden; display: flex; flex-direction: column; align-items: flex-start; }
   .experience_card--split { max-width: 88em; display: grid; grid-template-columns: 1fr 1fr; gap: 4em; align-items: start; }
+  .experience_card--split:not(.experience_card--reverse) { --red: #d7ff3f; }
   .experience_card--reverse .experience_col-left { order: 2; }
   .experience_card--reverse .experience_col-right { order: 1; }
-  .experience_index { position: absolute; top: -.2em; right: .2em; font-family: "DM Serif Display", serif; font-size: 9em; font-weight: 700; color: var(--red); opacity: .08; line-height: 1; pointer-events: none; }
+  .experience_index { position: absolute; top: -.2em; right: .2em; font-family: "DM Serif Display", serif; font-size: 9em; font-weight: 700; color: var(--red); opacity: .25; line-height: 1; pointer-events: none; }
   .experience_col-left, .experience_col-right { position: relative; z-index: 1; width: 100%; }
   .experience_eyebrow { color: var(--red); font-weight: 500; letter-spacing: .05em; text-transform: uppercase; font-size: 1.1em; margin-bottom: 1em; }
   .experience_period { display: block; color: var(--red); font-weight: 500; font-size: 1.15em; margin-bottom: .5em; }
