@@ -99,6 +99,29 @@
     }
   }
 
+  .section.experience { padding-top: 0; padding-bottom: 0; }
+  .experience-pin { height: 100vh; display: flex; align-items: center; overflow: hidden; }
+  .experience_track { display: flex; flex-wrap: nowrap; align-items: stretch; will-change: transform; }
+  .experience_panel { flex: none; width: 100vw; box-sizing: border-box; padding: 0 8rem; display: flex; flex-direction: column; justify-content: center; }
+  .experience_eyebrow { color: var(--red); font-weight: 500; letter-spacing: .05em; text-transform: uppercase; font-size: 1.1em; margin-bottom: 1em; }
+  .experience_period { display: block; color: var(--red); font-weight: 500; font-size: 1.15em; margin-bottom: .5em; }
+  .experience_company { font-size: 3.2em; margin-bottom: .15em; }
+  .experience_role { display: block; opacity: .7; font-size: 1.2em; margin-bottom: 1.5em; }
+  .experience_badge { display: inline-block; margin-left: .6em; padding: .15em .7em; border-radius: 2em; background: var(--red); color: #fff; font-size: .5em; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; vertical-align: middle; }
+  .experience_desc { max-width: 34em; margin-bottom: 1.5em; }
+  .experience_list { max-width: 34em; margin: 0 0 2em; padding: 0; list-style: none; display: flex; flex-direction: column; gap: .6em; }
+  .experience_list li { position: relative; padding-left: 1.4em; font-size: 1.1em; line-height: 1.5; }
+  .experience_list li:before { content: ""; position: absolute; left: 0; top: .55em; width: .5em; height: .5em; border-radius: 50%; background: var(--red); }
+  .experience_stack { display: flex; flex-wrap: wrap; gap: .6em; max-width: 34em; }
+  .experience_stack span { border: 1px solid currentColor; opacity: .8; border-radius: 2em; padding: .3em 1em; font-size: .95em; font-weight: 500; }
+
+  @media (max-width: 767px) {
+    .experience-pin { height: auto; }
+    .experience_track { flex-direction: column; }
+    .experience_panel { width: 100%; padding: 6em 2rem; }
+    .experience_company { font-size: 2.4em; }
+  }
+
 </style><style>
   .service_list p {
     transform: translate3d(-200%,0,0);
@@ -274,7 +297,7 @@
 <header class="header difference">
     <div class="container">
         <div class="navbar_inner"><a href="/" aria-current="page" class="logo_link w-inline-block w--current"><img src="images/mgt-icon.svg" loading="eager" alt="MGT Logo" class="navbar_logo" /></a>
-            <nav class="nav"><a href="#works" class="nav_link">Projetos.</a><a href="#skills" class="nav_link">Tecnologias.</a><a href="#about" class="nav_link">Sobre.</a><a href="#contact" class="nav_link">Contato.</a></nav>
+            <nav class="nav"><a href="#works" class="nav_link">Projetos.</a><a href="#skills" class="nav_link">Tecnologias.</a><a href="#experience" class="nav_link">Trajetória.</a><a href="#about" class="nav_link">Sobre.</a><a href="#contact" class="nav_link">Contato.</a></nav>
         </div>
     </div>
 </header>
@@ -692,7 +715,42 @@
   <span class="grow-text">
     imersão. 
   </span>
-</p></div></div></div></section><footer id="contact" data-w-id="5be8c815-6575-3e1b-39d1-56c8914fa363" class="section contact"><div class="container footer-content"><div class="section_content"><p id="w-node-_5be8c815-6575-3e1b-39d1-56c8914fa366-914fa363" class="section_body footer">Vamos construir algo juntos?</p><a data-w-id="5be8c815-6575-3e1b-39d1-56c8914fa368" href="mailto:murilo_agudos@hotmail.com" class="email_link w-inline-block"><div class="email_text">murilo_agudos@hotmail.com</div><div class="cta-underline"></div></a><a href="https://www.linkedin.com/in/murilo-trigo-6205b3190/" target="_blank" class="email_link w-inline-block" style="margin-top:0.4em;"><div class="email_text" style="font-size:2.2em;">LinkedIn</div><div class="cta-underline"></div></a></div></div><div class="footer-tickers"><div class="footer-ticker-group"><div class="ticker giant opacity-75"><div class="ticker_track"><div class="ticker_group"><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Vou adorar trabalhar com você</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Podemos falar sobre tecnologia</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Ou sobre os objetivos do seu negócio</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Ou sobre a vida</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Você decide.</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Me manda uma mensagem</div></div><div class="ticker_group"><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Vou adorar trabalhar com você</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Podemos falar sobre tecnologia</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Ou sobre os objetivos do seu negócio</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Ou sobre a vida</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Você decide.</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Me manda uma mensagem</div></div></div></div></div></div></footer></div></main><script src="js/vendor/gsap.min.js"></script><script src="js/vendor/ScrollTrigger.min.js"></script><script src="js/interactions-data.js"></script><script src="js/animations.js"></script><script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@0.2.28/bundled/lenis.js"></script>
+</p></div></div></div></section><section id="experience" class="section light experience"><div class="experience-pin"><div class="experience_track">
+    <div class="experience_panel experience_intro">
+        <div class="experience_eyebrow">Experiência</div>
+        <h2 class="section_heading">Minha <em>trajetória</em>.</h2>
+        <p class="section_body small opacity-70">Role para conhecer as empresas onde já trabalhei e o que fiz em cada uma.</p>
+    </div>
+    <div class="experience_panel">
+        <span class="experience_period">Out 2021 — Mar 2026 · 4 anos e 6 meses</span>
+        <h3 class="experience_company">I-SINC</h3>
+        <span class="experience_role">Full Stack Developer · Agudos, São Paulo, Brasil</span>
+        <p class="section_body small experience_desc">Desenvolvimento, manutenção e evolução de sistemas web com foco em aplicações ERP, backend, frontend, banco de dados, integrações e regras de negócio, em sistemas usados em ambiente real de operação.</p>
+        <ul class="experience_list">
+            <li>APIs REST para comunicação entre módulos do sistema</li>
+            <li>Frontend com Angular, HTML, CSS e JavaScript/TypeScript</li>
+            <li>Implementação de regras de negócio para sistemas ERP</li>
+            <li>Relatórios dinâmicos e consultas avançadas</li>
+            <li>Otimização de consultas em PostgreSQL e MySQL</li>
+            <li>Integrações com AWS S3 e SES</li>
+        </ul>
+        <div class="experience_stack"><span>Angular</span><span>Node.js</span><span>NestJS</span><span>PostgreSQL</span><span>MySQL</span><span>AWS S3</span><span>AWS SES</span><span>REST APIs</span><span>Git</span></div>
+    </div>
+    <div class="experience_panel">
+        <span class="experience_period">Mai 2026 — o momento · 3 meses</span>
+        <h3 class="experience_company">Next Soluções Inteligentes<span class="experience_badge">Atual</span></h3>
+        <span class="experience_role">Full Stack Developer · Bauru, São Paulo, Brasil · Híbrido</span>
+        <p class="section_body small experience_desc">Desenvolvimento e manutenção de sistemas web, trabalhando principalmente com React no front-end e PHP no back-end.</p>
+        <ul class="experience_list">
+            <li>Desenvolvimento de telas e funcionalidades com React</li>
+            <li>Manutenção e evolução de sistemas web com PHP</li>
+            <li>Ajustes e implementação de regras de negócio</li>
+            <li>Correção de bugs e integração entre front-end e back-end</li>
+            <li>Análise de oportunidades para aplicar IA em fluxos do sistema</li>
+        </ul>
+        <div class="experience_stack"><span>React</span><span>PHP</span><span>JavaScript</span><span>HTML</span><span>CSS</span><span>Git</span></div>
+    </div>
+</div></div></section><footer id="contact" data-w-id="5be8c815-6575-3e1b-39d1-56c8914fa363" class="section contact"><div class="container footer-content"><div class="section_content"><p id="w-node-_5be8c815-6575-3e1b-39d1-56c8914fa366-914fa363" class="section_body footer">Vamos construir algo juntos?</p><a data-w-id="5be8c815-6575-3e1b-39d1-56c8914fa368" href="mailto:murilo_agudos@hotmail.com" class="email_link w-inline-block"><div class="email_text">murilo_agudos@hotmail.com</div><div class="cta-underline"></div></a><a href="https://www.linkedin.com/in/murilo-trigo-6205b3190/" target="_blank" class="email_link w-inline-block" style="margin-top:0.4em;"><div class="email_text" style="font-size:2.2em;">LinkedIn</div><div class="cta-underline"></div></a></div></div><div class="footer-tickers"><div class="footer-ticker-group"><div class="ticker giant opacity-75"><div class="ticker_track"><div class="ticker_group"><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Vou adorar trabalhar com você</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Podemos falar sobre tecnologia</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Ou sobre os objetivos do seu negócio</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Ou sobre a vida</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Você decide.</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Me manda uma mensagem</div></div><div class="ticker_group"><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Vou adorar trabalhar com você</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Podemos falar sobre tecnologia</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Ou sobre os objetivos do seu negócio</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Ou sobre a vida</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Você decide.</div><div class="section_heading ticker-text black"> • </div><div class="section_heading ticker-text black">Me manda uma mensagem</div></div></div></div></div></div></footer></div></main><script src="js/vendor/gsap.min.js"></script><script src="js/vendor/ScrollTrigger.min.js"></script><script src="js/interactions-data.js"></script><script src="js/animations.js"></script><script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@0.2.28/bundled/lenis.js"></script>
 <!--
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.3/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.3/Flip.min.js"></script>
@@ -806,7 +864,38 @@
   }
 
   setCursor();
-  
+
+  (function setupExperienceScroll() {
+    if (!window.gsap || !window.ScrollTrigger) return;
+    var pinWrap = document.querySelector('.experience-pin');
+    var track = document.querySelector('.experience_track');
+    if (!pinWrap || !track) return;
+
+    ScrollTrigger.matchMedia({
+      "(min-width: 768px)": function () {
+        var getScrollAmount = function () { return track.scrollWidth - window.innerWidth; };
+        var tween = gsap.to(track, {
+          x: function () { return -getScrollAmount(); },
+          ease: "none",
+          scrollTrigger: {
+            trigger: pinWrap,
+            start: "top top",
+            end: function () { return "+=" + getScrollAmount(); },
+            scrub: 1,
+            pin: true,
+            invalidateOnRefresh: true,
+            anticipatePin: 1
+          }
+        });
+        return function () {
+          if (tween.scrollTrigger) tween.scrollTrigger.kill();
+          tween.kill();
+          gsap.set(track, { clearProps: "transform" });
+        };
+      }
+    });
+  })();
+
   /*
 
   const duration = 1;
