@@ -1003,6 +1003,18 @@
     function freezePage() { if (window.lenis) window.lenis.stop(); }
     function unfreezePage() { if (window.lenis) window.lenis.start(); }
 
+    function snapIn() {
+      if (window.lenis) window.lenis.scrollTo(pinWrap, { immediate: true });
+    }
+
+    ScrollTrigger.create({
+      trigger: pinWrap,
+      start: "top bottom-=150",
+      end: "top top",
+      onEnter: snapIn,
+      onEnterBack: snapIn
+    });
+
     ScrollTrigger.create({
       trigger: pinWrap,
       start: "top top",
