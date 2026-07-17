@@ -130,7 +130,15 @@
   // Real tweens between consecutive keyframes, not discrete .set() jumps,
   // so ScrollTrigger's scrub produces a smooth in-between motion instead of
   // an abrupt pop the instant a keyframe position is crossed.
-  function buildScrollScrubTimeline(actionList, triggerEl) {
+  function scaleMoveVars(vars, scale) {
+    ["x", "y"].forEach(function (k) {
+      if (typeof vars[k] === "string" && vars[k].indexOf("%") > -1) {
+        vars[k] = (parseFloat(vars[k]) * scale) + "%";
+      }
+    });
+  }
+
+  function buildScrollScrubTimeline(actionList, triggerEl, scale) {
     var pg = actionList.continuousParameterGroups && actionList.continuousParameterGroups[0];
     if (!pg) return null;
     var groups = (pg.continuousActionGroups || []).slice().sort(function (a, b) { return a.keyframe - b.keyframe; });
@@ -143,6 +151,7 @@
       if (!els.length) return;
       var vars = {};
       applyActionItemToVars(item, vars);
+      if (scale !== undefined && scale !== 1) scaleMoveVars(vars, scale);
       gsap.set(els, vars);
     });
 
@@ -156,6 +165,7 @@
         if (!els.length) return;
         var vars = { duration: segDuration, ease: gsapEase(item.config.easing) };
         applyActionItemToVars(item, vars);
+        if (scale !== undefined && scale !== 1) scaleMoveVars(vars, scale);
         tl.to(els, vars, prevPos);
       });
       prevPos = pos;
@@ -171,9 +181,15 @@
     // Otherwise (Hero Scroll, false/false): a whole-element scroll-through, keyed to
     // the element's own top/bottom transiting the viewport (correct at scrollY=0 too).
     var enteringStyle = !!cfg.startsEntering;
+    // The project card parallax (+-50% self move) was tuned for desktop's spaced-out
+    // stack layout. At mobile widths the cards sit close together in a single column,
+    // so the full amplitude opens up large dead gaps between cards; tone it way down
+    // instead of dropping the effect entirely.
+    var isMobileProjectCard = window.innerWidth <= 767 && triggerEls[0] && triggerEls[0].classList.contains("project_item");
+    var scale = isMobileProjectCard ? 0.15 : 1;
 
     triggerEls.forEach(function (triggerEl) {
-      var tl = buildScrollScrubTimeline(actionList, triggerEl);
+      var tl = buildScrollScrubTimeline(actionList, triggerEl, scale);
       if (!tl) return;
       var smoothing = cfg.smoothing !== undefined ? cfg.smoothing : 50;
       var scrubVal = Math.max(0.1, (smoothing / 100) * 1.2);
@@ -187,17 +203,28 @@
     });
   }
 
-  function setupScrollReveal(ev, actionList, once) {
+  function setupScrollReveal(ev, actionList, offList) {
     var triggerEls = resolveEventTargets(ev);
+    // .about-stair-item already has its own dedicated, staggered reveal (opacity +
+    // directional slide, wired up in the page script). It also carries the generic
+    // ".section_body" class, so without this it gets driven by both systems at
+    // once: this "skew in" interaction sets an inline transform every time it
+    // fires, which fully overrides the CSS-based reveal's transform (inline always
+    // wins over a stylesheet), and the skew in particular is a known source of
+    // text-clipping compositing bugs in mobile Safari. Exclude it here so only its
+    // own reveal drives it.
+    triggerEls = triggerEls.filter(function (el) { return !el.classList.contains("about-stair-item"); });
     if (!triggerEls.length) return;
+    var once = !offList;
     triggerEls.forEach(function (triggerEl) {
       var tl = buildDiscreteTimeline(actionList, triggerEl);
+      var offTl = offList ? buildDiscreteTimeline(offList, triggerEl) : null;
       ScrollTrigger.create({
         trigger: triggerEl,
         start: "top 88%",
         once: once,
         onEnter: function () { tl.play(0); },
-        onLeaveBack: once ? undefined : function () { tl.reverse(); }
+        onLeaveBack: once ? undefined : function () { if (offTl) offTl.play(0); else tl.reverse(); }
       });
     });
   }
@@ -334,9 +361,15 @@
       } else if (ev.eventTypeId === "SCROLLING_IN_VIEW") {
         setupScrollTrigger(ev, actionList);
       } else if (ev.eventTypeId === "SCROLL_INTO_VIEW") {
-        setupScrollReveal(ev, actionList, true);
+        var t3 = ev.targets && ev.targets[0];
+        var key3 = t3 ? (t3.id || t3.selector) : id;
+        var outSiblings = byTriggerKey[key3] || [];
+        var outId = outSiblings.filter(function (sid) { return events[sid].eventTypeId === "SCROLL_OUT_OF_VIEW"; })[0];
+        var outList = outId ? actionLists[events[outId].action.config.actionListId] : null;
+        setupScrollReveal(ev, actionList, outList);
+        if (outId) handledOffEvents[outId] = true;
       } else if (ev.eventTypeId === "SCROLL_OUT_OF_VIEW") {
-        // paired with a SCROLL_INTO_VIEW on the same trigger for touch fallback; already covered by hover pair's reverse when applicable
+        // handled as part of its SCROLL_INTO_VIEW pair; if orphaned, skip
       }
     });
 

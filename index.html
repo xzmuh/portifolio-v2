@@ -115,16 +115,19 @@
 
   .section.experience { padding-top: 0; padding-bottom: 0; }
   .experience-pin { position: relative; height: 100vh; display: flex; align-items: center; overflow: hidden; background-color: #fff; color: var(--black); }
+  /* Text color is fixed per panel, not scroll-driven: intro stays black (inherited
+     above), both company cards are always white regardless of wipe progress. */
+  .experience_panel:not(.experience_intro) { color: #fff; }
   .experience_colorwipe { position: absolute; inset: 0; clip-path: inset(0 0 0 100%); will-change: clip-path; }
   .experience_colorwipe--gray { z-index: 1; background: #8a8a8a; }
   .experience_colorwipe--dark { z-index: 2; background: #0b0b0b; }
   .experience_track { position: relative; z-index: 3; display: flex; flex-wrap: nowrap; align-items: stretch; will-change: transform; }
   .experience_panel { flex: none; width: 100vw; box-sizing: border-box; padding: 0 4rem; display: flex; align-items: center; justify-content: center; }
-  .experience_card { position: relative; width: 100%; max-width: 50em; overflow: hidden; display: flex; flex-direction: column; align-items: flex-start; }
+  .experience_card { position: relative; width: 100%; max-width: 50em; display: flex; flex-direction: column; align-items: flex-start; }
   .experience_card--split { max-width: 88em; display: grid; grid-template-columns: 1fr 1fr; gap: 4em; align-items: start; }
   .experience_card--split:not(.experience_card--reverse) { --red: #d7ff3f; }
-  .experience_card--reverse .experience_col-left { order: 2; }
-  .experience_card--reverse .experience_col-right { order: 1; }
+  .experience_card--split .experience_col-left { order: 2; }
+  .experience_card--split .experience_col-right { order: 1; }
   .experience_index { position: absolute; top: -.2em; right: .2em; font-family: "DM Serif Display", serif; font-size: 9em; font-weight: 700; color: var(--red); opacity: .25; line-height: 1; pointer-events: none; }
   .experience_col-left, .experience_col-right { position: relative; z-index: 1; width: 100%; }
   .experience_eyebrow { color: var(--red); font-weight: 500; letter-spacing: .05em; text-transform: uppercase; font-size: 1.1em; margin-bottom: 1em; }
@@ -142,10 +145,31 @@
   @media (max-width: 767px) {
     .experience_panel { padding: 0 1.75rem; }
     .experience_card, .experience_card--split { grid-template-columns: 1fr; gap: 1.75em; max-width: none; }
-    .experience_card--reverse .experience_col-left, .experience_card--reverse .experience_col-right { order: initial; }
+    .experience_card--split .experience_col-left, .experience_card--split .experience_col-right { order: initial; }
     .experience_company { font-size: 2.1em; }
     .experience_index { font-size: 5em; }
     .experience_desc, .experience_list, .experience_stack { max-width: none; }
+  }
+
+  @media (max-width: 767px) {
+    /* The "Projetos em destaque" ticker is sticky so it can peek through gaps in
+       the desktop staggered card stack. On a single mobile column there are no
+       gaps, so a sticky ticker just floats over every card as you scroll past it. */
+    .ticker.forwards.projects {
+      position: static;
+    }
+
+    /* .flow-grid places the ticker and every project card via explicit desktop
+       grid-area line numbers (that's how the ticker peeks through gaps in the
+       staggered stack). Those line numbers force extra implicit grid columns even
+       on a "single column" mobile layout, so the ticker and the first project card
+       end up sharing the same cell and fight over z-index. Reset placement to the
+       grid's natural auto-flow (one item per row) on mobile. */
+    .flow-grid > div {
+      grid-area: auto !important;
+      align-self: auto !important;
+      justify-self: auto !important;
+    }
   }
 
 </style><style>
@@ -169,12 +193,12 @@
   .works-item {
     position: relative;
     opacity: 0;
-    transform: translate3d(0, 3em, 0);
+    transform: translate3d(0, 3em, 0) scale(.96);
     transition: opacity 700ms cubic-bezier(.19, 1, .22, 1), transform 700ms cubic-bezier(.19, 1, .22, 1);
   }
   .project_item:nth-child(odd) .works-item { z-index: 1; }
   .project_item:nth-child(even) .works-item { z-index: 3; }
-  .works-item.reveal { opacity: 1; transform: translate3d(0,0,0); }
+  .works-item.reveal { opacity: 1; transform: translate3d(0,0,0) scale(1); }
 
   .img-reveal_wrap, .hero_heading-track {
   	opacity: 0;
@@ -204,7 +228,11 @@
   }
 
   @media (max-width: 767px) {
-    .about-stair-item, .about-stair-item.stair-2, .about-stair-item.stair-3 {
+    /* :not(.reveal) so this pre-reveal transform stops matching once revealed,
+       instead of tying in specificity with .about-stair-item.reveal below (a tie
+       that the media query used to win by source order, leaving stair-2/stair-3
+       stuck 1em off their final position forever on mobile). */
+    .about-stair-item:not(.reveal), .about-stair-item.stair-2:not(.reveal), .about-stair-item.stair-3:not(.reveal) {
       transform: translate3d(0, 1em, 0);
     }
   }
@@ -418,10 +446,26 @@
     </section>
     <section class="section intro">
         <div class="container small">
-            <div class="section_content">
-                <h1 id="w-node-_62899e0b-fbee-f876-8be2-69d93ce781d5-4b175c0b" class="section_body large intro">E ai!<span class="emoji">👋</span> Eu atuo como <a href="https://www.linkedin.com/in/murilo-trigo-6205b3190/" target="_blank" class="inline-link white">Full Stack <em>Developer</em>,</a> tenho mais de 5 anos de experiência criando sites e sistemas web. Gosto de ajudar negócios a crescer com soluções eficientes, seguras e bem estruturadas.</h1>
-                <p id="w-node-_9f3f3223-5878-20eb-144c-2a6d6eb0b722-4b175c0b" class="section_body intro">Transformo regras de negócio complexas em soluções web seguras e eficiêntes, venha com a ideia e chegamos no produto digital.<br /></p>
-            </div>
+<div class="section_content">
+    <h1
+        id="w-node-_62899e0b-fbee-f876-8be2-69d93ce781d5-4b175c0b"
+        class="section_body large intro"
+    >
+        Bem-vindo ao meu portfólio. <span class="emoji">👋</span>
+        Mais do que escrever código, gosto de
+        <span style="color: var(--red);">construir experiências</span>.
+        Acredito que os melhores sistemas são aqueles que escondem toda a sua
+        complexidade por trás de uma experiência fluida e intuitiva.
+    </h1>
+
+    <p
+        id="w-node-_9f3f3223-5878-20eb-144c-2a6d6eb0b722-4b175c0b"
+        class="section_body intro"
+    >
+        Role a página e conheça alguns dos projetos, tecnologias e experiências que fazem parte da minha trajetória como desenvolvedor.
+        <br />
+    </p>
+</div>
         </div>
     </section>
     <section id="works" class="section projects">
@@ -597,7 +641,7 @@
                     <div id="w-node-dd9341d7-13df-2998-3032-e5d9ce9833ab-4b175c0b" class="service_list w-richtext">
                         <p>PostgreSQL</p>
                         <p>MySQL</p>
-                        <p>Consultas Otimizadas</p>
+                        <p>MongoDB</p>
                         <p>Integrações</p>
                     </div>
                 </div>
@@ -990,42 +1034,96 @@
     var wipeDark = document.querySelector('.experience_colorwipe--dark');
     if (!pinWrap || !track || !wipeGray || !wipeDark) return;
 
+    // Every duration/position in this timeline is a fixed fraction derived once
+    // from track.scrollWidth. The Google Fonts loader swaps fonts in
+    // asynchronously (network fetch), which can change text/track widths well
+    // after this script block runs — measuring before that swap bakes in stale
+    // fractions, so e.g. the intro->white color switch and the wipe/track motion
+    // stop landing on the same scroll position. Wait for the real fonts first.
+    var startWhenReady = function (run) {
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(run, run);
+      } else {
+        run();
+      }
+    };
+
+    startWhenReady(setupWhenFontsReady);
+
+    function setupWhenFontsReady() {
     ScrollTrigger.matchMedia({
       "all": function () {
         var getScrollAmount = function () { return track.scrollWidth - window.innerWidth; };
         var moveLen = getScrollAmount() * 0.55;
-        var holdLen = window.innerHeight * 0.5;
+        var holdLen = window.innerHeight * 0.15;
         var moveFrac = moveLen / (moveLen + holdLen);
+        var snapPoints = [0, moveFrac / 2, moveFrac, 1];
 
         var tl = gsap.timeline({
           scrollTrigger: {
             trigger: pinWrap,
             start: "top top",
             end: function () { return "+=" + (moveLen + holdLen); },
-            scrub: 0.4,
+            scrub: 0.3,
             pin: true,
-            invalidateOnRefresh: true,
-            anticipatePin: 1
+            invalidateOnRefresh: true
           }
         });
-        gsap.set(pinWrap, { color: "#0b0b0b" });
         gsap.set([wipeGray, wipeDark], { clipPath: "inset(0 0 0 100%)" });
 
+        // Text color is fixed per panel via CSS (see .experience_panel:not(.experience_intro)),
+        // not animated here — it doesn't depend on wipe/scroll progress at all.
         tl.to(track, { x: function () { return -getScrollAmount(); }, ease: "none", duration: moveFrac }, 0)
           .to(wipeGray, { clipPath: "inset(0 0 0 0%)", ease: "none", duration: moveFrac / 2 }, 0)
-          .to(pinWrap, { color: "#ffffff", ease: "none", duration: moveFrac / 2 }, 0)
           .to(wipeDark, { clipPath: "inset(0 0 0 0%)", ease: "none", duration: moveFrac / 2 }, moveFrac / 2)
           .to({}, { duration: 1 - moveFrac }, moveFrac);
 
+        // Lock to the nearest checkpoint once scrolling actually stops, instead of
+        // GSAP's built-in ScrollTrigger `snap` (which forces the scroll position
+        // itself). That fights Lenis's own smooth-scroll animation for control of
+        // the scroll position and causes visible flashing/jump-cutting. Driving the
+        // snap through lenis.scrollTo() keeps a single owner of the scroll position.
+        var st = tl.scrollTrigger;
+        var snapTimer = null;
+        var onScrollSettle = function () {
+          if (!st.isActive) return;
+          clearTimeout(snapTimer);
+          snapTimer = setTimeout(function () {
+            if (!st.isActive) return;
+            var progress = st.progress;
+            // Only the two wipe-in-progress zones actually look broken if you rest
+            // mid-transition (a half-drawn gray/dark wipe). The true start, the
+            // fully-wiped hold buffer, and the end are all fine resting points on
+            // their own — snapping into/out of those too is what read as an abrupt,
+            // uninvited "lock" right as the section is entered or left. So only
+            // correct when progress is strictly inside one of those two zones.
+            var zoneStart, zoneEnd;
+            if (progress > 0 && progress < snapPoints[1]) { zoneStart = snapPoints[0]; zoneEnd = snapPoints[1]; }
+            else if (progress > snapPoints[1] && progress < snapPoints[2]) { zoneStart = snapPoints[1]; zoneEnd = snapPoints[2]; }
+            else { return; }
+            var nearest = (progress - zoneStart < zoneEnd - progress) ? zoneStart : zoneEnd;
+            var targetScroll = st.start + nearest * (st.end - st.start);
+            if (Math.abs(targetScroll - window.scrollY) < 4) return;
+            if (typeof lenis !== "undefined" && lenis) {
+              lenis.scrollTo(targetScroll, { duration: 0.8 });
+            } else {
+              window.scrollTo({ top: targetScroll, behavior: "smooth" });
+            }
+          }, 450);
+        };
+        window.addEventListener("scroll", onScrollSettle, { passive: true });
+
         return function () {
+          window.removeEventListener("scroll", onScrollSettle);
+          clearTimeout(snapTimer);
           if (tl.scrollTrigger) tl.scrollTrigger.kill();
           tl.kill();
-          gsap.set(pinWrap, { clearProps: "color" });
           gsap.set(track, { clearProps: "transform" });
           gsap.set([wipeGray, wipeDark], { clearProps: "clipPath" });
         };
       }
     });
+    }
   })();
 
   /*
