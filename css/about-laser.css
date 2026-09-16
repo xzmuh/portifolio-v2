@@ -1,0 +1,101 @@
+/* "Um pouco sobre mim": traço grosso e arredondado de "canetinha" que desce pela
+   lateral esquerda numa curva longa e suave, sem cruzar o texto, e vai sendo desenhado com o
+   scroll (stroke-dashoffset em px, calculado no JS). */
+
+.section.about {
+  position: relative;
+  overflow: hidden;
+}
+
+.section.about > .container {
+  position: relative;
+  z-index: 1;
+}
+
+/* abre espaço na esquerda para o traço */
+.container.small.about {
+  padding-left: 13rem;
+}
+
+.about-thread {
+  --thread-left: 2.5rem;
+  --thread-width: 8.5rem;
+  position: absolute;
+  z-index: 0;
+  top: clamp(6rem, 10vw, 10rem);
+  left: var(--thread-left);
+  width: var(--thread-width);
+  height: calc(100% - clamp(6rem, 10vw, 10rem) - 14rem);
+  overflow: visible;
+  pointer-events: none;
+}
+
+.about-thread path {
+  fill: none;
+  stroke: #2e2e2e;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 99999;
+  stroke-dashoffset: 99999;
+}
+
+.about-thread__glow {
+  stroke-width: 40;
+  opacity: .05;
+  filter: blur(10px);
+}
+
+.about-thread__line {
+  stroke-width: 20;
+  opacity: .9;
+}
+
+/* texto grande um pouco menor */
+.section_body.large.about {
+  font-size: 6.4em;
+}
+
+@media (max-width: 991px) {
+  .container.small.about {
+    padding-left: 18vw;
+  }
+
+  .about-thread {
+    --thread-left: 3vw;
+    --thread-width: 11vw;
+  }
+
+  .section_body.large.about {
+    font-size: 7.6vw;
+  }
+}
+
+@media (max-width: 767px) {
+  .container.small.about {
+    padding-left: 17vw;
+  }
+
+  .about-thread {
+    --thread-left: 2vw;
+    --thread-width: 11vw;
+  }
+
+  .about-thread__glow {
+    stroke-width: 22;
+  }
+
+  .about-thread__line {
+    stroke-width: 10;
+  }
+
+  .section_body.large.about {
+    font-size: 10.4vw;
+  }
+}
+
+@media (max-width: 479px) {
+  .section_body.large.about {
+    font-size: 11.2vw;
+  }
+}

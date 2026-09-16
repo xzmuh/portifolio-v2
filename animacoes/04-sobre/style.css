@@ -1,0 +1,23 @@
+* { box-sizing: border-box; }
+body { margin: 0; font-family: system-ui, sans-serif; background: #0b0b0b; color: #fff; }
+.container { max-width: 40em; margin: 0 auto; padding: 3em 2em; }
+.spacer { height: 60vh; display: flex; align-items: center; justify-content: center; opacity: .4; }
+.spacer:before { content: "role para ver"; }
+
+.about-stairs { display: flex; flex-direction: column; gap: 2.5em; margin: 1em 0 3em; }
+.about-stair-item {
+  max-width: 32em; width: 100%;
+  background: #151515; border-left: 3px solid #d7ff3f; padding: 1em 1.4em;
+  opacity: 0;
+  transform: translate3d(-4em, 0, 0);
+  transition: opacity 450ms cubic-bezier(.19, 1, .22, 1), transform 450ms cubic-bezier(.19, 1, .22, 1);
+}
+.about-stairs .stair-1 { align-self: flex-start; }
+.about-stairs .stair-2 { align-self: center; transform: translate3d(-1.3em, 0, 0); }
+.about-stairs .stair-3 { align-self: flex-end; transform: translate3d(4em, 0, 0); }
+.about-stair-item.reveal { opacity: 1; transform: translate3d(0, 0, 0); }
+
+.section_body.large { font-size: 2.2em; line-height: 1.4; }
+.grow-text { display: inline-block; }
+.grow-text:nth-child(odd) { transform-origin: bottom right; }
+.grow-text:nth-child(even) { transform-origin: center left; }

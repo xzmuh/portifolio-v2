@@ -1,0 +1,40 @@
+* { box-sizing: border-box; }
+body { margin: 0; font-family: system-ui, sans-serif; background: #fff; color: #0b0b0b; }
+.container { max-width: 40em; margin: 0 auto; padding: 3em 2em; }
+.spacer { height: 60vh; display: flex; align-items: center; justify-content: center; opacity: .4; }
+.spacer:before { content: "role para ver"; }
+
+@keyframes tickerForwards {
+  from { transform: translate3d(0%, 0, 0); }
+  to { transform: translate3d(-100%, 0, 0); }
+}
+.ticker { overflow: hidden; margin-bottom: 3em; }
+.ticker_track { display: flex; width: max-content; }
+.ticker_group { display: flex; flex-shrink: 0; }
+.ticker.forwards .ticker_group { animation: tickerForwards 15s linear infinite; }
+.ticker-text { font-size: 2em; white-space: nowrap; padding-right: 1em; margin: 0; }
+.serif { font-family: Georgia, serif; font-style: italic; }
+
+.service { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 2em; overflow: hidden; padding: 1em 0; }
+.service_title { margin: 0 0 .3em; }
+.service-desc p { opacity: .7; margin: 0; }
+.service_list p {
+  margin: 0;
+  font-size: 1.4em;
+  padding: .3em 0;
+  transform: translate3d(-200%,0,0);
+  transition: transform 600ms cubic-bezier(.19, 1, .22, 1) 100ms;
+}
+.service_list p.reveal { transform: translate3d(0%,0,0); }
+
+.service:before {
+  content: "";
+  position: absolute; left: calc(50% - 1.5px); top: 0;
+  width: 3px; height: 100%;
+  background: #000;
+  transform-origin: top;
+  transform: scale3d(1,0,1);
+  transition: transform 2000ms cubic-bezier(.19, 1, .22, 1) 500ms;
+  z-index: 2;
+}
+.service.reveal:before { transform: scale3d(1,1,1); }

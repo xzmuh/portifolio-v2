@@ -1,0 +1,303 @@
+/* Footer "produzido": headline gigante com bulge (WebGL), colunas de links,
+   órbitas tracejadas e barra final com relógio. O .section.contact do Webflow força 100vh/centro —
+   aqui o footer cresce com o conteúdo. */
+
+.section.contact.site-footer {
+  --footer-ink: #e6e3dc;
+  --footer-muted: rgba(230, 227, 220, .5);
+  --footer-line: rgba(230, 227, 220, .16);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: auto;
+  max-height: none;
+  min-height: 100vh;
+  padding: 0 0 2.5rem;
+  background: #161616;
+  color: var(--footer-ink);
+  overflow: hidden;
+  position: relative;
+}
+
+/* ---------- órbitas tracejadas ---------- */
+.footer-orbit {
+  position: absolute;
+  border: 1px dashed rgba(230, 227, 220, .14);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.footer-orbit--a {
+  width: 95vw;
+  height: 95vw;
+  left: 38vw;
+  top: -22vw;
+  animation: footerSpin 140s linear infinite;
+}
+
+.footer-orbit--b {
+  width: 42vw;
+  height: 42vw;
+  right: -14vw;
+  top: 12vw;
+  animation: footerSpin 90s linear infinite reverse;
+}
+
+@keyframes footerSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---------- topo: headline + colunas ---------- */
+.container.footer-main {
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: 4rem;
+  align-items: start;
+  margin-top: auto;
+  padding-top: clamp(5rem, 9vw, 9rem);
+}
+
+.footer-cta {
+  position: relative;
+}
+
+.container.footer-bar {
+  z-index: 2;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-top: auto;
+  padding-top: 4rem;
+  font-size: .85rem;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--footer-muted);
+}
+
+.footer-clock b {
+  font-weight: 500;
+  color: var(--footer-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.footer-top {
+  color: var(--footer-ink);
+  text-decoration: none;
+  transition: color .3s;
+}
+
+.footer-top i {
+  display: inline-block;
+  font-style: normal;
+  transition: transform .45s cubic-bezier(.19, 1, .22, 1);
+}
+
+.footer-top:hover {
+  color: var(--red);
+}
+
+.footer-top:hover i {
+  transform: translateY(-.3em);
+}
+
+.footer-headline {
+  position: relative;
+  margin: 0;
+  font-family: Roboto, sans-serif;
+  font-weight: 400;
+  font-size: clamp(3rem, 7.6vw, 9.5rem);
+  line-height: .93;
+  letter-spacing: -.035em;
+  text-transform: uppercase;
+  color: var(--footer-ink);
+}
+
+.footer-line {
+  display: block;
+  white-space: nowrap;
+}
+
+.footer-headline em {
+  font-family: "DM Serif Display", serif;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -.01em;
+  text-transform: lowercase;
+  color: var(--red);
+}
+
+/* Com o WebGL ativo o canvas desenha o texto; o h2 segue no DOM (SEO/leitores). */
+.footer-cta.is-bulge .footer-headline,
+.footer-cta.is-bulge .footer-headline em {
+  color: transparent;
+}
+
+.footer-bulge-canvas {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.footer-pill {
+  position: absolute;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: .9em;
+  padding: .85em 1.6em;
+  border: 1px solid rgba(230, 227, 220, .35);
+  border-radius: 999px;
+  color: var(--footer-ink);
+  font-size: clamp(1rem, 1.9vw, 2.2rem);
+  font-weight: 400;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  background: rgba(22, 22, 22, .55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: background-color .45s cubic-bezier(.19, 1, .22, 1), color .45s cubic-bezier(.19, 1, .22, 1), border-color .45s;
+  /* posição default (sem JS): logo abaixo do headline */
+  left: 0;
+  top: 100%;
+  margin-top: 1.5rem;
+}
+
+.footer-pill svg {
+  width: 1em;
+  height: 1em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  transition: transform .45s cubic-bezier(.19, 1, .22, 1);
+}
+
+.footer-pill:hover {
+  background: var(--red);
+  border-color: var(--red);
+  color: #0b0b0b;
+}
+
+.footer-pill:hover svg {
+  transform: translateX(.3em);
+}
+
+.footer-cols {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2rem;
+  padding-top: .6rem;
+}
+
+.footer-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.05rem;
+}
+
+.footer-col-title {
+  margin-bottom: 1rem;
+  font-size: clamp(.8rem, 1.05vw, 1.15rem);
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  color: var(--footer-muted);
+}
+
+.footer-link,
+.footer-text {
+  font-size: clamp(.95rem, 1.2vw, 1.3rem);
+  text-transform: uppercase;
+  color: var(--footer-ink);
+  text-decoration: none;
+  line-height: 1.2;
+}
+
+.footer-link {
+  position: relative;
+  display: inline-flex;
+  gap: .45em;
+  padding-bottom: .25em;
+}
+
+.footer-link i {
+  font-style: normal;
+  font-size: .85em;
+  transition: transform .45s cubic-bezier(.19, 1, .22, 1);
+}
+
+.footer-link:after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: currentColor;
+  opacity: .25;
+  transform-origin: 0 50%;
+  transition: opacity .3s, background-color .3s;
+}
+
+.footer-link:hover {
+  color: var(--red);
+}
+
+.footer-link:hover:after {
+  opacity: 1;
+}
+
+.footer-link:hover i {
+  transform: translateX(.25em);
+}
+
+/* ---------- responsivo ---------- */
+@media (max-width: 991px) {
+  .container.footer-main {
+    grid-template-columns: 1fr;
+    gap: 5rem;
+  }
+
+  .footer-pill {
+    position: relative;
+    top: auto;
+    margin-top: 2.2rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .footer-headline {
+    font-size: 13.5vw;
+  }
+
+  .footer-cols {
+    grid-template-columns: 1fr 1fr;
+    row-gap: 3rem;
+  }
+
+  .container.footer-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .6rem;
+  }
+
+  .footer-orbit--a {
+    width: 160vw;
+    height: 160vw;
+    left: 20vw;
+    top: 20vw;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .footer-orbit {
+    animation: none !important;
+  }
+}

@@ -27,6 +27,11 @@
   <meta content="summary_large_image" name="twitter:card" />
   <meta content="width=device-width, initial-scale=1" name="viewport" />
   <link href="css/murilos-fantastic-site-c1d49f.webflow.shared.4f6f10648.css" rel="stylesheet" type="text/css" />
+  <link href="css/about-laser.css" rel="stylesheet" type="text/css" />
+  <link href="css/experience.css" rel="stylesheet" type="text/css" />
+  <link href="css/footer.css" rel="stylesheet" type="text/css" />
+  <link href="css/xreveal.css" rel="stylesheet" type="text/css" />
+  <link href="css/pixel-seam.css" rel="stylesheet" type="text/css" />
   <link href="https://fonts.googleapis.com" rel="preconnect" />
   <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin="anonymous" />
   <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js" type="text/javascript"></script>
@@ -102,23 +107,6 @@
       padding-left: 0;
     }
 
-    .footer-content .email_text {
-      font-size: clamp(0.85rem, 4.6vw, 3.5em) !important;
-      white-space: nowrap;
-    }
-
-    .footer-content .email_link {
-      gap: 0.5em;
-    }
-
-    .footer-content .cta-underline {
-      display: none;
-    }
-
-    .footer-content .email_text {
-      color: var(--red);
-    }
-
     .about-stairs {
       display: flex;
       flex-direction: column;
@@ -149,238 +137,6 @@
       .about-stairs .about-stair-item.stair-2,
       .about-stairs .about-stair-item.stair-3 {
         align-self: flex-start;
-      }
-    }
-
-    .section.experience {
-      padding-top: 0;
-      padding-bottom: 0;
-    }
-
-    .experience-pin {
-      position: relative;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      overflow: hidden;
-      background-color: #fff;
-      color: var(--black);
-    }
-
-    /* Text color is fixed per panel, not scroll-driven: intro stays black (inherited
-     above), both company cards are always white regardless of wipe progress. */
-    .experience_panel:not(.experience_intro) {
-      color: #fff;
-    }
-
-    .experience_colorwipe {
-      position: absolute;
-      inset: 0;
-      clip-path: inset(0 0 0 100%);
-      will-change: clip-path;
-    }
-
-    .experience_colorwipe--gray {
-      z-index: 1;
-      background: #8a8a8a;
-    }
-
-    .experience_colorwipe--dark {
-      z-index: 2;
-      background: #0b0b0b;
-    }
-
-    .experience_track {
-      position: relative;
-      z-index: 3;
-      display: flex;
-      flex-wrap: nowrap;
-      align-items: stretch;
-      will-change: transform;
-    }
-
-    .experience_panel {
-      flex: none;
-      width: 100vw;
-      box-sizing: border-box;
-      padding: 0 4rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .experience_card {
-      position: relative;
-      width: 100%;
-      max-width: 50em;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-    }
-
-    .experience_card--split {
-      max-width: 88em;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4em;
-      align-items: start;
-    }
-
-    .experience_card--split:not(.experience_card--reverse) {
-      --red: #d7ff3f;
-    }
-
-    .experience_card--split .experience_col-left {
-      order: 2;
-    }
-
-    .experience_card--split .experience_col-right {
-      order: 1;
-    }
-
-    .experience_index {
-      position: absolute;
-      top: -.2em;
-      right: .2em;
-      font-family: "DM Serif Display", serif;
-      font-size: 9em;
-      font-weight: 700;
-      color: var(--red);
-      opacity: .25;
-      line-height: 1;
-      pointer-events: none;
-    }
-
-    .experience_col-left,
-    .experience_col-right {
-      position: relative;
-      z-index: 1;
-      width: 100%;
-    }
-
-    .experience_eyebrow {
-      color: var(--red);
-      font-weight: 500;
-      letter-spacing: .05em;
-      text-transform: uppercase;
-      font-size: 1.1em;
-      margin-bottom: 1em;
-    }
-
-    .experience_period {
-      display: block;
-      color: var(--red);
-      font-weight: 500;
-      font-size: 1.15em;
-      margin-bottom: .5em;
-    }
-
-    .experience_company {
-      font-size: 3em;
-      margin-bottom: .15em;
-      position: relative;
-      z-index: 1;
-    }
-
-    .experience_role {
-      display: block;
-      opacity: .7;
-      font-size: 1.15em;
-      margin-bottom: 1.5em;
-    }
-
-    .experience_badge {
-      display: inline-block;
-      margin-left: .6em;
-      padding: .15em .7em;
-      border-radius: 2em;
-      background: var(--red);
-      color: #fff;
-      font-size: .5em;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: .05em;
-      vertical-align: middle;
-    }
-
-    .experience_desc {
-      max-width: none;
-      margin-bottom: 0;
-    }
-
-    .experience_list {
-      max-width: none;
-      margin: 0 0 2em;
-      padding: 0;
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: .7em;
-    }
-
-    .experience_list li {
-      position: relative;
-      padding-left: 1.4em;
-      font-size: 1.1em;
-      line-height: 1.5;
-    }
-
-    .experience_list li:before {
-      content: "";
-      position: absolute;
-      left: 0;
-      top: .55em;
-      width: .5em;
-      height: .5em;
-      border-radius: 50%;
-      background: var(--red);
-    }
-
-    .experience_stack {
-      display: flex;
-      flex-wrap: wrap;
-      gap: .6em;
-      max-width: none;
-    }
-
-    .experience_stack span {
-      border: 1px solid currentColor;
-      opacity: .8;
-      border-radius: 2em;
-      padding: .3em 1em;
-      font-size: .95em;
-      font-weight: 500;
-    }
-
-    @media (max-width: 767px) {
-      .experience_panel {
-        padding: 0 1.75rem;
-      }
-
-      .experience_card,
-      .experience_card--split {
-        grid-template-columns: 1fr;
-        gap: 1.75em;
-        max-width: none;
-      }
-
-      .experience_card--split .experience_col-left,
-      .experience_card--split .experience_col-right {
-        order: initial;
-      }
-
-      .experience_company {
-        font-size: 2.1em;
-      }
-
-      .experience_index {
-        font-size: 5em;
-      }
-
-      .experience_desc,
-      .experience_list,
-      .experience_stack {
-        max-width: none;
       }
     }
 
@@ -439,6 +195,35 @@
 
     .project_item {
       position: relative;
+    }
+
+    /* Dialogi / SigmaCX continue the staggered stack below Freplan and Beauty Exp. The
+     mobile reset in the block above (.flow-grid>div !important) still wins. */
+    .flow-grid>.project_item.dialogi {
+      grid-area: 6 / 2 / 7 / 4;
+      place-self: center;
+      z-index: 3;
+    }
+
+    .flow-grid>.project_item.sigmacx {
+      grid-area: 7 / 3 / 8 / 5;
+      place-self: center end;
+      z-index: 1;
+    }
+
+    /* Hero screenshots are wide; keep the headline side in the square crop. */
+    .project_item.dialogi .project_image,
+    .project_item.sigmacx .project_image {
+      object-position: 20% 50%;
+    }
+
+    .project_item.dialogi .project_info,
+    .project_item.sigmacx .project_info,
+    .project_item.dialogi .project_name,
+    .project_item.dialogi .project_desc,
+    .project_item.sigmacx .project_name,
+    .project_item.sigmacx .project_desc {
+      place-self: end;
     }
 
     .works-item {
@@ -808,13 +593,13 @@
                 <div role="listitem" class="works-item w-dyn-item">
                   <div class="project_wrap medium w-inline-block"><img
                       id="w-node-_31353db0-b592-3a3d-f0b0-8a650926bbdd-4b175c0b" loading="lazy" width="650"
-                      src="images/projects/lumina.png" alt="Lumina" class="project_image" />
+                      src="images/projects/beauty-exp.png" alt="Beauty Exp" class="project_image" />
                     <div id="w-node-_31353db0-b592-3a3d-f0b0-8a650926bbde-4b175c0b" class="project_darken"></div>
                     <div id="w-node-_31353db0-b592-3a3d-f0b0-8a650926bbdf-4b175c0b" class="project_info">
                       <h3 id="w-node-_31353db0-b592-3a3d-f0b0-8a650926bbe0-4b175c0b" class="project_name item-name">
-                        Lumina</h3>
+                        Beauty Exp</h3>
                       <div id="w-node-_31353db0-b592-3a3d-f0b0-8a650926bbe1-4b175c0b" class="project_desc">Sistema de
-                        gestão para clínicas com atendimento inteligente por IA, agenda, pacientes e financeiro.</div>
+                        gestão para clínicas de estética, com agenda, pacientes, procedimentos e financeiro.</div>
                     </div>
                   </div>
                 </div>
@@ -887,6 +672,36 @@
                       </div>
                     </div>
                   </div>
+                </div>
+              </div>
+            </div>
+            <div class="project_item dialogi w-dyn-list">
+              <div role="list" class="w-dyn-items">
+                <div role="listitem" class="works-item w-dyn-item"><a href="https://dialogi.ai" target="_blank"
+                    rel="noopener" class="project_wrap medium w-inline-block"><img loading="lazy" width="1000"
+                      src="images/projects/dialogi.png" alt="Dialogi" class="project_image" />
+                    <div class="project_darken"></div>
+                    <div class="project_info">
+                      <h3 class="project_name item-name">Dialogi</h3>
+                      <div class="project_desc">Site da plataforma de gamificação para operações, com experiências
+                        interativas e animações.</div>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div class="project_item sigmacx w-dyn-list">
+              <div role="list" class="w-dyn-items">
+                <div role="listitem" class="works-item w-dyn-item"><a href="https://sigmacx.ai" target="_blank"
+                    rel="noopener" class="project_wrap small w-inline-block"><img loading="lazy" width="1000"
+                      src="images/projects/sigmacx.png" alt="SigmaCX" class="project_image" />
+                    <div class="project_darken"></div>
+                    <div class="project_info">
+                      <h3 class="project_name item-name">SigmaCX</h3>
+                      <div class="project_desc">Site institucional da SigmaCX, plataforma de CX que unifica canais,
+                        automação e IA.</div>
+                    </div>
+                  </a>
                 </div>
               </div>
             </div>
@@ -1009,6 +824,10 @@
       </div>
     </section>
     <section id="about" data-w-id="23362570-771b-0c45-251f-7b311e606ac5" class="section about">
+      <svg class="about-thread" viewBox="0 0 100 3000" preserveAspectRatio="none" aria-hidden="true">
+        <path class="about-thread__glow" d="M -90 10 C 10 40 70 260 80 700 C 90 1120 40 1700 45 2150 C 50 2550 60 2780 60 2900" />
+        <path class="about-thread__line" d="M -90 10 C 10 40 70 260 80 700 C 90 1120 40 1700 45 2150 C 50 2550 60 2780 60 2900" />
+      </svg>
       <div class="container small about">
         <div class="section_content">
           <h2 id="w-node-_23362570-771b-0c45-251f-7b311e606ac7-4b175c0b"
@@ -1110,125 +929,199 @@
         </div>
       </div>
     </section>
-    <section id="experience" class="section light experience">
-      <div class="experience-pin">
-        <div class="experience_colorwipe experience_colorwipe--gray"></div>
-        <div class="experience_colorwipe experience_colorwipe--dark"></div>
-        <div class="experience_track">
-          <div class="experience_panel experience_intro">
-            <div class="experience_card">
-              <span class="experience_index">00</span>
-              <div class="experience_eyebrow">Experiência</div>
-              <h2 class="section_heading">Minha <em>trajetória</em>.</h2>
-              <p class="section_body small opacity-70">Role para conhecer as empresas onde já trabalhei e o que fiz em
-                cada uma.</p>
-            </div>
+    <div class="pixel-seam" aria-hidden="true"></div>
+    <section id="experience" class="section xp">
+      <div class="xp-bg" aria-hidden="true">
+        <div class="xp-bg-beam"></div>
+        <div class="xp-bg-year xp-bg-year--a">2019</div>
+        <div class="xp-bg-year xp-bg-year--b">2026</div>
+        <div class="xp-bg-spot"></div>
+        <div class="xp-bg-grain"></div>
+      </div>
+      <div class="container xp-inner">
+        <aside class="xp-side">
+          <div class="xp-sticky">
+            <div class="xp-eyebrow">Experiência</div>
+            <h2 class="xp-title">Minha <em>trajetória</em>.</h2>
+            <p class="xp-lead">Empresas onde já trabalhei e o que construí em cada uma. Toque no + para ver os detalhes.</p>
           </div>
-          <div class="experience_panel">
-            <div class="experience_card experience_card--split">
-              <span class="experience_index">01</span>
-              <div class="experience_col-left">
-                <span class="experience_period">Out 2021 — Fev 2026 · 4 anos e 5 meses</span>
-                <h3 class="experience_company">I-SINC</h3>
-                <span class="experience_role">Full Stack Developer · Agudos, São Paulo, Brasil</span>
-                <p class="section_body small experience_desc">Desenvolvimento, manutenção e evolução de sistemas web com
-                  foco em aplicações ERP, backend, frontend, banco de dados, integrações e regras de negócio, em
-                  sistemas usados em ambiente real de operação.</p>
+        </aside>
+
+        <div class="xp-cards">
+          <div class="xp-col xp-col--a">
+            <article class="xp-card xp-card--isinc" data-xp="0">
+              <div class="xp-card-logo"><img src="images/experience/isinc.png" alt="I-SINC" loading="lazy" /></div>
+              <div class="xp-card-foot">
+                <div>
+                  <h3 class="xp-card-name">I-SINC</h3>
+                  <span class="xp-card-meta">Mai 2019 — Fev 2026 · Full Stack</span>
+                </div>
+                <button class="xp-card-toggle" type="button" aria-expanded="false" aria-label="Ver detalhes da I-SINC"><i></i></button>
               </div>
-              <div class="experience_col-right">
-                <ul class="experience_list">
-                  <li>APIs REST para comunicação entre módulos do sistema</li>
-                  <li>Frontend com Angular, HTML, CSS e JavaScript/TypeScript</li>
-                  <li>Implementação de regras de negócio para sistemas ERP</li>
-                  <li>Relatórios dinâmicos e consultas avançadas</li>
+              <div class="xp-card-detail">
+                <span class="xp-card-period">Mai 2019 — Fev 2026 · 6 anos e 10 meses</span>
+                <p class="xp-card-role">Full Stack Developer · Agudos, SP</p>
+                <p class="xp-card-desc">Sistemas web com foco em ERP, backend, frontend, banco de dados, integrações e regras de negócio, usados em operação real.</p>
+                <ul>
+                  <li>APIs REST entre módulos do sistema</li>
+                  <li>Frontend com Angular, HTML, CSS e TypeScript</li>
+                  <li>Regras de negócio para ERP e relatórios dinâmicos</li>
                   <li>Otimização de consultas em PostgreSQL e MySQL</li>
                   <li>Integrações com AWS S3 e SES</li>
                 </ul>
-                <div class="experience_stack">
-                  <span>Angular</span><span>Node.js</span><span>NestJS</span><span>PostgreSQL</span><span>MySQL</span><span>AWS
-                    S3</span><span>AWS SES</span><span>REST APIs</span><span>Git</span>
+                <div class="xp-card-stack"><span>Angular</span><span>Node.js</span><span>NestJS</span><span>PostgreSQL</span><span>MySQL</span><span>AWS</span></div>
+              </div>
+            </article>
+
+            <article class="xp-card xp-card--dialogi" data-xp="2">
+              <div class="xp-card-logo"><img src="images/experience/dialogi.png" alt="Dialogi" loading="lazy" /></div>
+              <div class="xp-card-foot">
+                <div>
+                  <h3 class="xp-card-name">Dialogi <b class="xp-badge">Atual</b></h3>
+                  <span class="xp-card-meta">Ago 2026 — hoje · Front-end Engineer</span>
                 </div>
+                <button class="xp-card-toggle" type="button" aria-expanded="false" aria-label="Ver detalhes da Dialogi"><i></i></button>
               </div>
-            </div>
-          </div>
-          <div class="experience_panel">
-            <div class="experience_card experience_card--split experience_card--reverse">
-              <span class="experience_index">02</span>
-              <div class="experience_col-left">
-                <span class="experience_period">Mai 2026 — o momento · 3 meses</span>
-                <h3 class="experience_company">Next Soluções Inteligentes<span class="experience_badge">Atual</span>
-                </h3>
-                <span class="experience_role">Full Stack Developer · Bauru, São Paulo, Brasil · Híbrido</span>
-                <p class="section_body small experience_desc">Desenvolvimento e manutenção de sistemas web, trabalhando
-                  principalmente com React no front-end e PHP no back-end.</p>
-              </div>
-              <div class="experience_col-right">
-                <ul class="experience_list">
-                  <li>Desenvolvimento de telas e funcionalidades com React</li>
-                  <li>Manutenção e evolução de sistemas web com PHP</li>
-                  <li>Ajustes e implementação de regras de negócio</li>
-                  <li>Correção de bugs e integração entre front-end e back-end</li>
-                  <li>Análise de oportunidades para aplicar IA em fluxos do sistema</li>
+              <div class="xp-card-detail">
+                <span class="xp-card-period">Ago 2026 — o momento · 2 meses</span>
+                <p class="xp-card-role">Front-end Engineer · Web, Interactive Experiences &amp; AI · Remoto</p>
+                <p class="xp-card-desc">Sites, landing pages e interfaces web para a dialogi.ai, com experiências interativas e IA no dia a dia.</p>
+                <ul>
+                  <li>Sites, landing pages e interfaces web</li>
+                  <li>Experiências interativas e minigames</li>
+                  <li>Front-end com React, JavaScript e TypeScript</li>
+                  <li>Integração com APIs e serviços externos</li>
+                  <li>IA em desenvolvimento e automações</li>
                 </ul>
-                <div class="experience_stack">
-                  <span>React</span><span>PHP</span><span>JavaScript</span><span>HTML</span><span>CSS</span><span>Git</span>
-                </div>
+                <div class="xp-card-stack"><span>React</span><span>TypeScript</span><span>JavaScript</span><span>Cloudflare</span><span>IA</span></div>
               </div>
-            </div>
+            </article>
+          </div>
+
+          <div class="xp-col xp-col--b">
+            <article class="xp-card xp-card--next" data-xp="1">
+              <div class="xp-card-logo"><img src="images/experience/next.png" alt="Next Soluções Inteligentes" loading="lazy" /></div>
+              <div class="xp-card-foot">
+                <div>
+                  <h3 class="xp-card-name">Next SI <b class="xp-badge">Atual</b></h3>
+                  <span class="xp-card-meta">Mai 2026 — hoje · Full Stack</span>
+                </div>
+                <button class="xp-card-toggle" type="button" aria-expanded="false" aria-label="Ver detalhes da Next"><i></i></button>
+              </div>
+              <div class="xp-card-detail">
+                <span class="xp-card-period">Mai 2026 — o momento · 5 meses</span>
+                <p class="xp-card-role">Full Stack Developer · Bauru, SP · Híbrido</p>
+                <p class="xp-card-desc">Desenvolvimento e manutenção de sistemas web, principalmente com React no front-end e PHP no back-end.</p>
+                <ul>
+                  <li>Telas e funcionalidades com React</li>
+                  <li>Manutenção e evolução de sistemas em PHP</li>
+                  <li>Ajustes e implementação de regras de negócio</li>
+                  <li>Correção de bugs e integração front/back</li>
+                  <li>Oportunidades para aplicar IA nos fluxos</li>
+                </ul>
+                <div class="xp-card-stack"><span>React</span><span>PHP</span><span>JavaScript</span><span>HTML</span><span>CSS</span><span>Git</span></div>
+              </div>
+            </article>
+
+            <article class="xp-card xp-card--sigmacx" data-xp="3">
+              <div class="xp-card-logo"><img src="images/experience/sigmacx.png" alt="SigmaCX" loading="lazy" /></div>
+              <div class="xp-card-foot">
+                <div>
+                  <h3 class="xp-card-name">SigmaCX <b class="xp-badge">Atual</b></h3>
+                  <span class="xp-card-meta">Ago 2026 — hoje · Front-end Engineer</span>
+                </div>
+                <button class="xp-card-toggle" type="button" aria-expanded="false" aria-label="Ver detalhes da SigmaCX"><i></i></button>
+              </div>
+              <div class="xp-card-detail">
+                <span class="xp-card-period">Ago 2026 — o momento · 2 meses</span>
+                <p class="xp-card-role">Front-end Engineer · Web, Interactive Experiences &amp; AI · Remoto</p>
+                <p class="xp-card-desc">Interfaces web e aplicações front-end da SigmaCX, com soluções digitais para campanhas e projetos.</p>
+                <ul>
+                  <li>Interfaces web e aplicações front-end</li>
+                  <li>Experiências interativas para campanhas</li>
+                  <li>React, JavaScript e TypeScript</li>
+                  <li>Integração com APIs e serviços externos</li>
+                  <li>IA em desenvolvimento e automações</li>
+                </ul>
+                <div class="xp-card-stack"><span>JavaScript</span><span>TypeScript</span><span>React</span><span>APIs</span><span>IA</span></div>
+              </div>
+            </article>
           </div>
         </div>
       </div>
     </section>
-    <footer id="contact" data-w-id="5be8c815-6575-3e1b-39d1-56c8914fa363" class="section contact">
-      <div class="container footer-content">
-        <div class="section_content">
-          <p id="w-node-_5be8c815-6575-3e1b-39d1-56c8914fa366-914fa363" class="section_body footer">Vamos construir algo
-            juntos?</p><a data-w-id="5be8c815-6575-3e1b-39d1-56c8914fa368" href="mailto:murilo_agudos@hotmail.com"
-            class="email_link w-inline-block">
-            <div class="email_text">murilo_agudos@hotmail.com</div>
-            <div class="cta-underline"></div>
-          </a><a href="https://www.linkedin.com/in/murilo-trigo-6205b3190/" target="_blank"
-            class="email_link w-inline-block" style="margin-top:0.4em;">
-            <div class="email_text" style="font-size:2.2em;">LinkedIn</div>
-            <div class="cta-underline"></div>
+    <section class="xreveal" aria-label="Vamos construir algo juntos?">
+      <div class="xreveal-pin">
+        <svg class="xreveal-svg" aria-hidden="true">
+          <defs>
+            <linearGradient id="xrevealGrad" class="xreveal-grad" gradientUnits="objectBoundingBox" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="#eef5ff" />
+              <stop offset=".28" stop-color="#5da6ff" />
+              <stop offset=".55" stop-color="#8f7cf0" />
+              <stop offset=".82" stop-color="#c8f06a" />
+              <stop offset="1" stop-color="#d7ff3f" />
+            </linearGradient>
+            <clipPath id="xrevealClip" clipPathUnits="userSpaceOnUse">
+              <path class="xreveal-xpath" />
+              <circle class="xreveal-xcircle" r="0" />
+            </clipPath>
+          </defs>
+          <circle class="xreveal-ring" r="0" />
+          <circle class="xreveal-ring" r="0" />
+          <g clip-path="url(#xrevealClip)">
+            <rect class="xreveal-bg" fill="url(#xrevealGrad)" />
+            <text class="xreveal-text"></text>
+          </g>
+        </svg>
+      </div>
+    </section>
+    <footer id="contact" class="section contact site-footer">
+      <div class="footer-orbit footer-orbit--a" aria-hidden="true"></div>
+      <div class="footer-orbit footer-orbit--b" aria-hidden="true"></div>
+
+      <div class="container footer-main">
+        <div class="footer-cta">
+          <h2 class="footer-headline">
+            <span class="footer-line">Bora tirar</span>
+            <span class="footer-line">sua <em>ideia</em></span>
+            <span class="footer-line">do papel<span class="footer-comma">,</span></span>
+            <span class="footer-line">juntos?</span>
+          </h2>
+          <a href="mailto:murilo_agudos@hotmail.com" class="footer-pill cta">
+            <span>Fale comigo</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6" /></svg>
           </a>
         </div>
-      </div>
-      <div class="footer-tickers">
-        <div class="footer-ticker-group">
-          <div class="ticker giant opacity-75">
-            <div class="ticker_track">
-              <div class="ticker_group">
-                <div class="section_heading ticker-text black"> • </div>
-                <div class="section_heading ticker-text black">Vou adorar trabalhar com você</div>
-                <div class="section_heading ticker-text black"> • </div>
-                <div class="section_heading ticker-text black">Podemos falar sobre tecnologia</div>
-                <div class="section_heading ticker-text black"> • </div>
-                <div class="section_heading ticker-text black">Ou sobre os objetivos do seu negócio</div>
-                <div class="section_heading ticker-text black"> • </div>
-                <div class="section_heading ticker-text black">Ou sobre a vida</div>
-                <div class="section_heading ticker-text black"> • </div>
-                <div class="section_heading ticker-text black">Você decide.</div>
-                <div class="section_heading ticker-text black"> • </div>
-                <div class="section_heading ticker-text black">Me manda uma mensagem</div>
-              </div>
-              <div class="ticker_group">
-                <div class="section_heading ticker-text black"> • </div>
-                <div class="section_heading ticker-text black">Vou adorar trabalhar com você</div>
-                <div class="section_heading ticker-text black"> • </div>
-                <div class="section_heading ticker-text black">Podemos falar sobre tecnologia</div>
-                <div class="section_heading ticker-text black"> • </div>
-                <div class="section_heading ticker-text black">Ou sobre os objetivos do seu negócio</div>
-                <div class="section_heading ticker-text black"> • </div>
-                <div class="section_heading ticker-text black">Ou sobre a vida</div>
-                <div class="section_heading ticker-text black"> • </div>
-                <div class="section_heading ticker-text black">Você decide.</div>
-                <div class="section_heading ticker-text black"> • </div>
-                <div class="section_heading ticker-text black">Me manda uma mensagem</div>
-              </div>
-            </div>
+
+        <div class="footer-cols">
+          <div class="footer-col">
+            <div class="footer-col-title">Navegação</div>
+            <a href="#home" class="footer-link">Início <i>→</i></a>
+            <a href="#works" class="footer-link">Projetos <i>→</i></a>
+            <a href="#skills" class="footer-link">Tecnologias <i>→</i></a>
+            <a href="#experience" class="footer-link">Trajetória <i>→</i></a>
+            <a href="#about" class="footer-link">Sobre <i>→</i></a>
+          </div>
+          <div class="footer-col">
+            <div class="footer-col-title">Conecte</div>
+            <a href="https://www.linkedin.com/in/murilo-trigo-6205b3190/" target="_blank" rel="noopener"
+              class="footer-link">LinkedIn <i>↗</i></a>
+            <a href="https://github.com/xzmuh" target="_blank" rel="noopener" class="footer-link">GitHub <i>↗</i></a>
+            <a href="https://wa.me/5514981647336" target="_blank" rel="noopener" class="footer-link">WhatsApp <i>↗</i></a>
+            <a href="mailto:murilo_agudos@hotmail.com" class="footer-link">E-mail <i>↗</i></a>
+          </div>
+          <div class="footer-col">
+            <div class="footer-col-title">Base</div>
+            <span class="footer-text">Agudos · SP</span>
+            <span class="footer-text">Remoto · Brasil</span>
           </div>
         </div>
+      </div>
+
+      <div class="container footer-bar">
+        <span>© 2026 Murilo Gonzales Trigo</span>
+        <span class="footer-clock">Agudos, SP · <b data-footer-clock>--:--</b></span>
+        <a href="#home" class="footer-top">Voltar ao topo <i>↑</i></a>
       </div>
     </footer>
     </div>
@@ -1237,6 +1130,11 @@
   <script src="js/vendor/ScrollTrigger.min.js"></script>
   <script src="js/interactions-data.js"></script>
   <script src="js/animations.js"></script>
+  <script src="js/about-laser.js"></script>
+  <script src="js/pixel-seam.js"></script>
+  <script src="js/experience.js"></script>
+  <script src="js/footer-bulge.js"></script>
+  <script src="js/xreveal.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@0.2.28/bundled/lenis.js"></script>
   <!--
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.3/gsap.min.js"></script>
@@ -1380,112 +1278,6 @@
 
     setCursor();
 
-    (function setupExperienceScroll() {
-      if (!window.gsap || !window.ScrollTrigger) return;
-      var pinWrap = document.querySelector('.experience-pin');
-      var track = document.querySelector('.experience_track');
-      var wipeGray = document.querySelector('.experience_colorwipe--gray');
-      var wipeDark = document.querySelector('.experience_colorwipe--dark');
-      if (!pinWrap || !track || !wipeGray || !wipeDark) return;
-
-      // Every duration/position in this timeline is a fixed fraction derived once
-      // from track.scrollWidth. The Google Fonts loader swaps fonts in
-      // asynchronously (network fetch), which can change text/track widths well
-      // after this script block runs — measuring before that swap bakes in stale
-      // fractions, so e.g. the intro->white color switch and the wipe/track motion
-      // stop landing on the same scroll position. Wait for the real fonts first.
-      var startWhenReady = function (run) {
-        if (document.fonts && document.fonts.ready) {
-          document.fonts.ready.then(run, run);
-        } else {
-          run();
-        }
-      };
-
-      startWhenReady(setupWhenFontsReady);
-
-      function setupWhenFontsReady() {
-        ScrollTrigger.matchMedia({
-          "all": function () {
-            var getScrollAmount = function () { return track.scrollWidth - window.innerWidth; };
-            var moveLen = getScrollAmount() * 0.55;
-            var holdLen = window.innerHeight * 0.15;
-            var moveFrac = moveLen / (moveLen + holdLen);
-            var snapPoints = [0, moveFrac / 2, moveFrac, 1];
-
-            var tl = gsap.timeline({
-              scrollTrigger: {
-                trigger: pinWrap,
-                start: "top top",
-                end: function () { return "+=" + (moveLen + holdLen); },
-                scrub: 0.3,
-                pin: true,
-                invalidateOnRefresh: true
-              }
-            });
-            gsap.set(pinWrap, { color: "#0b0b0b" });
-            gsap.set([wipeGray, wipeDark], { clipPath: "inset(0 0 0 100%)" });
-
-            // Text color is a hard switch, not a transition: black for the whole intro
-            // panel, white from the instant the intro is gone and card 01 (I-SINC)
-            // arrives, staying white through card 02 as well. Track motion (1 viewport
-            // per card, duration moveFrac) and the gray wipe (duration moveFrac/2) both
-            // reach that exact "intro gone, card 01 arrived" point at moveFrac/2, so
-            // that's where the .set() sits — no easing, no duration.
-            tl.to(track, { x: function () { return -getScrollAmount(); }, ease: "none", duration: moveFrac }, 0)
-              .to(wipeGray, { clipPath: "inset(0 0 0 0%)", ease: "none", duration: moveFrac / 2 }, 0)
-              .to(wipeDark, { clipPath: "inset(0 0 0 0%)", ease: "none", duration: moveFrac / 2 }, moveFrac / 2)
-              .set(pinWrap, { color: "#ffffff" }, moveFrac / 2)
-              .to({}, { duration: 1 - moveFrac }, moveFrac);
-
-            // Lock to the nearest checkpoint once scrolling actually stops, instead of
-            // GSAP's built-in ScrollTrigger `snap` (which forces the scroll position
-            // itself). That fights Lenis's own smooth-scroll animation for control of
-            // the scroll position and causes visible flashing/jump-cutting. Driving the
-            // snap through lenis.scrollTo() keeps a single owner of the scroll position.
-            var st = tl.scrollTrigger;
-            var snapTimer = null;
-            var onScrollSettle = function () {
-              if (!st.isActive) return;
-              clearTimeout(snapTimer);
-              snapTimer = setTimeout(function () {
-                if (!st.isActive) return;
-                var progress = st.progress;
-                // Only the two wipe-in-progress zones actually look broken if you rest
-                // mid-transition (a half-drawn gray/dark wipe). The true start, the
-                // fully-wiped hold buffer, and the end are all fine resting points on
-                // their own — snapping into/out of those too is what read as an abrupt,
-                // uninvited "lock" right as the section is entered or left. So only
-                // correct when progress is strictly inside one of those two zones.
-                var zoneStart, zoneEnd;
-                if (progress > 0 && progress < snapPoints[1]) { zoneStart = snapPoints[0]; zoneEnd = snapPoints[1]; }
-                else if (progress > snapPoints[1] && progress < snapPoints[2]) { zoneStart = snapPoints[1]; zoneEnd = snapPoints[2]; }
-                else { return; }
-                var nearest = (progress - zoneStart < zoneEnd - progress) ? zoneStart : zoneEnd;
-                var targetScroll = st.start + nearest * (st.end - st.start);
-                if (Math.abs(targetScroll - window.scrollY) < 4) return;
-                if (typeof lenis !== "undefined" && lenis) {
-                  lenis.scrollTo(targetScroll, { duration: 0.8 });
-                } else {
-                  window.scrollTo({ top: targetScroll, behavior: "smooth" });
-                }
-              }, 450);
-            };
-            window.addEventListener("scroll", onScrollSettle, { passive: true });
-
-            return function () {
-              window.removeEventListener("scroll", onScrollSettle);
-              clearTimeout(snapTimer);
-              if (tl.scrollTrigger) tl.scrollTrigger.kill();
-              tl.kill();
-              gsap.set(pinWrap, { clearProps: "color" });
-              gsap.set(track, { clearProps: "transform" });
-              gsap.set([wipeGray, wipeDark], { clearProps: "clipPath" });
-            };
-          }
-        });
-      }
-    })();
 
     /*
   
