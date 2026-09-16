@@ -1,0 +1,35 @@
+/* Emenda "Sobre mim" (branco) -> "Trajetória" (escuro): uma faixa de pixels
+   brancos que se apagam com o scroll, de baixo para cima e fora de ordem,
+   como uma tela de jogo trocando de cena. */
+
+.pixel-seam {
+  --pixel-light: #fff;
+  --pixel-dark: #161616;
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-auto-rows: var(--pixel-size, 4vw);
+  grid-template-columns: repeat(var(--pixel-cols, 25), 1fr);
+  margin-block: -1px;
+  background: var(--pixel-dark);
+  overflow: hidden;
+}
+
+.pixel-seam i {
+  display: block;
+  background: var(--pixel-light);
+  /* cobre a fresta de subpixel entre células vizinhas */
+  box-shadow: 0 0 0 1px var(--pixel-light);
+  transition: opacity .18s steps(2), transform .25s cubic-bezier(.19, 1, .22, 1);
+}
+
+.pixel-seam i.is-off {
+  opacity: 0;
+  transform: scale(.4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pixel-seam i {
+    transition: none;
+  }
+}
