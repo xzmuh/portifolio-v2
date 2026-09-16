@@ -30,6 +30,12 @@
   pointer-events: none;
 }
 
+/* o normalize do Webflow (svg:not(:root) { overflow: hidden }) ganharia de
+   .about-thread e cortaria o traço antes da borda da tela */
+.section.about svg.about-thread {
+  overflow: visible;
+}
+
 .about-thread path {
   fill: none;
   stroke: #2e2e2e;
