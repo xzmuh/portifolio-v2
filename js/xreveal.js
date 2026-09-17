@@ -1,9 +1,10 @@
 /*
  * Transição Trajetória -> footer (referência: OFF+BRAND).
- * Tudo em um SVG no tamanho da tela (unidades = px): um X com cantos internos
- * arredondados serve de clipPath para o gradiente + texto. O ScrollTrigger fixa a
- * seção e o progresso escala/gira o X; no fim um círculo completa o preenchimento
- * e os cantos de baixo arredondam antes do painel subir.
+ * Tudo em um SVG no tamanho da tela (unidades = px): o M da logo (traço arredondado)
+ * serve de máscara para o gradiente + texto. O ScrollTrigger fixa a seção e o
+ * progresso primeiro espreme o M até virar uma linha reta; depois a linha gira e
+ * cresce até cobrir a tela, um círculo completa o preenchimento e os cantos de
+ * baixo arredondam antes do painel subir.
  */
 (function () {
   var section = document.querySelector('.xreveal');
@@ -12,36 +13,35 @@
   var svg = section.querySelector('.xreveal-svg');
   var gradRect = section.querySelector('.xreveal-bg');
   var grad = section.querySelector('.xreveal-grad');
-  var xPath = section.querySelector('.xreveal-xpath');
+  var mask = section.querySelector('.xreveal-mask');
+  var mPath = section.querySelector('.xreveal-mpath');
   var xCircle = section.querySelector('.xreveal-xcircle');
   var rings = section.querySelectorAll('.xreveal-ring');
   var text = section.querySelector('.xreveal-text');
 
-  // X em coordenadas centradas: braços de meia-largura H e comprimento L,
-  // pontas com raio T e cantos internos côncavos com raio R (desenhado como "+").
-  var L = 50, H = 8.5, R = 13, T = 3.5;
-  function a(r, sweep, x, y) { return ' A' + r + ' ' + r + ' 0 0 ' + sweep + ' ' + x + ' ' + y; }
-  xPath.setAttribute('d',
-    'M' + (H + R) + ' ' + (-H) +
-    ' L' + (L - T) + ' ' + (-H) + a(T, 1, L, -H + T) +
-    ' L' + L + ' ' + (H - T) + a(T, 1, L - T, H) +
-    ' L' + (H + R) + ' ' + H + a(R, 0, H, H + R) +
-    ' L' + H + ' ' + (L - T) + a(T, 1, H - T, L) +
-    ' L' + (-H + T) + ' ' + L + a(T, 1, -H, L - T) +
-    ' L' + (-H) + ' ' + (H + R) + a(R, 0, -H - R, H) +
-    ' L' + (-L + T) + ' ' + H + a(T, 1, -L, H - T) +
-    ' L' + (-L) + ' ' + (-H + T) + a(T, 1, -L + T, -H) +
-    ' L' + (-H - R) + ' ' + (-H) + a(R, 0, -H, -H - R) +
-    ' L' + (-H) + ' ' + (-L + T) + a(T, 1, -H + T, -L) +
-    ' L' + (H - T) + ' ' + (-L) + a(T, 1, H, -L + T) +
-    ' L' + H + ' ' + (-H - R) + a(R, 0, H + R, -H) + ' Z'
-  );
+  // M da logo (images/mgt-icon.svg) centrado na origem: 50 de largura, 53 de altura,
+  // traço de 13 com pontas redondas. Espremer = achatar os y até zero (vira "—").
+  var MW = 25, MH = 26.5, MV = 2.5, STROKE = 13;
+  var SPREAD = 0.45, FATTEN = 0.4;        // quanto o M alarga/engorda ao ser esmagado
+  // k = altura (1 -> 0); sx = alargamento; b = quanto as pernas envergam para fora.
+  // As pernas e as diagonais viram curvas (Q) para o traço "ceder" sob pressão.
+  function mShape(k, sx, b) {
+    var w = MW * sx, top = -MH * k, bottom = MH * k, mid = MV * k;
+    var legBow = b * 9, sag = b * 7;
+    return 'M' + (-w) + ' ' + bottom +
+      ' Q' + (-w - legBow) + ' 0 ' + (-w) + ' ' + top +
+      ' Q' + (-w / 2) + ' ' + (top / 2 + mid / 2 + sag) + ' 0 ' + mid +
+      ' Q' + (w / 2) + ' ' + (top / 2 + mid / 2 + sag) + ' ' + w + ' ' + top +
+      ' Q' + (w + legBow) + ' 0 ' + w + ' ' + bottom;
+  }
+  var L = MW + STROKE / 2, H = (STROKE * (1 + FATTEN)) / 2;
 
   var W = 0, HH = 0, lineLens = [], fontSize = 100, progress = 0;
 
   function lerp(from, to, t) { return from + (to - from) * t; }
   function clamp01(t) { return t < 0 ? 0 : t > 1 ? 1 : t; }
   function easeIn(t) { return t * t * t; }
+  function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
   function easeInOut(t) { return t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; }
 
   function layoutText() {
@@ -76,6 +76,8 @@
     gradRect.setAttribute('height', HH);
     rings[0].setAttribute('cx', W / 2); rings[0].setAttribute('cy', HH / 2);
     rings[1].setAttribute('cx', W / 2); rings[1].setAttribute('cy', HH / 2);
+    mask.setAttribute('x', 0); mask.setAttribute('y', 0);
+    mask.setAttribute('width', W); mask.setAttribute('height', HH);
     xCircle.setAttribute('cx', W / 2); xCircle.setAttribute('cy', HH / 2);
     layoutText();
     render(progress);
@@ -84,26 +86,44 @@
   function render(p) {
     progress = p;
     var vmin = Math.min(W, HH), diag = Math.sqrt(W * W + HH * HH);
-    // 0 -> .8: X cresce e gira; .62 -> .82: círculo fecha os cantos; .82 -> 1: segura cheio.
-    // Zoom exponencial (s0 * k^t) para o crescimento parecer constante na tela.
-    var grow = easeInOut(clamp01(p / 0.8));
-    var s0 = (vmin * 0.23) / L;           // tamanho inicial: braço ~23% da menor dimensão
-    var s1 = (diag * 0.5) / H;            // final: meia-largura do braço > diagonal
-    var scale = s0 * Math.pow(s1 / s0, grow);
-    var rot = lerp(45, 105, clamp01(p / 0.8));
-    xPath.setAttribute('transform',
-      'translate(' + W / 2 + ' ' + HH / 2 + ') rotate(' + rot + ') scale(' + scale + ')');
+    // 0 -> .3: M é esmagado (resiste, treme, cede de uma vez e espirra para os lados);
+    // .3 -> .85: a linha volta ao centro, gira e cresce; .68 -> .88: círculo fecha o
+    // que falta; .88 -> 1: segura cheio.
+    var t = clamp01(p / 0.3), k;
+    if (t < 0.4) k = 1 - 0.14 * easeOut(t / 0.4);                 // resiste
+    else k = 0.86 * (1 - easeIn(clamp01((t - 0.4) / 0.45)));       // cede
+    var crush = 1 - k;
+    // tremor enquanto segura a pressão (some quando cede)
+    var shake = Math.sin(t * 140) * 1.2 * Math.sin(Math.PI * clamp01((t - 0.15) / 0.35));
+    // espirro: quando encosta no chão estica além e volta
+    var splat = Math.sin(Math.PI * clamp01((t - 0.8) / 0.2)) * 0.18;
+    var sx = 1 + SPREAD * crush + splat;
+    var bulge = Math.sin(Math.PI * clamp01((t - 0.3) / 0.6));
+    mPath.setAttribute('d', mShape(k, sx, bulge));
+    mPath.setAttribute('stroke-width', STROKE * (1 + FATTEN * crush - splat * 0.6));
 
-    xCircle.setAttribute('r', easeIn(clamp01((p - 0.62) / 0.2)) * diag * 0.6);
+    // Zoom exponencial (s0 * k^t) para o crescimento parecer constante na tela.
+    var spin = clamp01((p - 0.3) / 0.55);
+    var grow = easeInOut(spin);
+    var s0 = (vmin * 0.16) / L;           // tamanho inicial: M com ~32% da menor dimensão
+    var s1 = (diag * 0.55) / H;           // final: espessura da linha > diagonal
+    var scale = s0 * Math.pow(s1 / s0, grow);
+    var rot = lerp(0, 180, easeInOut(spin));
+    // esmagado contra o chão: a base fica parada e o topo desce; no giro volta ao centro
+    var floor = MH * crush * s0 * (1 - easeInOut(clamp01(spin / 0.4)));
+    mPath.setAttribute('transform',
+      'translate(' + (W / 2 + shake * s0) + ' ' + (HH / 2 + floor) + ') rotate(' + rot + ') scale(' + scale + ')');
+
+    xCircle.setAttribute('r', easeIn(clamp01((p - 0.68) / 0.2)) * diag * 0.6);
 
     var ringScale = s0 * L;
     rings[0].setAttribute('r', ringScale * 1.4 * scale / s0);
     rings[1].setAttribute('r', ringScale * 1.05 * scale / s0);
-    var ringAlpha = 1 - clamp01(p / 0.35);
+    var ringAlpha = 1 - clamp01((p - 0.25) / 0.3);
     rings[0].style.opacity = rings[1].style.opacity = ringAlpha;
 
-    // texto desliza da direita até o centro enquanto o X abre
-    var tx = lerp(W * 0.62, 0, easeInOut(clamp01(p / 0.8)));
+    // texto desliza da direita até o centro enquanto a linha gira
+    var tx = lerp(W * 0.62, 0, easeInOut(clamp01((p - 0.1) / 0.75)));
     text.setAttribute('transform', 'translate(' + (W / 2 + tx) + ' 0)');
 
     // gradiente escorrega de leve junto com o scroll
