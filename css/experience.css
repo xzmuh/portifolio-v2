@@ -1,6 +1,6 @@
 /* Trajetória: título fixo à esquerda e cards das empresas em duas colunas com
    parallax. Substitui o antigo scroll horizontal fixado. Paleta sóbria: sem o
-   verde-limão do site, cada card só com um brilho discreto da marca. */
+   azul do site, cada card só com um brilho discreto da marca. */
 
 .section.xp {
   --xp-ink: #e6e3dc;
@@ -150,8 +150,8 @@
 }
 
 .xp-title em {
-  font-family: "DM Serif Display", serif;
-  font-style: italic;
+  font-style: normal;
+  font-weight: 700;
   color: var(--xp-accent);
 }
 

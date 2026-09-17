@@ -124,10 +124,8 @@
 }
 
 .footer-headline em {
-  font-family: "DM Serif Display", serif;
-  font-style: italic;
-  font-weight: 400;
-  letter-spacing: -.01em;
+  font-style: normal;
+  font-weight: 700;
   text-transform: lowercase;
   color: var(--red);
 }
