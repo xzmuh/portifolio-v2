@@ -179,9 +179,9 @@
     // O h2 fica transparente com o bulge ativo, então as cores vêm das variáveis.
     var rootStyle = getComputedStyle(footer);
     var ink = rootStyle.getPropertyValue('--footer-ink').trim() || '#e6e3dc';
-    var accent = rootStyle.getPropertyValue('--red').trim() || '#d7ff3f';
+    var accent = rootStyle.getPropertyValue('--red').trim() || '#2997ff';
 
-    // Cada nó de texto é desenhado com o estilo do próprio pai (ex.: <em> em serifa),
+    // Cada nó de texto é desenhado com o estilo do próprio pai (ex.: <em> em negrito),
     // na posição que o navegador calculou para ele.
     var walker = document.createTreeWalker(headline, NodeFilter.SHOW_TEXT);
     var node;
@@ -292,7 +292,7 @@
   var fontReady = document.fonts && document.fonts.load
     ? Promise.all([
       document.fonts.load('400 100px Roboto'),
-      document.fonts.load('400 100px "DM Serif Display"')
+      document.fonts.load('700 100px Roboto')
     ]).then(function () { return document.fonts.ready; })
     : Promise.resolve();
   fontReady.then(setup, setup);
