@@ -1,6 +1,6 @@
-/* Transição Trajetória -> footer: um X com gradiente cresce e gira com o scroll
-   (texto "Vamos construir algo juntos?" visível só dentro dele) até cobrir a
-   tela; depois o painel sobe com cantos arredondados e revela o footer. */
+/* Transição Trajetória -> footer: o M da logo é espremido até virar uma linha,
+   que gira e cresce com o scroll (texto "Vamos construir algo juntos?" visível só
+   dentro dela) até cobrir a tela; depois o painel sobe com cantos arredondados e revela o footer. */
 
 .xreveal {
   position: relative;
