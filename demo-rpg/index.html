@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Masmorra MGT</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Silkscreen&family=VT323&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --vazio: #050608;
+      --noite: #0b0e12;
+      --texto: #e6ecf2;
+      --suave: #8a97a3;
+      --borda: #c8d2dc;
+      --azul: #2997ff;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; background: var(--vazio); color: var(--texto); }
+    #cena { position: fixed; inset: 0; width: 100vw; height: 100vh; display: block; image-rendering: pixelated; }
+    #rolagem { height: 1000vh; }
+
+    .hud { position: fixed; inset: 0; pointer-events: none; font-family: Silkscreen, monospace; }
+
+    .cartao { position: absolute; top: 20px; left: 16px; }
+    .cartao .area { font-size: 11px; letter-spacing: .12em; color: var(--azul); text-transform: uppercase; }
+    .cartao .local { font-size: clamp(22px, 3.2vw, 32px); line-height: 1.1; margin-top: 4px; text-shadow: 2px 2px 0 var(--vazio); }
+    .cartao.entra { animation: revela .7s steps(8) both; }
+    @keyframes revela { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+
+    .xp { position: absolute; top: 22px; right: 16px; display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--suave); }
+    .xp .barra { width: min(160px, 30vw); height: 8px; background: var(--noite); box-shadow: 0 0 0 2px var(--borda); position: relative; }
+    .xp .barra::after {
+      content: ""; position: absolute; inset: 0; width: calc(var(--p, 0) * 100%);
+      background: repeating-linear-gradient(90deg, var(--azul) 0 6px, transparent 6px 8px);
+    }
+
+    .dialogo {
+      position: absolute; left: 50%; bottom: 24px; transform: translateX(-50%);
+      width: min(720px, calc(100% - 32px)); min-height: 108px; padding: 18px 22px 16px;
+      background: rgba(8, 10, 13, .92);
+      box-shadow: 0 0 0 2px var(--noite), 0 0 0 4px var(--borda), 0 0 0 6px var(--noite);
+    }
+    .dialogo .quem {
+      position: absolute; top: -14px; left: 14px; padding: 4px 8px 3px;
+      background: var(--azul); color: var(--vazio); font-size: 12px; text-transform: uppercase;
+      box-shadow: 0 0 0 2px var(--noite);
+    }
+    .dialogo p { margin: 0; font: 24px/1.15 VT323, monospace; white-space: pre-line; }
+    .dialogo .seta { position: absolute; right: 14px; bottom: 8px; color: var(--azul); font-size: 12px; animation: pisca 1s steps(1) infinite; }
+    @keyframes pisca { 50% { opacity: 0; } }
+
+    .carregando {
+      position: fixed; inset: 0; display: grid; place-items: center; z-index: 2;
+      background: var(--vazio); font: 14px Silkscreen, monospace; letter-spacing: .1em; color: var(--suave);
+      transition: opacity .6s steps(4);
+    }
+    .carregando span { animation: pisca 1s steps(1) infinite; }
+    .carregando.pronto { opacity: 0; pointer-events: none; }
+
+    @media (max-width: 600px) {
+      .dialogo p { font-size: 20px; }
+      .dialogo { min-height: 96px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .cartao.entra, .dialogo .seta, .carregando span { animation: none; }
+    }
+  </style>
+  <script type="importmap">
+    { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js" } }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+</head>
+<body>
+  <canvas id="cena" aria-label="Masmorra em pixel art que se materializa conforme você rola a página"></canvas>
+  <div id="rolagem"></div>
+
+  <div class="hud">
+    <div class="cartao" id="cartao">
+      <div class="area" id="area">Área 01</div>
+      <div class="local" id="local">O Salão</div>
+    </div>
+    <div class="xp" id="xp">XP <div class="barra"></div></div>
+    <div class="dialogo" aria-live="polite">
+      <div class="quem" id="quem">Narrador</div>
+      <p id="fala"></p>
+      <span class="seta">▼</span>
+    </div>
+  </div>
+  <div class="carregando" id="carregando"><span>Carregando masmorra…</span></div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>
