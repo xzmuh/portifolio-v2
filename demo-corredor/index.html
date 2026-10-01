@@ -3,55 +3,39 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Corredor de Papel</title>
+  <title>Corredor</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --fundo: #ebe3d5;
-      --tinta: #2b2622;
-      --suave: #7a6c5d;
-      --destaque: #5b8fd6;
-    }
-    * { box-sizing: border-box; }
-    html, body { margin: 0; background: var(--fundo); color: var(--tinta); font-family: Roboto, system-ui, sans-serif; }
-    #cena { position: fixed; inset: 0; width: 100vw; height: 100vh; display: block; }
-    #rolagem { height: 900vh; }
-
-    .ui { position: fixed; inset: 0; pointer-events: none; }
-    .marca { position: absolute; top: 20px; left: 16px; font-weight: 500; font-size: 14px; letter-spacing: .02em; }
-    .marca span { color: var(--suave); font-weight: 400; }
-    .sala { position: absolute; top: 14px; right: 16px; font: 700 30px Caveat, cursive; }
-    .barra { position: absolute; right: 20px; top: 70px; bottom: 70px; width: 2px; background: rgba(43,38,34,.15); border-radius: 2px; }
-    .barra i { position: absolute; inset: 0; background: var(--destaque); transform-origin: top; transform: scaleY(0); border-radius: 2px; }
-    .dica { position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%); font: 700 26px Caveat, cursive; transition: opacity .6s; animation: flutua 2s ease-in-out infinite; white-space: nowrap; }
-    .dica.some { opacity: 0; }
-    @keyframes flutua { 50% { transform: translate(-50%, 6px); } }
-
-    .carregando { position: fixed; inset: 0; display: grid; place-items: center; background: var(--fundo); font: 700 32px Caveat, cursive; transition: opacity .8s; z-index: 2; }
-    .carregando.pronto { opacity: 0; pointer-events: none; }
-
-    @media (prefers-reduced-motion: reduce) { .dica { animation: none; } }
-  </style>
-  <script type="importmap">
-    { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js" } }
-  </script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&display=swap" rel="stylesheet" />
 </head>
 <body>
-  <canvas id="cena" aria-label="Corredor ilustrado em 3D que se pinta conforme você rola a página"></canvas>
+  <div id="palco" aria-label="Corredor desenhado a nanquim; role para andar, use WASD para andar livre e clique nas portas para entrar nas salas"></div>
   <div id="rolagem"></div>
 
-  <div class="ui">
-    <div class="marca">Murilo · <span>corredor de papel (demo)</span></div>
-    <div class="sala" id="nomeSala">Entrada</div>
-    <div class="barra"><i id="progresso"></i></div>
-    <div class="dica" id="dica">role para entrar ↓</div>
+  <div class="assinatura">Murilo <span>· corredor</span></div>
+  <div class="sala" id="sala"></div>
+  <div class="controles">
+    <button id="modo" type="button">[WASD] andar livre</button>
+    <div class="dicas-livre" id="dicasLivre" hidden>mouse olha · shift corre · clique interage · esc solta o mouse</div>
   </div>
-  <div class="carregando" id="carregando">afiando o lápis…</div>
+  <button class="voltar" id="voltar" type="button" hidden>← voltar ao corredor</button>
+  <button class="som" id="som" type="button" aria-pressed="true">som: ligado</button>
+  <div class="rotulo" id="rotulo" hidden></div>
+  <div class="mira" aria-hidden="true"></div>
 
-  <script type="module" src="main.js"></script>
+  <div class="dica" id="dica" aria-live="polite">
+    <b id="tituloNome">EXPLORADOR</b>
+    <span id="tituloSub">clique na porta para entrar</span>
+    <div class="setas" id="setas" aria-hidden="true" hidden><i></i><i></i><i></i></div>
+  </div>
+
+  <div class="joystick" id="joystick" hidden aria-label="joystick para andar"><div class="pino" id="pino"></div></div>
+
+  <!-- recebem o teclado do formulário de papel (inclusive o do celular) -->
+  <input class="campo-escondido" id="campoNome" type="text" autocomplete="name" aria-label="seu nome" maxlength="32" />
+  <textarea class="campo-escondido" id="campoMensagem" aria-label="sua mensagem" maxlength="220"></textarea>
+
+  <div class="carregando" id="carregando">apontando o lápis…</div>
+  <script type="module" src="/src/main.js"></script>
 </body>
 </html>
