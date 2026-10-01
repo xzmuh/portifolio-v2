@@ -1,0 +1,70 @@
+:root {
+  --papel: #f3f2ef;
+  --tinta: #2c2c2c;
+  --suave: #6b6760;
+  --rabisco: 255px 15px 225px 15px / 15px 225px 15px 255px; /* borda "desenhada à mão" */
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--papel); color: var(--tinta); font-family: Caveat, 'Comic Sans MS', cursive; }
+html.na-sala, html.livre, html.na-fachada { overflow: hidden; }
+#palco { position: fixed; inset: 0; }
+#palco canvas { display: block; touch-action: pan-y; }
+html.livre #palco canvas { touch-action: none; }
+#rolagem { height: 800vh; }
+
+.assinatura { position: fixed; top: 14px; left: 16px; font-size: 28px; font-weight: 700; pointer-events: none; }
+.assinatura span { color: var(--suave); font-weight: 500; }
+.sala { position: fixed; top: 58px; right: 16px; font-size: 30px; font-weight: 700; pointer-events: none; }
+
+button { font: 700 21px Caveat, cursive; color: var(--tinta); background: var(--papel); border: 2px solid var(--tinta); border-radius: var(--rabisco); padding: 2px 14px 4px; cursor: pointer; }
+button:hover, button:focus-visible { background: var(--tinta); color: var(--papel); outline: none; }
+
+.controles { position: fixed; top: 14px; right: 16px; display: grid; justify-items: end; gap: 6px; }
+.dicas-livre { font-size: 18px; color: var(--suave); }
+.voltar { position: fixed; left: 16px; bottom: 18px; font-size: 24px; }
+.som { position: fixed; right: 16px; bottom: 16px; font-size: 19px; }
+
+.rotulo { position: fixed; left: 0; top: 0; font-size: 22px; font-weight: 700; padding: 2px 10px 4px; pointer-events: none; background: var(--papel); border: 2px solid var(--tinta); border-radius: var(--rabisco); }
+
+.mira { position: fixed; left: 50%; top: 50%; width: 12px; height: 12px; margin: -6px 0 0 -6px; border: 2px solid var(--tinta); border-radius: 50%; display: none; pointer-events: none; }
+html.livre .mira { display: block; }
+@media (pointer: coarse) { html.livre .mira { display: none; } }
+
+/* HUD: faixa de papel com o "título" de quem explora + setinhas de rolagem */
+.dica {
+  position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); display: grid; justify-items: center;
+  padding: 6px 22px 8px; background: #fbfaf7; border: 2px solid var(--tinta); border-radius: var(--rabisco);
+  box-shadow: 3px 4px 0 rgba(44, 44, 44, .15); pointer-events: none; white-space: nowrap; line-height: 1.05;
+}
+.dica b { font: 700 13px system-ui, sans-serif; letter-spacing: .18em; }
+.dica span { font-size: 21px; color: var(--suave); }
+.dica.muda { animation: muda .6s; }
+@keyframes muda { 30% { transform: translateX(-50%) scale(1.12) rotate(-2deg); } 60% { transform: translateX(-50%) scale(.97) rotate(1deg); } }
+html.livre .dica { bottom: auto; top: 14px; }
+.setas { display: grid; justify-items: center; margin-top: 4px; }
+.setas[hidden] { display: none; }
+.setas i { width: 16px; height: 16px; margin-top: -6px; border-right: 3px solid var(--tinta); border-bottom: 3px solid var(--tinta); transform: rotate(45deg); animation: seta 1.4s infinite; opacity: 0; }
+.setas i:nth-child(2) { animation-delay: .2s; }
+.setas i:nth-child(3) { animation-delay: .4s; }
+@keyframes seta { 0% { opacity: 0; translate: 0 -6px; } 40% { opacity: 1; } 100% { opacity: 0; translate: 0 8px; } }
+@media (pointer: coarse) { .setas { rotate: 180deg; } }
+
+/* joystick do celular */
+.joystick { position: fixed; left: 26px; bottom: 30px; width: 124px; height: 124px; border: 2px solid var(--tinta); border-radius: 50% 48% 52% 50% / 49% 52% 48% 51%; background: rgba(244, 241, 234, .75); touch-action: none; }
+.joystick .pino { position: absolute; left: 50%; top: 50%; width: 52px; height: 52px; margin: -26px 0 0 -26px; border-radius: 50%; background: var(--tinta); transition: transform .08s; }
+
+.campo-escondido { position: fixed; left: -9999px; top: 0; width: 1px; height: 1px; opacity: 0; }
+
+.carregando { position: fixed; inset: 0; display: grid; place-items: center; background: var(--papel); font-size: 32px; font-weight: 700; transition: opacity .6s; z-index: 5; }
+.carregando.pronto { opacity: 0; pointer-events: none; }
+
+@media (max-width: 600px) {
+  .dica { font-size: 20px; }
+  .assinatura { font-size: 24px; }
+  .dicas-livre { display: none; }
+  /* Mantém o som fora do cartão de instrução na abertura estreita. */
+  .som { bottom: 94px; }
+}
+@media (prefers-reduced-motion: reduce) { .setas i { animation: none; opacity: 1; } }
+html.livre .sala { top: 92px; }
+@media (max-width: 600px) { html.livre .sala { top: 58px; } }
