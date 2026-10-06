@@ -1,0 +1,22 @@
+ponte.glb — "Stylized Stone Bridge" por Saturniccc
+https://sketchfab.com/3d-models/stylized-stone-bridge-3147f29372d7433bacd1944f99c0df8d
+Licença CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+
+cerca.glb — "Stylized Fence" por exsesone
+https://sketchfab.com/3d-models/stylized-fence-9d8ce953d9414a07b974af8629dda93a
+Licença CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+
+pedras.glb — "Free Pack - Rocks Stylized" por PolyOne Studio
+https://sketchfab.com/3d-models/free-pack-rocks-stylized-7c60b4d1b8ab4187965f30c5e0212fc0
+Licença CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+
+arvore-leve.glb — "Low Poly Stylized Tree" de 3Dev (Sketchfab), CC-BY-SA 4.0
+  https://sketchfab.com/3d-models/low-poly-stylized-tree-bc1df9f4b7de421886b84af8ee8bcea1 (folhas recoloridas de vermelho para verde)
+arvore-anime.glb — "Anime Nature Tree 01" de JABAMI Production (Sketchfab), licença Sketchfab Standard
+  https://sketchfab.com/3d-models/anime-nature-tree-01-177e81f556564fc9a9a64e9d55c30ae4 (material convertido para metal/rugosidade, folhas recortadas e verde suavizado)
+arvore-carvalho.glb — "Tree Oak" de William_Godwin (Sketchfab), CC-BY 4.0
+  https://sketchfab.com/3d-models/tree-oak-e3389635c5524c24bcc9fc924ed1c362 (tronco esticado, sem brilho próprio)
+arvore-stylized.glb — "Stylized Tree" de stefan (Sketchfab), CC-BY 4.0
+  https://sketchfab.com/3d-models/stylized-tree-4475c38dac544c8abe49ffa602df6595 (sem alterações)
+pinheiro.glb — "Pine tree" de Andriy Shekh (Sketchfab), CC-BY 4.0
+  https://sketchfab.com/3d-models/pine-tree-e52769d653cd4e52a4acff3041961e65 (folhas recortadas)

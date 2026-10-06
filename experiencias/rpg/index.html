@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="pt-BR" class="sem-css">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+  <meta name="theme-color" content="#0d0805" />
+  <title>Crônicas de Murilo · Mesa de RPG</title>
+  <meta name="description" content="O currículo de Murilo Gonzales Trigo contado como uma campanha de RPG de mesa." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <!-- antes do CSS chegar (ele vem pelo main.js): fundo da taverna e a tela de carga já escura,
+       sem o flash branco/preto; o resto da página fica invisível até lá -->
+  <style>html,body{background:#0d0805;height:100%;margin:0;overflow:hidden}.sem-css body>:not(#carregando),.sem-css #carregando>*{visibility:hidden}#carregando{z-index:30;background:radial-gradient(at 50% 42%,#2a1709 0%,#120a05 45%,#0d0805 80%);position:fixed;inset:0}</style>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@600;700&family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=UnifrakturMaguntia&family=Pinyon+Script&display=swap" rel="stylesheet" />
+  <script type="module" crossorigin src="./assets/index-CfXDxhd2.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-C99XSr-v.css">
+</head>
+<body>
+  <div id="palco" aria-label="Tabuleiro de RPG sobre uma mesa de taverna"></div>
+
+  <div class="carregando" id="carregando" role="progressbar" aria-label="Carregando a mesa" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+    <div class="selo-m">
+      <canvas id="faiscas" aria-hidden="true"></canvas>
+      <svg viewBox="-14 -14 128 128" aria-hidden="true">
+        <defs>
+          <linearGradient id="ouro" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#fff1c2" />
+            <stop offset="0.45" stop-color="#e6b85c" />
+            <stop offset="1" stop-color="#9c6a24" />
+          </linearGradient>
+          <radialGradient id="pedra" cx="0.45" cy="0.4" r="0.7">
+            <stop offset="0" stop-color="#2e2620" />
+            <stop offset="1" stop-color="#120d0a" />
+          </radialGradient>
+        </defs>
+        <!-- medalhão de pedra com anel de runas que acendem conforme carrega -->
+        <circle class="selo-pedra" cx="50" cy="50" r="58" />
+        <g class="anel" id="anelRunas">
+          <circle class="anel-linha" cx="50" cy="50" r="56" />
+          <circle class="anel-linha" cx="50" cy="50" r="44" />
+        </g>
+        <circle class="anel-linha interno" cx="50" cy="50" r="40" />
+        <path class="m-trilho" d="M34 68 L34 35 L50 53 L66 35 L66 68" />
+        <path class="m-traco" id="mTraco" d="M34 68 L34 35 L50 53 L66 35 L66 68" />
+        <circle class="m-fagulha" id="mFagulha" r="2.6" cx="34" cy="68" />
+      </svg>
+    </div>
+    <p class="carga-titulo">Crônicas de Murilo</p>
+    <p class="carga-frase" id="cargaFrase">acendendo as velas…</p>
+  </div>
+
+  <section class="abertura" id="abertura" hidden>
+    <div class="abertura-topo">
+      <p class="cap">um currículo em cinco capítulos</p>
+      <h1>Crônicas de Murilo</h1>
+      <p>O currículo de um desenvolvedor full stack, contado numa mesa de RPG. Role o dado, siga o herói pela trilha e vire as cartas na mesa para ver os projetos.</p>
+    </div>
+    <div class="abertura-base">
+      <div class="abertura-botoes">
+        <button type="button" id="comecar" aria-label="Sentar à mesa">
+          <span class="comecar-texto">Sentar à mesa</span>
+          <svg class="comecar-seta" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9l7 7 7-7" /></svg>
+        </button>
+        <button type="button" id="abreTutorial" class="abertura-tutorial">Como jogar</button>
+      </div>
+      <p class="abertura-dica">ou arraste a mesa para explorar</p>
+    </div>
+  </section>
+
+  <!-- ícones do menu (pintados em SVG; usados com <use href="#i-…">) -->
+  <svg class="icones" aria-hidden="true" focusable="false">
+    <defs>
+      <linearGradient id="g-couro" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b9773f" /><stop offset="1" stop-color="#6e3f1c" /></linearGradient>
+      <linearGradient id="g-couroEsc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8a5228" /><stop offset="1" stop-color="#4f2c12" /></linearGradient>
+      <linearGradient id="g-metal" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff0b8" /><stop offset="0.5" stop-color="#e2ad48" /><stop offset="1" stop-color="#9a6a22" /></linearGradient>
+      <linearGradient id="g-papel" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f7e7c1" /><stop offset="1" stop-color="#d9b97c" /></linearGradient>
+      <linearGradient id="g-bronze" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e2b46a" /><stop offset="0.55" stop-color="#a8702f" /><stop offset="1" stop-color="#5e3a17" /></linearGradient>
+      <radialGradient id="g-sol" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#fffbe0" /><stop offset="0.55" stop-color="#ffd35a" /><stop offset="1" stop-color="#f29a1d" /></radialGradient>
+    </defs>
+    <symbol id="i-mochila" viewBox="0 0 48 48">
+      <path d="M17 11c0-4 3-6 7-6s7 2 7 6" fill="none" stroke="#5a3418" stroke-width="3" stroke-linecap="round" />
+      <rect x="9" y="12" width="30" height="31" rx="8" fill="url(#g-couro)" stroke="#3d220d" stroke-width="1.6" />
+      <path d="M9.5 21c0-6 4-9.5 14.5-9.5S38.5 15 38.5 21v4c-4 2.5-9 3.5-14.5 3.5S13.5 27.5 9.5 25z" fill="url(#g-couroEsc)" stroke="#3d220d" stroke-width="1.4" />
+      <rect x="21" y="25" width="6" height="7" rx="1.5" fill="url(#g-metal)" stroke="#6b4614" stroke-width="1" />
+      <rect x="13" y="33" width="22" height="7" rx="3" fill="#7a4520" opacity="0.6" />
+      <path d="M14 15c3-1.6 6-2.2 10-2.2" stroke="#e3a565" stroke-width="1.6" stroke-linecap="round" fill="none" opacity="0.6" />
+    </symbol>
+    <symbol id="i-pergaminho" viewBox="0 0 48 48">
+      <rect x="11" y="9" width="26" height="30" fill="url(#g-papel)" stroke="#7a5320" stroke-width="1.5" />
+      <rect x="7" y="5" width="34" height="7" rx="3.5" fill="url(#g-bronze)" stroke="#5e3a17" stroke-width="1.4" />
+      <rect x="7" y="36" width="34" height="7" rx="3.5" fill="url(#g-bronze)" stroke="#5e3a17" stroke-width="1.4" />
+      <path d="M16 17h16M16 22h16M16 27h11M16 32h14" stroke="#9a7240" stroke-width="1.7" stroke-linecap="round" />
+    </symbol>
+    <symbol id="i-bolsa" viewBox="0 0 48 48">
+      <path d="M14 15v-3c0-4 4-7 10-7s10 3 10 7v3" fill="none" stroke="#5a3418" stroke-width="3" />
+      <path d="M7 19c0-3 2-5 5-5h24c3 0 5 2 5 5v17c0 4-3 7-7 7H14c-4 0-7-3-7-7z" fill="url(#g-couro)" stroke="#3d220d" stroke-width="1.6" />
+      <path d="M7 20c0-3.5 2.5-6 6-6h22c3.5 0 6 2.5 6 6v4c-5 3-11 4-17 4s-12-1-17-4z" fill="url(#g-couroEsc)" stroke="#3d220d" stroke-width="1.4" />
+      <path d="M19 25h10v5a5 5 0 0 1-10 0z" fill="url(#g-metal)" stroke="#6b4614" stroke-width="1.1" />
+      <circle cx="24" cy="29" r="1.5" fill="#6b4614" />
+    </symbol>
+    <symbol id="i-engrenagem" viewBox="0 0 48 48">
+      <path d="M21 4h6l1 5 4 1.7 4.3-2.9 4.2 4.2-2.9 4.3L39 20.3l5 1v6l-5 1-1.7 4 2.9 4.3-4.2 4.2-4.3-2.9L28 39l-1 5h-6l-1-5-4-1.7-4.3 2.9-4.2-4.2 2.9-4.3L8.3 27.7 4 27v-6l5-1 1.7-4-2.9-4.3 4.2-4.2 4.3 2.9L20 9z" fill="url(#g-bronze)" stroke="#4a2c10" stroke-width="1.5" stroke-linejoin="round" />
+      <circle cx="24" cy="24" r="7.5" fill="#3a2410" stroke="#e2b46a" stroke-width="1.6" />
+      <circle cx="24" cy="24" r="3" fill="#a8702f" />
+    </symbol>
+    <symbol id="i-seta" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" /></symbol>
+    <symbol id="i-sol" viewBox="0 0 48 48">
+      <g class="raios" stroke="#ffcf5a" stroke-width="3" stroke-linecap="round"><path d="M24 3v6M24 39v6M3 24h6M39 24h6M9 9l4 4M35 35l4 4M9 39l4-4M35 13l4-4" /></g>
+      <circle cx="24" cy="24" r="10" fill="url(#g-sol)" />
+    </symbol>
+    <symbol id="i-lua" viewBox="-2 -1 48 48"><path d="M30 6a18 18 0 1 0 12 30A15 15 0 0 1 30 6z" fill="#cfe4ff" /></symbol>
+    <symbol id="i-camadas" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3l9 4.5-9 4.5-9-4.5z" /><path d="M3 12l9 4.5 9-4.5" /><path d="M3 16.5l9 4.5 9-4.5" /></g></symbol>
+    <symbol id="i-som" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor" fill-opacity="0.25" /><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11" /></g></symbol>
+    <symbol id="i-mudo" viewBox="0.5 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor" fill-opacity="0.25" /><path d="M16 9.5l5 5M21 9.5l-5 5" /></g></symbol>
+    <symbol id="i-olho" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z" /><circle cx="12" cy="12" r="3" fill="currentColor" fill-opacity="0.35" /></g></symbol>
+    <symbol id="i-olho-fechado" viewBox="0 3 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2.5 11s3.5 5.5 9.5 5.5S21.5 11 21.5 11" /><path d="M6 15l-1.5 2.5M12 16.5V19M18 15l1.5 2.5" /></g></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9" /><path d="M12 11v6" /><circle cx="12" cy="7.6" r="0.6" fill="currentColor" /></g></symbol>
+    <symbol id="i-andar" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="4.2" r="1.9" fill="currentColor" fill-opacity="0.35" /><path d="M10.5 21l2.2-5.5-2.4-2.6.9-4.6 3.3 2.8 3 .9" /><path d="M11.2 8.3L8 9.7 6.6 13M12.7 15.5l2.6 1.8.6 3.7" /></g></symbol>
+    <symbol id="i-livro" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.5C10 5 7 4.5 3.5 5v13c3.5-.5 6.5 0 8.5 1.5 2-1.5 5-2 8.5-1.5V5C17 4.5 14 5 12 6.5z" fill="currentColor" fill-opacity="0.18" /><path d="M12 6.5v13" /></g></symbol>
+    <symbol id="i-mao" viewBox="-1.3 -0.5 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11.5V5a1.5 1.5 0 0 1 3 0v6M12 10.5V4a1.5 1.5 0 0 1 3 0v6.5M15 10.5V6a1.5 1.5 0 0 1 3 0v7.5c0 4-2.5 7-6.5 7-3 0-4.5-1.5-6-4l-2-3.5a1.5 1.5 0 0 1 2.5-1.6L9 13" /></g></symbol>
+  </svg>
+
+  <!-- ajustes: sempre no canto de cima à direita (gráficos, dia/noite, som, HUD e onde clicar) (fora do #hud: aparece sempre, até na abertura) -->
+  <aside class="ajustes" id="ajustes" aria-label="Ajustes">
+    <div class="aj-barra">
+      <button type="button" class="aj" id="ajGraficos" aria-expanded="false" aria-controls="popGraficos" title="Gráficos"><svg><use href="#i-camadas" /></svg></button>
+      <button type="button" class="aj aj-ceu" id="ceu" role="switch" aria-checked="false" title="Dia e noite"><svg class="ic-sol"><use href="#i-sol" /></svg><svg class="ic-lua"><use href="#i-lua" /></svg></button>
+      <button type="button" class="aj aj-som" id="som" aria-pressed="true" title="Som"><svg class="ic-ligado"><use href="#i-som" /></svg><svg class="ic-mudo"><use href="#i-mudo" /></svg></button>
+      <button type="button" class="aj aj-andar" id="andar" aria-pressed="false" title="Passeio em primeira pessoa (V)"><svg><use href="#i-andar" /></svg></button>
+      <span class="aj-sep" aria-hidden="true"></span>
+      <button type="button" class="aj aj-onde" id="ajOnde" aria-expanded="false" aria-controls="popOnde" title="Como jogar"><svg><use href="#i-info" /></svg></button>
+      <a class="aj aj-sobre" id="ajSobre" href="sobre/" target="_blank" rel="noopener" title="Sobre o projeto (como foi feito)"><svg><use href="#i-livro" /></svg></a>
+    </div>
+    <p class="fps" id="fps" title="quadros por segundo (tecla F liga e desliga)"></p>
+    <div class="aj-pop" id="popGraficos" hidden>
+      <p class="aj-tit">Gráficos</p>
+      <div class="graficos" id="graficos" role="group" aria-label="Qualidade gráfica">
+        <button type="button" data-q="baixo" aria-pressed="false">Baixo</button>
+        <button type="button" data-q="medio" aria-pressed="false">Médio</button>
+        <button type="button" data-q="alto" aria-pressed="false">Alto</button>
+        <button type="button" data-q="ultra" aria-pressed="false">Ultra</button>
+      </div>
+      <p class="aviso-graficos" id="avisoGraficos" role="alert" hidden></p>
+    </div>
+    <!-- o pergaminho de instruções (o botão "i"): como mexer, o que é clicável, as cartas e a jornada -->
+    <div class="aj-pop aj-onde-pop tutorial" id="popOnde" hidden>
+      <p class="aj-tit">Como jogar</p>
+      <p class="tut-sec">Mexer na mesa</p>
+      <p class="tut-txt">Arraste para girar, role para aproximar. </p>
+      <p class="tut-sec">A jornada do herói</p>
+      <p class="tut-txt">Cada parada da trilha é um capítulo da minha vida. Role o <b>d20</b> para o herói andar até o próximo e contar a história.</p>
+      <p class="tut-sec">As cartas</p>
+      <p class="tut-txt">São os projetos. Clique numa carta e ela vira na sua frente.</p>
+      <p class="tut-sec">O que dá para clicar</p>
+      <ul class="onde">
+        <li style="--i:0"><i style="--cor:#e8b94a"></i><b>Dados, caneca e moedas</b>segure e arraste para jogar; um clique dá um peteleco</li>
+        <li style="--i:1"><i style="--cor:#8dff5a"></i><b>Caldeirão da bruxa</b>na clareira da floresta: misture as poções</li>
+        <li style="--i:2"><i style="--cor:#ff9a4a"></i><b>Acampamento</b>no vale: jogue comidas no caldeirão e cozinhe</li>
+        <li style="--i:3"><i style="--cor:#e9b44c"></i><b>Campo de treino</b>arco e flecha na vila do moinho</li>
+        <li style="--i:4"><i style="--cor:#d24a2a"></i><b>Vagonete</b>na boca da mina</li>
+        <li style="--i:5"><i style="--cor:#5fa8e8"></i><b>Água</b>um toque faz ondinha</li>
+        <li style="--i:6"><i style="--cor:#f3e4c3"></i><b>Ficha</b>o pergaminho do herói</li>
+        <li style="--i:7"><i style="--cor:#4fb3d9"></i><b>Píer do farol</b>pescar: clique quando a boia afundar</li>
+        <li style="--i:8"><i style="--cor:#ffc46a"></i><b>Praça do sol</b>de noite, solte uma lanterna</li>
+        <li style="--i:9"><i style="--cor:#f2c14e"></i><b>Fonte do castelo</b>jogue uma moeda e faça um desejo</li>
+      </ul>
+      <p class="aj-dica">Fique livre para explorar: tem muita coisa te esperando.</p>
+    </div>
+  </aside>
+
+  <div id="hud" hidden>
+  </div>
+
+  <div class="titulo-cap" id="tituloCap" aria-live="polite" hidden>
+    <p class="tc-cap"></p>
+    <h2 class="tc-lugar"></h2>
+    <p class="tc-quando"></p>
+  </div>
+  <article class="painel" id="painel" aria-live="polite"></article>
+  <article class="ficha" id="ficha" hidden></article>
+  <p class="aviso" id="aviso" role="status"></p>
+  <p class="dica-carta" id="dicaCarta" hidden></p>
+  <p class="etiqueta" id="etiqueta" hidden></p>
+
+  <div class="alquimia-hud" id="alquimiaHud" hidden>
+    <p>Escolha um frasco e derrame no caldeirão</p>
+    <button type="button" id="sairAlquimia">Voltar à mesa</button>
+  </div>
+  <div class="alquimia-hud" id="pertoHud" hidden>
+    <div class="barra-forca" id="barraForca" hidden><i></i></div>
+    <div class="barra-luta" id="barraLuta" hidden><span class="faixa"></span><span class="agulha"></span></div>
+    <p id="pertoDica"></p>
+    <button type="button" id="sairPerto">Voltar à mesa</button>
+  </div>
+  <div class="alquimia-hud" id="cozinhaHud" hidden>
+    <button type="button" id="sairCozinha">Voltar à mesa</button>
+  </div>
+  <article class="rotulo" id="rotulo" aria-live="polite"></article>
+
+  <div class="arco-hud" id="arcoHud" hidden>
+    <p class="arco-placar"><span id="arcoFlechas"></span><span id="arcoPontos"></span></p>
+    <p class="arco-dica" id="arcoDica">Mire com o mouse. Segure o clique para puxar a corda e solte para atirar.</p>
+    <div class="arco-fim" id="arcoFim" hidden>
+      <h2 id="arcoTotal"></h2>
+      <p id="arcoFrase"></p>
+      <button type="button" id="arcoDeNovo">Atirar de novo</button>
+    </div>
+    <button type="button" id="sairArco">Voltar à mesa</button>
+  </div>
+  <div class="aventura-hud" id="aventuraHud" hidden>
+    <i class="aventura-mira" aria-hidden="true"></i>
+    <p class="aventura-dica">WASD anda · Shift corre · Espaço pula · Esc solta o mouse</p>
+    <p class="aventura-solto" id="aventuraSolto" hidden>Clique para continuar andando · Esc de novo volta à mesa</p>
+    <button type="button" id="sairAventura">Voltar à mesa</button>
+  </div>
+  <div class="modal-fp" id="modalFp" role="dialog" aria-modal="true" aria-labelledby="modalFpTit" hidden>
+    <div class="modal-fp-caixa">
+      <h2 id="modalFpTit">Passeio em primeira pessoa</h2>
+      <p>Um modo extra, só para se divertir e explorar o mundo de perto, pelos olhos do herói. Não faz parte da jornada.</p>
+      <p class="modal-fp-teclas"><b>WASD</b> anda · <b>Shift</b> corre · <b>Espaço</b> pula · <b>mouse</b> olha · <b>Esc</b> sai</p>
+      <div class="modal-fp-botoes">
+        <button type="button" id="modalFpVoltar">Agora não</button>
+        <button type="button" id="modalFpEntrar" class="principal">Explorar</button>
+      </div>
+    </div>
+  </div>
+  <div class="mira" id="mira" hidden><i id="miraForca"></i></div>
+  <p class="arco-aviso" id="arcoAviso" aria-live="polite"></p>
+  <ul class="drops" id="drops" aria-live="polite"></ul>
+
+</body>
+</html>

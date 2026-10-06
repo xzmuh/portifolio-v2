@@ -1,0 +1,5 @@
+rasteira.glb — "Undergrowth pack (lowpoly, game-ready)" de LOLIPOP, Sketchfab, CC-BY 4.0
+  https://sketchfab.com/3d-models/undergrowth-pack-lowpoly-game-ready-c98b4c1a15aa447a97cb76df127c1c78
+  (sem o chão xadrez e o boneco de referência; só a cor, alfa recortado)
+pedras-grama.glb — rocks_grass_01.glb (baixado pelo Murilo; o arquivo não traz autor nem licença)
+  textura recolorida de laranja/areia para pedra cinza com grama verde (scripts/recolore-pedras.mjs)

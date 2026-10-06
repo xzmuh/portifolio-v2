@@ -32,6 +32,8 @@
   <link href="css/footer.css?v=20260917" rel="stylesheet" type="text/css" />
   <link href="css/xreveal.css?v=20260917" rel="stylesheet" type="text/css" />
   <link href="css/pixel-seam.css" rel="stylesheet" type="text/css" />
+  <link href="css/escolha.css?v=20261006d" rel="stylesheet" type="text/css" />
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Cinzel:wght@600;700&family=EB+Garamond:ital@0;1&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com" rel="preconnect" />
   <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin="anonymous" />
   <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js" type="text/javascript"></script>
@@ -554,6 +556,66 @@
               <br />
             </p>
           </div>
+        </div>
+      </section>
+      <section id="experiencias" class="escolha" aria-labelledby="escolha-titulo">
+        <div class="escolha_container">
+          <div class="escolha_topo">
+            <h2 id="escolha-titulo" class="escolha_titulo">Outras experiências com <span>meu currículo</span></h2>
+            <p class="escolha_sub">A mesma trajetória e os mesmos projetos, contados de um jeito diferente.</p>
+          </div>
+          <!-- As experiências, uma fatia por mundo: a fatia sob o mouse se abre como uma lente e ganha vida;
+               o clique faz ela tomar a tela e abre a experiência (js/escolha.js). Para uma experiência nova,
+               basta mais uma <a class="mundo"> com a cena dela. -->
+          <div class="vitrine">
+            <div class="vitrine_topo">
+              <span class="vitrine_rotulo">Experiências interativas</span>
+            </div>
+          <div class="mundos" data-mundos>
+            <a class="mundo mundo--papel" href="experiencias/corredor/index.html">
+              <div class="mundo_cena" aria-hidden="true">
+                <svg class="papel_rabiscos" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice">
+                  <path d="M40 60l8 18 18 2-14 12 4 18-16-9-16 9 4-18-14-12 18-2z" />
+                  <path d="M300 50c30-10 60 0 70 25" /><path d="M362 66l8 10-12 2" />
+                  <circle cx="330" cy="200" r="16" /><path d="M322 196h16M330 188v16" />
+                </svg>
+                <span class="papel_codigo">while(true) explore();</span>
+                <div class="papel_fachada">
+                  <img class="papel_arvore" src="img/escolha/arvore.webp" alt="" loading="lazy" />
+                  <img class="papel_gato" src="img/escolha/gato.webp" alt="" loading="lazy" />
+                  <img class="papel_porta" src="img/escolha/porta.webp" alt="" loading="lazy" />
+                  <img class="papel_vaso" src="img/escolha/vaso.webp" alt="" loading="lazy" />
+                  <span class="papel_chao"></span>
+                </div>
+              </div>
+              <span class="mundo_num" aria-hidden="true">01</span>
+              <div class="mundo_texto">
+                <h3 class="mundo_nome">Corredor de papel</h3>
+                <p class="mundo_desc">Um passeio desenhado a lápis: cada porta guarda uma parte do portfólio.</p>
+                <span class="mundo_ir">Entrar <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+              </div>
+            </a>
+            <a class="mundo mundo--rpg" href="experiencias/rpg/index.html">
+              <div class="mundo_cena" aria-hidden="true">
+                <div class="rpg_luz"></div>
+                <div class="rpg_brasas"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+                <img class="rpg_selo" src="experiencias/rpg/favicon.svg" alt="" loading="lazy" />
+              </div>
+              <span class="mundo_num" aria-hidden="true">02</span>
+              <div class="mundo_texto">
+                <h3 class="mundo_nome">Crônicas de Murilo</h3>
+                <p class="mundo_desc">Uma mesa de RPG em 3D: role o dado e acompanhe minha trajetória capítulo a capítulo.</p>
+                <span class="mundo_ir">Começar a aventura <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+              </div>
+            </a>
+          </div>
+            <a class="vitrine_rolar" href="#works">
+              <span class="rolar_mouse" aria-hidden="true"><i></i></span>
+              <span class="rolar_texto"><b>Prefere ver direto?</b> É só continuar rolando: os projetos estão logo abaixo.</span>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg>
+            </a>
+          </div>
+          <p class="escolha_aviso">As experiências em 3D rodam melhor no computador.</p>
         </div>
       </section>
       <section id="works" class="section projects">
@@ -1343,6 +1405,7 @@
     */
   </script>
 
+  <script src="js/escolha.js?v=20261006d"></script>
 </body>
 
 </html>
