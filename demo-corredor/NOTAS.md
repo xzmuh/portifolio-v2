@@ -35,6 +35,30 @@
 - Contato virou mundo: píer no mar com farol, nuvens, barquinho e placas em barris
   (GitHub, LinkedIn, WhatsApp, Mensagem → formulário de papel).
 
+## Feito em 06/10
+- Móveis e objetos do corredor em 3D de papel dobrado (src/dobradura.js): banco com gato, mesa, vasos, luminárias.
+  Na parede só fica o que é de parede (quadros, janelas, grades, rabiscos).
+- Fachada: floreira virou imagem no estilo do gato/árvore (public/facade/planter.png), sem toldo, placa "PORTFÓLIO".
+- Píer: farol maior com brilho e fachos girando; mar azul.
+- Habilidades: estante de livros (uma prateleira por área, um livro por tecnologia; clicar abre o livro).
+  Textos em ESTANTE no main.js — revisar com o Murilo.
+- Trajetória: não é sala, é uma plataforma de lançamento; entrar pela porta já decola o aviãozinho. No céu a câmera
+  fica parada atrás do avião e o mundo anda com a rolagem (inércia, para trás também), como no portfolio-itom:
+  trechos de 40 m de nuvens criados/descartados, paradas (TRAJETORIA) repetindo a cada 160 m — voo infinito.
+  "pular"/Esc cai de volta na sala.
+- Voo: céu de papel (sem azul), com folha desenhada ao fundo: hachura a lápis no alto.
+- Objetos 3D (dobradura.js) desenhados: papel quase branco, hachura presa à superfície conforme a luz,
+  contorno à mão (passa da quina, torto, "ferve" a 7 qps) com segundo traço de esboço.
+- Voo anda sozinho (cruzeiro) e a rolagem acelera; perto das placas o cruzeiro cai.
+- Portas com espessura (tábua + contorno); janelas e quadros do corredor continuam desenhados na parede (3D ali ficou forçado).
+- Mar do píer em grafite (cinza esfumado). Materiais e texturas pré-carregados no carregamento (sem tranco ao entrar).
+- Sobre mim: escrivaninha de dobradura (monitor digitando CODIGO_MONITOR, teclado, caneca, controle que treme)
+  e quadro de cortiça com BILHETES que vêm até a frente ao clicar.
+- Carregamento (antigo): folha amassada que se desamassa (script inline no index.html).
+- Livros: capas, miolo de páginas e lombada com faixas; clicar traz o livro voando e ele abre em 3D.
+- Referência: github.com/ITomPoland/portfolio-itom (MIT, Tomasz Szmajda). Do voo dele veio a ideia da câmera
+  colada no avião, do impulso com inércia e a forma do avião (adaptada em dobradura.js, com crédito no código).
+
 ## Próximos passos
 - Projetos, Habilidades, Trajetória e Sobre ainda são "salas"; transformar cada uma num mundo
   (ex.: Trajetória como ilhas flutuando no céu, como o "Journey" dele; Projetos como galeria/varal
