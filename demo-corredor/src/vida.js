@@ -1,9 +1,10 @@
 import * as THREE from 'three';
 import * as d from './desenhos.js';
-import { criaFolha, PAPEL } from './lapis.js';
+import * as dobra from './dobradura.js';
+import { criaFolha } from './lapis.js';
 
-/* O que deixa o corredor vivo, sem poluir: poucas plantas, um banco com um
-   gato (clique nele), duas janelas com nuvens passando, aviõezinhos de papel e um pouco de poeira.
+/* O que deixa o corredor vivo, sem poluir: luminárias, vasos, uma mesinha e um
+   banco com um gato (clique nele), todos de papel dobrado; duas janelas com nuvens passando, aviõezinhos de papel e um pouco de poeira.
    `folha` e `corredor` vêm do main.js (material rascunho → arte final). */
 
 const MIAUS = ['miau.', 'rrrrr...', 'o Murilo me deve um sachê.', 'miau? (tradução: oi)'];
@@ -11,7 +12,6 @@ const MIAUS = ['miau.', 'rrrrr...', 'o Murilo me deve um sachê.', 'miau? (tradu
 export function criaVida({ cena, folha, corredor, som, ALT }) {
   const animados = [];   // (t, dt, camera) => void
   const alvos = [];      // meshes clicáveis, com userData.alvo
-  const cutouts = [];    // recortes que giram para encarar a câmera (só no eixo Y)
 
   // troca o desenho de uma folha já existente (balões de fala, janelas)
   function redesenha(mesh, def) {
@@ -23,34 +23,40 @@ export function criaVida({ cena, folha, corredor, som, ALT }) {
     }
   }
 
-  /* ---------- plantas (recortes que encaram a câmera) ---------- */
+  /* ---------- móveis e plantas de papel dobrado ---------- */
 
-  [[1.8, -8.6, 1], [-1.8, -21.6, 1], [1.75, -39.8, 0]].forEach(([x, z, v], k) => {
-    const m = folha(corredor, { w: 0.8, h: 1.15, pos: [x, 0.575, z], seed: 520 + k, fundo: 'vazado', ppu: 200, desenha: d.planta(v) });
-    cutouts.push(m);
+  // cada objeto só aparece depois que o traço do corredor chega nele
+  const surgindo = [];
+  const poe = (obj, x, y, z, rotY) => { obj.position.set(x, y, z); obj.rotation.y = rotY; cena.add(obj); surgindo.push([obj, z]); return obj; };
+  animados.push(() => {
+    const alcance = -2 + (corredor.uComprimento.value + 6) * corredor.uPintura.value;
+    for (const [o, z] of surgindo) o.visible = -z < alcance;
   });
+  const PAREDE = 2.2, VIRADO_ESQ = Math.PI / 2, VIRADO_DIR = -Math.PI / 2;
+
+  dobra.luzes(cena);
+  for (const z of [-5, -12, -19, -26, -33, -40]) poe(dobra.luminaria(), 0, ALT, z, 0);
+  poe(dobra.vaso(0), PAREDE - 0.35, 0, -8.6, 0);
+  poe(dobra.vaso(2), -(PAREDE - 0.35), 0, -21.6, 0);
+  poe(dobra.vaso(1), PAREDE - 0.35, 0, -39.8, 0);
+  poe(dobra.mesa(), -(PAREDE - 0.3), 0, -12.6, VIRADO_ESQ);
 
   /* ---------- banco com gato, embaixo de uma janela ---------- */
 
-  folha(corredor, { w: 1.7, h: 0.8, pos: [1.9, 0.4, -23.2], rotY: -Math.PI / 2, seed: 540, fundo: 'vazado', ppu: 200, desenha: d.banco() });
-  const gatoGrupo = new THREE.Group();
-  gatoGrupo.position.set(1.78, 0.74, -22.8);
-  gatoGrupo.rotation.y = -Math.PI / 2;
-  cena.add(gatoGrupo);
-  const gato = folha(corredor, { w: 0.46, h: 0.56, pos: [0, 0, 0], seed: 541, fundo: 'vazado', ppu: 260, desenha: d.gato() }, gatoGrupo);
-  const raboPivo = new THREE.Group();
-  raboPivo.position.set(0.1, -0.2, -0.01);
-  gatoGrupo.add(raboPivo);
-  folha(corredor, { w: 0.3, h: 0.36, pos: [0.12, 0.16, 0], seed: 542, fundo: 'vazado', ppu: 260, desenha: d.rabo() }, raboPivo);
-  const balaoGato = folha(corredor, { w: 1.1, h: 0.62, pos: [-0.15, 0.62, 0.02], seed: 543, fundo: 'vazado', desenha: d.balao(MIAUS[0]) }, gatoGrupo);
+  const banco = poe(dobra.banco(), PAREDE - 0.32, 0, -23.4, VIRADO_DIR);
+  const gato = dobra.gato();
+  gato.grupo.position.set(-0.35, 0.47, 0.04);
+  banco.add(gato.grupo);
+  const balaoGato = folha(corredor, { w: 1.1, h: 0.62, pos: [0, 0.95, 0.05], seed: 543, fundo: 'vazado', desenha: d.balao(MIAUS[0]) }, gato.grupo);
   balaoGato.visible = false;
   let rabada = 0, fimBalaoGato = 0, miau = 0;
-  animados.push((t) => {
-    raboPivo.rotation.z = Math.sin(t * (2.2 + rabada * 5)) * (0.25 + rabada * 0.35);
+  animados.push((t, dt, cam) => {
+    gato.rabo.rotation.y = Math.sin(t * (2 + rabada * 5)) * (0.3 + rabada * 0.4);
     rabada = Math.max(0, rabada - 0.01);
     balaoGato.visible = t < fimBalaoGato;
+    balaoGato.lookAt(cam.position);
   });
-  gato.userData.alvo = {
+  const alvoGato = {
     rotulo: () => 'fazer carinho',
     aoClicar: () => {
       som.miau();
@@ -59,7 +65,7 @@ export function criaVida({ cena, folha, corredor, som, ALT }) {
       fimBalaoGato = relogioAtual + 3;
     },
   };
-  alvos.push(gato);
+  for (const parte of gato.partes) { parte.userData.alvo = alvoGato; alvos.push(parte); }
 
   /* ---------- janelas com nuvens passando ---------- */
 
@@ -77,14 +83,8 @@ export function criaVida({ cena, folha, corredor, som, ALT }) {
 
   /* ---------- aviõezinhos de papel ---------- */
 
-  const geoAviao = new THREE.BufferGeometry();
-  const N = [0, 0, 0.22], L = [-0.14, 0.03, -0.18], R = [0.14, 0.03, -0.18], C = [0, 0, -0.18], K = [0, -0.07, -0.18];
-  geoAviao.setAttribute('position', new THREE.Float32BufferAttribute([...N, ...L, ...C, ...N, ...C, ...R, ...N, ...C, ...K], 3));
-  const matAviao = new THREE.MeshBasicMaterial({ color: new THREE.Color(PAPEL).multiplyScalar(0.98), side: THREE.DoubleSide });
-  const linhas = new THREE.LineBasicMaterial({ color: '#2c2c2c' });
   for (let k = 0; k < 2; k++) {
-    const aviao = new THREE.Group();
-    aviao.add(new THREE.Mesh(geoAviao, matAviao), new THREE.LineSegments(new THREE.EdgesGeometry(geoAviao, 1), linhas));
+    const aviao = dobra.aviaozinho();
     cena.add(aviao);
     const fase = k * 11.5, vel = 2.1 + k * 0.35;
     const pos = (t) => {
@@ -124,7 +124,6 @@ export function criaVida({ cena, folha, corredor, som, ALT }) {
     anima(t, dt, cam) {
       relogioAtual = t;
       for (const f of animados) f(t, dt, cam);
-      for (const c of cutouts) c.rotation.y = Math.atan2(cam.position.x - c.position.x, cam.position.z - c.position.z);
     },
   };
 }

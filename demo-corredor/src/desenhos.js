@@ -68,9 +68,11 @@ function adesivo(g, tipo, x, y, r) {
   if (tipo === 'js') { g.ret(x - r, y - r, 2 * r, 2 * r, null, { ...base, cor: '#f2d349' }); g.texto('JS', x + r * 0.2, y + r * 0.35, r * 1.1); }
   if (tipo === 'ts') { g.ret(x - r, y - r, 2 * r, 2 * r, null, { ...base, cor: '#3b7ccf' }); g.texto('TS', x + r * 0.2, y + r * 0.35, r * 1.05, { cor: '#fff' }); }
   if (tipo === 'react') {
-    g.elipse(x, y, r * 1.1, r * 1.1, null, { ...base, cor: '#2b2f3a' });
-    for (const a of [0, 1.05, 2.1]) g.forma(Array.from({ length: 20 }, (_, i) => { const t = (i / 20) * Math.PI * 2; const ex = Math.cos(t) * r * 0.85, ey = Math.sin(t) * r * 0.32; return [x + ex * Math.cos(a) - ey * Math.sin(a), y + ex * Math.sin(a) + ey * Math.cos(a)]; }), null, { peso: 0.6 });
-    g.elipse(x, y, r * 0.14, r * 0.14, 'preto');
+    // fundo claro e átomo azul: escuro, virava uma bola preta ilegível
+    g.elipse(x, y, r * 1.1, r * 1.1, null, { ...base, cor: '#e6f4fa' });
+    for (const a of [0, 1.05, 2.1]) g.forma(Array.from({ length: 20 }, (_, i) => { const t = (i / 20) * Math.PI * 2; const ex = Math.cos(t) * r * 0.85, ey = Math.sin(t) * r * 0.32; return [x + ex * Math.cos(a) - ey * Math.sin(a), y - r * 0.12 + ex * Math.sin(a) + ey * Math.cos(a)]; }), null, { sempreCor: true, cor: '#2a9bbf', peso: 0.7 });
+    g.elipse(x, y - r * 0.12, r * 0.16, r * 0.16, null, { sempreCor: true, fundo: true, cor: '#2a9bbf', peso: 0.5 });
+    g.texto('react', x, y + r * 0.72, r * 0.45);
   }
   if (tipo === 'node') { g.forma(Array.from({ length: 6 }, (_, i) => [x + Math.cos(i * Math.PI / 3 + Math.PI / 6) * r * 1.1, y + Math.sin(i * Math.PI / 3 + Math.PI / 6) * r * 1.1]), null, { ...base, cor: '#6cc24a' }); g.texto('node', x, y, r * 0.75); }
   if (tipo === 'php') { g.elipse(x, y, r * 1.3, r * 0.75, null, { ...base, cor: '#8a93c8' }); g.texto('php', x, y, r * 0.85); }
@@ -173,14 +175,6 @@ export function seta() {
   };
 }
 
-export function luzFluorescente() {
-  return (g, W, H, s) => {
-    g.ret(3 * s, 3 * s, W - 6 * s, H - 6 * s, null, { fundo: true, peso: 1.1 });
-    for (let x = W * 0.1; x < W * 0.95; x += W * 0.1) g.linha([[x, H * 0.18], [x, H * 0.82]], { peso: 0.5 });
-    g.linha([[W * 0.05, H * 0.5], [W * 0.95, H * 0.5]], { peso: 0.5 });
-  };
-}
-
 export function grade() {
   return (g, W, H, s) => {
     g.ret(3 * s, 3 * s, W - 6 * s, H - 6 * s, null, { fundo: true, peso: 1.1 });
@@ -209,18 +203,6 @@ export function rabiscoFluxo() {
   };
 }
 
-export function mesinha() {
-  return (g, W, H, s) => {
-    g.ret(W * 0.05, H * 0.5, W * 0.9, H * 0.06, 'claro', { fundo: true, peso: 1.1 });
-    for (const x of [0.1, 0.84]) g.linha([[W * x, H * 0.56], [W * (x + 0.03), H - 3 * s]], { peso: 1.1 });
-    g.forma([[W * 0.38, H * 0.5], [W * 0.62, H * 0.5], [W * 0.58, H * 0.32], [W * 0.42, H * 0.32]], 'claro', { fundo: true });
-    for (let i = 0; i < 7; i++) {
-      const a = -Math.PI / 2 + (i - 3) * 0.35;
-      g.elipse(W / 2 + Math.cos(a) * W * 0.12, H * 0.22 + Math.sin(a) * H * 0.12, W * 0.06, H * 0.04, null, { fundo: true, peso: 0.7 });
-    }
-  };
-}
-
 /* ---------- logo do começo do corredor ---------- */
 
 export function logo(nome, sub) {
@@ -242,15 +224,6 @@ export function logo(nome, sub) {
 }
 
 /* ---------- quadros ---------- */
-
-export function quadro(conteudo, { mold = 0.1 } = {}) {
-  return (g, W, H, s) => {
-    const m = Math.min(W, H) * mold;
-    g.ret(4 * s, 4 * s, W - 8 * s, H - 8 * s, 'medio', { fundo: true, peso: 1.4 });
-    g.ret(m, m, W - 2 * m, H - 2 * m, null, { fundo: true, peso: 1.1 });
-    conteudo(g, m * 1.4, m * 1.4, W - 2.8 * m, H - 2.8 * m, s);
-  };
-}
 
 export const cenas = {
   paisagem(g, x, y, w, h) {
@@ -289,31 +262,41 @@ export function projeto(titulo, linha) {
   };
 }
 
-// folha de papel presa com percevejo, com título e itens escritos à mão
-export function bilhete(titulo, itens) {
+// páginas do livro aberto: à esquerda a área e o nome, à direita o que fiz com aquilo
+export function paginaTitulo(titulo, categoria) {
   return (g, W, H, s) => {
-    g.forma([[6 * s, 10 * s], [W - 6 * s, 4 * s], [W - 10 * s, H - 6 * s], [10 * s, H - 10 * s]], null, { fundo: true, peso: 1.1 });
-    g.elipse(W / 2, 22 * s, 9 * s, 9 * s, 'preto');
-    g.texto(titulo, W / 2, H * 0.17, H * 0.1);
-    g.linha([[W * 0.2, H * 0.24], [W * 0.8, H * 0.24]], { peso: 0.8 });
-    itens.forEach((t, i) => g.texto(`· ${t}`, W * 0.12, H * (0.34 + i * 0.105), H * 0.068, { alinha: 'left', peso: 500 }));
+    g.texto(categoria.toUpperCase(), W / 2, H * 0.3, H * 0.06, { peso: 500 });
+    palavras(titulo, 12).forEach((l, k, arr) => g.texto(l, W / 2, H * (0.48 + (k - (arr.length - 1) / 2) * 0.13), H * 0.12));
+    g.linha([[W * 0.3, H * 0.64], [W * 0.7, H * 0.64]], { peso: 0.8 });
+    g.texto('(clique para fechar)', W / 2, H * 0.88, H * 0.042, { peso: 500 });
+  };
+}
+export function paginaTexto(texto) {
+  return (g, W, H, s) => {
+    palavras(texto, 20).slice(0, 9).forEach((l, k) => g.texto(l, W * 0.1, H * (0.2 + k * 0.08), H * 0.06, { alinha: 'left', peso: 500 }));
+    g.texto('~', W / 2, H * 0.9, H * 0.06, { peso: 500 });
   };
 }
 
-export function linhaDoTempo(marcos) {
+// bilhetinho preso no quadro de cortiça: papel quadrado, alfinete e texto à mão
+export function notinha(texto) {
   return (g, W, H, s) => {
-    g.forma([[8 * s, 12 * s], [W - 8 * s, 6 * s], [W - 12 * s, H - 8 * s], [12 * s, H - 12 * s]], null, { fundo: true, peso: 1.1 });
-    g.texto('Trajetória', W / 2, H * 0.13, H * 0.1);
-    const y = H * 0.42;
-    g.linha([[W * 0.06, y], [W * 0.94, y]], { peso: 1.6 });
-    marcos.forEach(([ano, nome, cargo, texto], i) => {
-      const x = W * (0.14 + i * (0.72 / Math.max(1, marcos.length - 1)));
-      g.elipse(x, y, 13 * s, 13 * s, 'preto');
-      g.texto(ano, x, y - H * 0.1, H * 0.075);
-      g.texto(nome, x, y + H * 0.12, H * 0.085);
-      g.texto(cargo, x, y + H * 0.22, H * 0.05, { peso: 500 });
-      palavras(texto, 22).forEach((l, k) => g.texto(l, x, y + H * (0.3 + k * 0.065), H * 0.045, { peso: 500 }));
-    });
+    g.forma([[6 * s, 12 * s], [W - 8 * s, 6 * s], [W - 5 * s, H - 9 * s], [9 * s, H - 6 * s]], null, { fundo: true, peso: 1.1 });
+    g.elipse(W / 2, 22 * s, 8 * s, 8 * s, 'preto');
+    const linhas = palavras(texto, 16).slice(0, 5);
+    linhas.forEach((l, k) => g.texto(l, W / 2, H * (0.5 + (k - (linhas.length - 1) / 2) * 0.15), H * 0.12, { peso: 500 }));
+  };
+}
+
+// parada da trajetória, presa numa nuvem do voo
+export function marcoVoo(ano, nome, cargo, texto) {
+  return (g, W, H, s) => {
+    g.forma([[6 * s, 10 * s], [W - 6 * s, 4 * s], [W - 10 * s, H - 6 * s], [10 * s, H - 10 * s]], null, { fundo: true, peso: 1.2 });
+    g.texto(ano, W / 2, H * 0.15, H * 0.11, { cor: '#b5652e' });
+    g.texto(nome, W / 2, H * 0.34, H * 0.17);
+    g.texto(cargo, W / 2, H * 0.5, H * 0.075, { peso: 500 });
+    g.linha([[W * 0.25, H * 0.58], [W * 0.75, H * 0.58]], { peso: 0.8 });
+    palavras(texto, 28).slice(0, 3).forEach((l, k) => g.texto(l, W / 2, H * (0.69 + k * 0.1), H * 0.07, { peso: 500 }));
   };
 }
 
@@ -582,78 +565,6 @@ export function formulario({ nome, mensagem, campo, cursor, aviso }) {
 
 /* ---------- vida no corredor ---------- */
 
-export function luminaria() {
-  return (g, W, H, s) => {
-    g.linha([[W / 2, 0], [W / 2, H * 0.55]], { peso: 1.1 });
-    g.forma([[W * 0.34, H * 0.55], [W * 0.66, H * 0.55], [W * 0.95, H * 0.86], [W * 0.05, H * 0.86]], 'medio', { fundo: true, peso: 1.4, angulo: Math.PI / 2 });
-    g.elipse(W / 2, H * 0.9, W * 0.11, H * 0.05, null, { fundo: true });
-    // raios de luz rabiscados
-    for (const a of [-0.6, -0.3, 0, 0.3, 0.6]) g.linha([[W / 2 + Math.sin(a) * W * 0.18, H * 0.95], [W / 2 + Math.sin(a) * W * 0.36, H * 0.995]], { peso: 0.6 });
-  };
-}
-
-export function tapete(largura) {
-  return (g, W, H, s) => {
-    const u = W / largura;
-    g.ret(4 * s, -10, W - 8 * s, H + 20, null, { fundo: true, peso: 1.3 });
-    g.ret(0.1 * u, -10, W - 0.2 * u, H + 20, null, { peso: 0.8 });
-    for (let y = 0.8 * u; y < H; y += 1.6 * u) {
-      g.forma([[W / 2, y - 0.45 * u], [W / 2 + 0.35 * u, y], [W / 2, y + 0.45 * u], [W / 2 - 0.35 * u, y]], 'medio');
-      g.elipse(W / 2, y, 0.08 * u, 0.08 * u, 'preto');
-    }
-  };
-}
-
-export function planta(variacao) {
-  return (g, W, H, s) => {
-    const cx = W / 2, topo = H * 0.62;
-    const n = 6 + variacao * 2;
-    for (let i = 0; i < n; i++) {
-      const t = i / (n - 1) - 0.5, a = t * 2.2 - Math.PI / 2, comp = H * (0.42 + 0.12 * Math.cos(t * 4));
-      const px = cx + Math.cos(a) * comp * 0.55, py = topo + Math.sin(a) * comp * 0.6;
-      g.linha([[cx, topo], [(cx + px) / 2 + t * 10 * s, (topo + py) / 2], [px, py]], { peso: 0.9 });
-      const ang = Math.atan2(py - topo, px - cx);
-      const folhaPts = Array.from({ length: 12 }, (_, k) => {
-        const u = (k / 12) * Math.PI * 2, rx = comp * 0.2, ry = comp * 0.07;
-        const x = Math.cos(u) * rx, y = Math.sin(u) * ry;
-        return [px + x * Math.cos(ang) - y * Math.sin(ang), py + x * Math.sin(ang) + y * Math.cos(ang)];
-      });
-      g.forma(folhaPts, i % 2 ? 'claro' : 'medio', { fundo: true, angulo: ang });
-    }
-    g.forma([[W * 0.3, topo], [W * 0.7, topo], [W * 0.62, H - 4 * s], [W * 0.38, H - 4 * s]], 'escuro', { fundo: true, peso: 1.3 });
-    g.ret(W * 0.27, topo - 8 * s, W * 0.46, 16 * s, 'medio', { fundo: true });
-  };
-}
-
-export function banco() {
-  return (g, W, H, s) => {
-    g.ret(W * 0.04, H * 0.42, W * 0.92, H * 0.12, 'medio', { fundo: true, peso: 1.4, angulo: 0 });
-    for (const x of [0.1, 0.84]) g.ret(W * x, H * 0.54, W * 0.06, H * 0.44, 'escuro', { fundo: true });
-    g.ret(W * 0.08, H * 0.1, W * 0.84, H * 0.08, 'claro', { fundo: true });
-    for (const x of [0.12, 0.82]) g.ret(W * x, H * 0.18, W * 0.05, H * 0.24, 'medio', { fundo: true });
-  };
-}
-
-// gato sentado de perfil, sem o rabo (o rabo é outra folha para poder balançar)
-export function gato() {
-  return (g, W, H, s) => {
-    g.forma([[W * 0.3, H * 0.98], [W * 0.26, H * 0.6], [W * 0.38, H * 0.4], [W * 0.6, H * 0.42], [W * 0.72, H * 0.7], [W * 0.74, H * 0.98]], 'escuro', { fundo: true, peso: 1.4 });
-    g.elipse(W * 0.46, H * 0.3, W * 0.2, H * 0.16, 'escuro', { fundo: true, peso: 1.4 });
-    g.forma([[W * 0.3, H * 0.22], [W * 0.32, H * 0.04], [W * 0.42, H * 0.17]], 'preto', { fundo: true });
-    g.forma([[W * 0.5, H * 0.16], [W * 0.6, H * 0.03], [W * 0.63, H * 0.22]], 'preto', { fundo: true });
-    for (const x of [0.38, 0.54]) g.elipse(W * x, H * 0.29, W * 0.035, H * 0.03, null, { fundo: true });
-    for (const lado of [-1, 1]) g.linha([[W * 0.46, H * 0.36], [W * (0.46 + lado * 0.28), H * 0.33]], { peso: 0.5 });
-  };
-}
-
-export function rabo() {
-  return (g, W, H) => {
-    const pts = [[W * 0.1, H * 0.95], [W * 0.35, H * 0.7], [W * 0.55, H * 0.35], [W * 0.8, H * 0.12], [W * 0.92, H * 0.05]];
-    g.linha(pts, { peso: 3.2 });
-    g.linha(pts.map(([x, y]) => [x + 3, y + 2]), { peso: 1.2 });
-  };
-}
-
 export function balao(frase) {
   return (g, W, H, s) => {
     g.forma(poligonoBalao(W, H), null, { fundo: true, peso: 1.3 });
@@ -671,29 +582,6 @@ function poligonoBalao(W, H) {
   return pts;
 }
 
-// bonequinho de cabelo cacheado acenando (o braço é outra folha)
-export function bonequinho() {
-  return (g, W, H, s) => {
-    g.forma([[W * 0.32, H * 0.98], [W * 0.34, H * 0.62], [W * 0.66, H * 0.62], [W * 0.68, H * 0.98]], 'escuro', { fundo: true, peso: 1.4 });
-    g.forma([[W * 0.28, H * 0.66], [W * 0.36, H * 0.42], [W * 0.64, H * 0.42], [W * 0.72, H * 0.66]], 'medio', { fundo: true, peso: 1.4 });
-    g.elipse(W / 2, H * 0.28, W * 0.17, H * 0.12, null, { fundo: true, peso: 1.4 });
-    for (let i = 0; i < 9; i++) {
-      const a = Math.PI + (i / 8) * Math.PI;
-      g.elipse(W / 2 + Math.cos(a) * W * 0.16, H * 0.24 + Math.sin(a) * H * 0.1, W * 0.06, H * 0.045, 'escuro', { fundo: true });
-    }
-    g.elipse(W * 0.44, H * 0.3, 3 * s, 3 * s, 'preto');
-    g.elipse(W * 0.56, H * 0.3, 3 * s, 3 * s, 'preto');
-    g.linha([[W * 0.45, H * 0.35], [W * 0.5, H * 0.365], [W * 0.55, H * 0.35]], { peso: 0.9 });
-  };
-}
-
-export function braco() {
-  return (g, W, H, s) => {
-    g.forma([[W * 0.3, H], [W * 0.2, H * 0.3], [W * 0.5, H * 0.28], [W * 0.7, H]], 'medio', { fundo: true, peso: 1.2 });
-    g.elipse(W * 0.35, H * 0.18, W * 0.22, H * 0.12, null, { fundo: true, peso: 1.2 });
-  };
-}
-
 export function placaEntrada(titulo, sub) {
   return (g, W, H, s) => {
     g.linha([[W * 0.2, 0], [W * 0.2, H * 0.28]], { peso: 1 });
@@ -706,26 +594,48 @@ export function placaEntrada(titulo, sub) {
 }
 
 // janela: moldura + paisagem; as nuvens são redesenhadas em movimento
-export function janela(deslocamento) {
+// o que se vê pela janela (sem moldura: a moldura é de dobradura): céu com nuvens
+// passando e morrinhos lá embaixo
+export function vistaJanela(deslocamento) {
   return (g, W, H, s) => {
-    const m = W * 0.08;
-    g.ret(4 * s, 4 * s, W - 8 * s, H - 8 * s, 'medio', { fundo: true, peso: 1.5, angulo: Math.PI / 2 });
-    g.ret(m, m, W - 2 * m, H - 2 * m, null, { fundo: true, peso: 1.1 });
-    const x0 = m, y0 = m, w = W - 2 * m, h = H - 2 * m;
-    g.ctx.save();
-    g.ctx.beginPath(); g.ctx.rect(x0, y0, w, h); g.ctx.clip();
+    g.ret(0, 0, W, H, null, { fundo: true, peso: 0 });
     for (let k = 0; k < 3; k++) {
-      const cx = x0 + ((((k * 0.37 + deslocamento * (0.6 + k * 0.25)) % 1.3) + 1.3) % 1.3 - 0.15) * w;
-      const cy = y0 + h * (0.2 + k * 0.12);
+      const cx = ((((k * 0.37 + deslocamento * (0.6 + k * 0.25)) % 1.3) + 1.3) % 1.3 - 0.15) * W;
+      const cy = H * (0.18 + k * 0.13);
       for (const [dx, dy, r] of [[0, 0, 0.09], [0.08, -0.03, 0.07], [-0.08, 0.01, 0.06], [0.15, 0.02, 0.05]]) {
-        g.elipse(cx + dx * w, cy + dy * h, r * w, r * w * 0.7, null, { fundo: true, peso: 0.9 });
+        g.elipse(cx + dx * W, cy + dy * H, r * W, r * W * 0.7, null, { fundo: true, peso: 0.9 });
       }
     }
-    g.forma([[x0, y0 + h], [x0, y0 + h * 0.75], [x0 + w * 0.3, y0 + h * 0.6], [x0 + w * 0.55, y0 + h * 0.72], [x0 + w * 0.8, y0 + h * 0.55], [x0 + w, y0 + h * 0.66], [x0 + w, y0 + h]], 'claro', { fundo: true });
+    g.forma([[0, H], [0, H * 0.74], [W * 0.3, H * 0.6], [W * 0.55, H * 0.72], [W * 0.8, H * 0.55], [W, H * 0.66], [W, H]], 'claro', { fundo: true });
+    g.forma([[0, H], [0, H * 0.86], [W * 0.4, H * 0.78], [W * 0.7, H * 0.88], [W, H * 0.8], [W, H]], 'medio', { fundo: true });
+  };
+}
+
+// janela desenhada na parede: moldura a lápis, cruzeta, peitoril e a vista por dentro
+export function janela(deslocamento) {
+  return (g, W, H, s) => {
+    const m = W * 0.08, x0 = m, y0 = m, w = W - 2 * m, h = H - 2 * m;
+    g.ret(4 * s, 4 * s, W - 8 * s, H - 8 * s, 'claro', { fundo: true, peso: 1.4, angulo: Math.PI / 2 });
+    g.ctx.save();
+    g.ctx.translate(x0, y0);
+    g.ctx.beginPath(); g.ctx.rect(0, 0, w, h); g.ctx.clip();
+    vistaJanela(deslocamento)(g, w, h, s);
     g.ctx.restore();
-    g.linha([[W / 2, m], [W / 2, H - m]], { peso: 1.3 });
-    g.linha([[m, H * 0.45], [W - m, H * 0.45]], { peso: 1.3 });
-    g.ret(m * 0.4, H - m * 1.3, W - m * 0.8, m * 0.9, 'escuro', { fundo: true });
+    g.ret(x0, y0, w, h, null, { peso: 1.1 });
+    g.linha([[W / 2, m], [W / 2, H - m]], { peso: 1.2 });
+    g.linha([[m, H * 0.45], [W - m, H * 0.45]], { peso: 1.2 });
+    g.ret(m * 0.3, H - m * 1.2, W - m * 0.6, m * 0.8, 'medio', { fundo: true, peso: 1 });
+  };
+}
+
+// quadro desenhado na parede: moldura a lápis, passe-partout e a cena
+export function quadro(conteudo) {
+  return (g, W, H, s) => {
+    const m = Math.min(W, H) * 0.09;
+    g.ret(4 * s, 4 * s, W - 8 * s, H - 8 * s, 'medio', { fundo: true, peso: 1.3 });
+    g.ret(m, m, W - 2 * m, H - 2 * m, null, { fundo: true, peso: 1 });
+    g.ret(m * 1.7, m * 1.7, W - 3.4 * m, H - 3.4 * m, null, { peso: 0.7 });
+    conteudo(g, m * 2.1, m * 2.1, W - 4.2 * m, H - 4.2 * m, s);
   };
 }
 
@@ -752,21 +662,6 @@ export function cordaoLuzes() {
   };
 }
 
-export function marquiseEntrada() {
-  return (g, W, H, s) => {
-    g.forma([[W * 0.05, H * 0.28], [W * 0.95, H * 0.28], [W * 0.86, H * 0.76], [W * 0.14, H * 0.76]], null, { fundo: true, peso: 1.25 });
-    for (let x = W * 0.17, i = 0; x < W * 0.87; x += W * 0.12, i++) {
-      g.forma([[x, H * 0.3], [x + W * 0.08, H * 0.3], [x + W * 0.05, H * 0.73], [x - W * 0.02, H * 0.73]], null, {
-        fundo: true,
-        sempreCor: i % 2 === 0,
-        cor: '#e7b45c',
-        peso: 0.4,
-      });
-    }
-    g.linha([[W * 0.1, H * 0.8], [W * 0.9, H * 0.8]], { peso: 1.5 });
-    for (const x of [0.13, 0.87]) g.linha([[W * x, H * 0.78], [W * x, H]], { peso: 1.1 });
-  };
-}
 
 export function arandelaEntrada() {
   return (g, W, H, s) => {
@@ -886,38 +781,12 @@ export function janelaCasa() {
   };
 }
 
-export function floreira() {
-  return (g, W, H, s) => {
-    const r = mulberry32(7);
-    for (let i = 0; i < 9; i++) {
-      const x = W * (0.08 + i * 0.1), alt = H * (0.25 + r() * 0.25);
-      if (i === 6) continue;
-      for (let k = -2; k <= 2; k++) g.forma([[x, H * 0.62], [x + k * 6 * s, H * 0.62 - alt], [x + k * 6 * s + 5 * s, H * 0.62 - alt * 0.9]], null, { fundo: true, peso: 0.7, cor: '#8fbf8a' });
-    }
-    g.forma([[W * 0.02, H * 0.6], [W * 0.98, H * 0.6], [W * 0.94, H - 3 * s], [W * 0.06, H - 3 * s]], 'claro', { fundo: true, peso: 1.2, cor: '#c9c3b8' });
-  };
-}
-
-export function folhaPortaDupla(lado) {
-  return (g, W, H, s) => {
-    const u = W / 0.9;
-    g.ret(2 * s, 2 * s, W - 4 * s, H - 4 * s, null, { fundo: true, peso: 1.3, cor: MADEIRA });
-    g.ret(0.12 * u, 0.15 * u, W - 0.24 * u, H * 0.4, null, { peso: 0.9, cor: MADEIRA_ESCURA });
-    g.ret(0.12 * u, H * 0.52, W - 0.24 * u, H * 0.4, null, { peso: 0.9, cor: MADEIRA_ESCURA });
-    const mx = lado < 0 ? W - 0.12 * u : 0.12 * u;
-    g.ret(mx - 0.03 * u, H * 0.47, 0.06 * u, 0.14 * u, null, { cor: '#c9c9c9', peso: 0.9 });
-    const colados = lado < 0
-      ? [['html', 0.35, 0.13], ['js', 0.6, 0.3], ['react', 0.38, 0.58], ['ts', 0.6, 0.78]]
-      : [['node', 0.42, 0.14], ['php', 0.6, 0.34], ['sql', 0.4, 0.6], ['react', 0.62, 0.8]];
-    for (const [t, x, y] of colados) adesivo(g, t, W * x, H * y, 0.15 * u);
-  };
-}
 
 export function adesivosPortaDupla(lado) {
   return (g, W, H) => {
     const colados = lado < 0
       ? [['html', 0.35, 0.13], ['js', 0.6, 0.3], ['react', 0.38, 0.58], ['ts', 0.6, 0.78]]
-      : [['node', 0.42, 0.14], ['php', 0.6, 0.34], ['sql', 0.4, 0.6], ['react', 0.62, 0.8]];
+      : [['node', 0.42, 0.18], ['php', 0.6, 0.45], ['sql', 0.42, 0.74]];
     for (const [tipo, x, y] of colados) adesivo(g, tipo, W * x, H * y, W * 0.15);
   };
 }

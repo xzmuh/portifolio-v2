@@ -3,6 +3,7 @@ import { criaFolha, PAPEL } from './lapis.js';
 import * as d from './desenhos.js';
 import * as som from './som.js';
 import { criaVida } from './vida.js';
+import * as dobra from './dobradura.js';
 import './style.css';
 
 /* Corredor desenhado a nanquim. A rolagem anda pelo corredor (ou WASD para
@@ -16,6 +17,40 @@ THREE.ColorManagement.enabled = false; // o canvas já está nas cores finais
 const LARG = 4.4, ALT = 3.4, FIM = -42;
 const PORTA = { w: 1.3, h: 2.3 };
 const SALA = { prof: 5.2, larg: 5 };
+// paradas do voo da sala Trajetória: [ano, empresa, cargo · onde, o que fiz]
+const TRAJETORIA = [
+  ['mai 2021', 'I-SINC', 'Full Stack · Agudos, SP', 'ERP, APIs REST, Angular e AWS'],
+  ['2026', 'Next SI', 'Full Stack · Bauru, SP', 'React no front e PHP no back'],
+  ['2026', 'Dialogi', 'Front-end · remoto', 'sites, experiências e minigames'],
+  ['2026', 'SigmaCX', 'Front-end · remoto', 'interfaces e campanhas interativas'],
+];
+// estante da sala de Habilidades: [área, [[tecnologia, o que fiz com ela], ...]]
+const ESTANTE = [
+  ['Front-end', [
+    ['HTML · Tailwind', 'Sites e páginas da Dialogi e da SigmaCX, do layout ao responsivo.'],
+    ['JavaScript', 'Interações, minigames e experiências na web, como este corredor.'],
+    ['React', 'O front do sistema da Next SI e interfaces na Dialogi e na SigmaCX.'],
+    ['Angular', 'As telas do ERP na I-SINC.'],
+  ]],
+  ['Back-end', [
+    ['PHP', 'O back-end do sistema da Next SI.'],
+    ['Node · NestJS', 'APIs e serviços no back-end.'],
+    ['TypeScript', 'Código tipado no front e no back.'],
+    ['Python', 'Scripts, automações e integrações.'],
+  ]],
+  ['Dados', [
+    ['PostgreSQL', 'Modelagem de banco e consultas para sistemas corporativos.'],
+    ['MySQL', 'Bancos de sistemas em produção.'],
+    ['MongoDB', 'Dados em documentos quando o formato pede.'],
+    ['Integrações', 'Ligando o sistema a outros sistemas e serviços.'],
+  ]],
+  ['Engenharia', [
+    ['Regras de negócio', 'Transformar o jeito que a empresa trabalha em sistema.'],
+    ['ERP', 'Mais de 5 anos em sistemas de gestão de verdade.'],
+    ['APIs REST', 'APIs completas, do desenho à documentação.'],
+    ['NF-e · SPED', 'Nota fiscal eletrônica e obrigações fiscais dentro do ERP.'],
+  ]],
+];
 const menosMovimento = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const toque = matchMedia('(pointer: coarse)').matches;
 
@@ -54,11 +89,12 @@ renderer.setClearColor(PAPEL);
 document.getElementById('palco').appendChild(renderer.domElement);
 
 const cena = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(toque ? 70 : 60, innerWidth / innerHeight, 0.05, 80);
+const camera = new THREE.PerspectiveCamera(toque ? 74 : 66, innerWidth / innerHeight, 0.05, 80);
 addEventListener('resize', () => {
   camera.aspect = innerWidth / innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(innerWidth, innerHeight);
+  dobra.resolucaoDesenho(innerWidth, innerHeight);
 });
 
 const tempo = { value: 0 };
@@ -72,16 +108,33 @@ await Promise.race([
 
 const texturaPortaMadeira = await new THREE.TextureLoader().loadAsync('doors/entrance-double-cropped.png');
 texturaPortaMadeira.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
-const [texturaArvoreEntrada, texturaMouseEntrada, texturaGatoEntrada] = await Promise.all([
+const [texturaArvoreEntrada, texturaMouseEntrada, texturaGatoEntrada, texturaVasoEntrada] = await Promise.all([
   new THREE.TextureLoader().loadAsync('facade/tree-v3.png'),
   new THREE.TextureLoader().loadAsync('facade/hanging-mouse-v2.png'),
   new THREE.TextureLoader().loadAsync('facade/cat-v4.png'),
+  new THREE.TextureLoader().loadAsync('facade/planter.png'),
 ]);
-for (const texturaEntrada of [texturaArvoreEntrada, texturaMouseEntrada, texturaGatoEntrada]) texturaEntrada.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+for (const texturaEntrada of [texturaArvoreEntrada, texturaMouseEntrada, texturaGatoEntrada, texturaVasoEntrada]) texturaEntrada.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
 const texturaPortaSimples = texturaPortaMadeira.clone();
 texturaPortaSimples.repeat.set(0.5, 1);
 texturaPortaSimples.offset.x = 0;
 texturaPortaSimples.needsUpdate = true;
+// a porta é uma tábua com espessura (não um papel): aberta, continua sendo vista
+// de lado, com a borda de madeira e o contorno a nanquim
+const geoBordaCache = new Map();
+function espessuraPorta(pai, w, h, x) {
+  const chave = `${w}x${h}`;
+  if (!geoBordaCache.has(chave)) {
+    const geo = new THREE.BoxGeometry(w * 0.985, h * 0.995, 0.07);
+    geoBordaCache.set(chave, { geo, arestas: new THREE.EdgesGeometry(geo) });
+  }
+  const { geo, arestas } = geoBordaCache.get(chave);
+  const tabua = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ color: '#d8d2c6' }));
+  tabua.position.set(x, h / 2, -0.04);
+  tabua.add(new THREE.LineSegments(arestas, new THREE.LineBasicMaterial({ color: '#2c2c2c' })));
+  pai.add(tabua);
+  return tabua;
+}
 const corPortaNormal = new THREE.Color('#ffffff');
 const corPortaHover = new THREE.Color('#d2a16f');
 
@@ -224,18 +277,17 @@ for (const lado of [-1, 1]) {
   folha(corredor, { w: PORTA.w, h: ALT - PORTA.h, pos: [0, PORTA.h + (ALT - PORTA.h) / 2, FIM], seed: 43, desenha: d.parede(PORTA.w) });
 }
 
-// pouca coisa, bem espaçada: luminárias no teto, grades de ventilação, rabiscos e uma mesinha
-for (const [k, z] of [-5, -12, -19, -26, -33, -40].entries()) {
-  folha(corredor, { w: 1.5, h: 0.34, pos: [0, ALT - 0.01, z], rotX: Math.PI / 2, seed: 300 + k, fundo: 'vazado', ppu: 200, desenha: d.luzFluorescente() });
-}
+// na parede, pouca coisa e bem espaçada: grades de ventilação, rabiscos e quadros
+// (luminárias, vasos, mesa e banco são de papel dobrado, no vida.js)
 [[-1, -6.4], [1, -13.5], [-1, -30], [1, -36.5]].forEach(([lado, z], k) => {
   folha(corredor, { w: 0.7, h: 0.32, pos: [lado * (meia - 0.02), 2.95, z], rotY: -lado * Math.PI / 2, seed: 310 + k, fundo: 'vazado', ppu: 220, desenha: d.grade() });
 });
 folha(corredor, { w: 1.3, h: 0.75, pos: [meia - 0.02, 1.9, -4.8], rotY: -Math.PI / 2, seed: 320, fundo: 'vazado', ppu: 220, desenha: d.rabiscoCodigo() });
 folha(corredor, { w: 0.8, h: 1.6, pos: [-(meia - 0.02), 1.7, -34.8], rotY: Math.PI / 2, seed: 321, fundo: 'vazado', ppu: 220, desenha: d.rabiscoFluxo() });
-folha(corredor, { w: 1.2, h: 1.1, pos: [-(meia - 0.12), 0.55, -12.6], rotY: Math.PI / 2, seed: 322, fundo: 'vazado', ppu: 200, desenha: d.mesinha() });
-[[1, -20.4, 'paisagem', 1.0, 0.7], [-1, -28.2, 'abstrato', 0.75, 0.75]].forEach(([lado, z, qual, w, h], k) => {
-  folha(corredor, { w, h, pos: [lado * (meia - 0.02), 1.85, z], rotY: -lado * Math.PI / 2, seed: 60 + k, fundo: 'vazado', ppu: 220, desenha: d.quadro(d.cenas[qual]) });
+// quadros desenhados na parede, levemente tortos
+[[1, -20.4, 'paisagem', 1.0, 0.75], [-1, -28.2, 'abstrato', 0.8, 0.85]].forEach(([lado, z, qual, w, h], k) => {
+  const q = folha(corredor, { w, h, pos: [lado * (meia - 0.02), 1.85, z], rotY: -lado * Math.PI / 2, seed: 60 + k, fundo: 'vazado', ppu: 220, desenha: d.quadro(d.cenas[qual]) });
+  q.rotation.z = (k % 2 ? 1 : -1) * 0.02;
 });
 // o nome grande no começo do corredor, como uma placa flutuando
 const logo = folha(corredor, { w: 3.4, h: 1.25, pos: [0.25, 2.6, -3.6], seed: 330, fundo: 'vazado', ppu: 220, desenha: d.logo('MURILO', '< dev full stack />') });
@@ -244,11 +296,18 @@ const logo = folha(corredor, { w: 3.4, h: 1.25, pos: [0.25, 2.6, -3.6], seed: 33
 
 const portas = [];
 const animacoesSala = []; // (t, dt) => void
+// voo da trajetória: o avião da sala decola e atravessa um céu montado bem longe, lá em cima
+const voo = { lado: 0, alto: 0, aviao: null, parado: null, fase: null, t: 0, s: 0, vel: 0, cruzeiro: 0.16, anda: 0.16, rolo: 0, inclina: 0, nevoa: 0, camDe: null };
+const CEU = new THREE.Vector3(0, 400, 0);
 const formulario = { nome: '', mensagem: '', campo: null, cursor: false, aviso: '' };
 let fotoDaSala = null;
+const CAMADA_VARANDA = 2;
 const grupoProjetos = new THREE.Group();
 grupoProjetos.visible = false;
-cena.add(grupoProjetos);
+// a plataforma da Trajetória é aberta: só aparece perto da porta dela (senão dá para vê-la do varal)
+const grupoTrajetoria = new THREE.Group();
+grupoTrajetoria.visible = false;
+cena.add(grupoProjetos, grupoTrajetoria);
 
 function montaSala(def) {
   // n = normal da porta (aponta para o corredor); t = eixo "largura" da porta
@@ -259,7 +318,7 @@ function montaSala(def) {
   // no píer (mundo aberto) o desenho precisa alcançar longe: farol e nuvens ficam a 20+ m
   const reg = regiao([c.x, 0, c.z], [-n.x, 0, -n.z], def.chave === 'contato' ? 40 : def.chave === 'projetos' ? 24 : SALA.prof);
   const noFundo = (dist, lateral, y) => c.clone().addScaledVector(n, -dist).addScaledVector(t, lateral).setY(y);
-  const paiSala = def.chave === 'projetos' ? grupoProjetos : cena;
+  const paiSala = def.chave === 'projetos' ? grupoProjetos : def.chave === 'trajetoria' ? grupoTrajetoria : cena;
 
   folha(corredor, {
     w: PORTA.w + 0.18, h: PORTA.h + 0.09, pos: c.clone().addScaledVector(n, 0.02).setY((PORTA.h + 0.09) / 2).toArray(), rotY,
@@ -283,6 +342,7 @@ function montaSala(def) {
   );
   folhaPorta.position.set(PORTA.w / 2, PORTA.h / 2, 0);
   dobradica.add(folhaPorta);
+  espessuraPorta(dobradica, PORTA.w, PORTA.h, PORTA.w / 2);
   const decoracaoPorta = folha(corredor, { w: PORTA.w, h: PORTA.h, pos: [PORTA.w / 2, PORTA.h / 2, 0.012], seed: 80 + def.z, ppu: 240, fundo: 'vazado', comCor: true, desenha: d.porta(PORTA.w, PORTA.h, def.chave, { semBase: true }) }, dobradica);
 
   const P = SALA.prof, W = SALA.larg;
@@ -320,6 +380,8 @@ function montaSala(def) {
       }
       folha(reg, { w: W, h: 1.15, pos: noFundo(P - 0.03, 0, 0.575).toArray(), rotY, seed: 93, fundo: 'vazado', ppu: 150, desenha: d.parapeitoVaranda(W) }, paiSala);
       for (const s of [-1, 1]) folha(reg, { w: P, h: 1.15, pos: noFundo(P / 2, s * W / 2, 0.575).toArray(), rotY: rotY - s * Math.PI / 2, seed: 94 + s, fundo: 'vazado', ppu: 140, desenha: d.parapeitoVaranda(P) }, paiSala);
+    } else if (def.chave === 'trajetoria') {
+      // não é sala: é a plataforma de lançamento, aberta, flutuando no papel
     } else {
       folha(reg, { w: W, h: P, pos: centro.clone().setY(ALT).toArray(), rotX: Math.PI / 2, rotY, seed: 91 + def.z, ppu: 90, desenha: d.teto(W, P) }, paiSala);
       folha(reg, { w: W, h: ALT, pos: noFundo(P, 0, ALT / 2).toArray(), rotY, seed: 92 + def.z, desenha: d.parede(W, { cantoEsq: true, cantoDir: true }) }, paiSala);
@@ -391,6 +453,7 @@ function conteudoDa(chave, { pendura, interativo, noFundo, rotY, reg, W, paiSala
             if (noLink(hit)) { window.open(link, '_blank', 'noopener'); return; }
             estadoCartao.virado = !estadoCartao.virado;
             som.papel();
+            if (estadoCartao.virado) abrirLeitura({ topo: `projeto ${i + 1}`, titulo, texto: descricao, link, aoFechar: () => { estadoCartao.virado = false; } });
           },
         };
         interativo(frente, alvo);
@@ -404,44 +467,237 @@ function conteudoDa(chave, { pendura, interativo, noFundo, rotY, reg, W, paiSala
     });
   }
   if (chave === 'habilidades') {
-    const notas = [
-      ['Engenharia', ['Regras de negócio', 'APIs completas', 'Sistemas ERP', 'NF-e & SPED']],
-      ['Front-end', ['HTML5 · Tailwind', 'JavaScript', 'React', 'Angular']],
-      ['Full stack', ['Node.js · NestJS', 'PHP · Python', 'TypeScript', 'APIs REST']],
-      ['Dados', ['PostgreSQL', 'MySQL', 'MongoDB', 'Integrações']],
-    ];
-    notas.forEach(([titulo, itens], i) => {
-      const m = pendura(d.bilhete(titulo, itens), 1.0, 1.3, 0, (i - 1.5) * 1.15, 1.75, { seed: 20 + i });
-      const baseY = m.position.y;
-      let balanco = 0;
-      interativo(m, {
-        rotulo: () => titulo,
-        aoEntrar: () => { m.material.uniforms.uRealce.value = 0.2; },
-        aoSair: () => { m.material.uniforms.uRealce.value = 0; },
-        aoClicar: () => { balanco = 1; som.papel(); },
-      });
-      animacoesSala.push((tt) => {
-        balanco = Math.max(0, balanco - 0.015);
-        m.rotation.z = Math.sin(tt * 9) * 0.12 * balanco;
-        m.position.y = baseY + balanco * 0.04;
-      });
+    // estante de livros: uma prateleira por área, um livro por tecnologia.
+    // Clicar tira o livro da estante, traz até você e abre; clicar de novo guarda.
+    const { grupo, livros } = dobra.estante(ESTANTE);
+    grupo.position.copy(noFundo(SALA.prof - 0.24, 0, 0));
+    grupo.rotation.y = rotY;
+    paiSala.add(grupo);
+    const defEsq = { w: 0.86, h: 1.17, seed: 260, ppu: 640 }, defDir = { ...defEsq, seed: 261 };
+    const pagEsq = folha(reg, { ...defEsq, pos: [0, 0, 0], fundo: 'vazado', desenha: d.paginaTitulo('', '') }, paiSala);
+    const pagDir = folha(reg, { ...defDir, pos: [0, 0, 0], fundo: 'vazado', desenha: d.paginaTexto('') }, paiSala);
+    const leitura = dobra.livroAberto3D(pagEsq, pagDir);
+    leitura.grupo.visible = false;
+    paiSala.add(leitura.grupo);
+    const lugarLeitura = noFundo(2.1, 0, 1.5);
+    const giroLeitura = new THREE.Quaternion().setFromEuler(new THREE.Euler(-0.12, rotY, 0, 'YXZ'));
+    const deOnde = new THREE.Vector3(), giroLivro = new THREE.Quaternion(), meiaVolta = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI);
+    let escolhido = null, emCima = null, k = 0, indo = false;
+    const fecha = () => { indo = false; som.papel(); };
+    leitura.grupo.traverse((o) => { if (o.isMesh) interativo(o, { rotulo: () => 'guardar o livro', aoClicar: fecha }); });
+    for (const l of livros) {
+      for (const parte of l.partes) {
+        interativo(parte, {
+          rotulo: () => `ler sobre ${l.titulo}`,
+          aoEntrar: () => { emCima = l; som.papel(); },
+          aoSair: () => { if (emCima === l) emCima = null; },
+          aoClicar: () => {
+            if (escolhido) return;
+            escolhido = l;
+            indo = true;
+            k = 0;
+            l.livro.getWorldPosition(deOnde);
+            // fechado, o livro aberto tem a lombada atrás: meia volta para casar com a lombada da estante
+            l.livro.getWorldQuaternion(giroLivro).multiply(meiaVolta);
+            leitura.cor(l.cor);
+            redesenha(pagEsq, { ...defEsq, desenha: d.paginaTitulo(l.titulo, l.categoria) });
+            redesenha(pagDir, { ...defDir, desenha: d.paginaTexto(l.texto) });
+            som.papel();
+          },
+        });
+      }
+    }
+    animacoesSala.push((tt, dt) => {
+      grupo.visible = reg.uPintura.value > 0.35;
+      for (const l of livros) {
+        const fora = emCima === l && !escolhido ? 0.09 : 0;
+        l.livro.position.z += (l.base.z + fora - l.livro.position.z) * Math.min(1, dt * 8);
+        l.livro.visible = l !== escolhido;
+      }
+      if (!escolhido) return;
+      // vem voando da estante (fechado, do tamanho do livro), cresce e abre na sua frente
+      k = THREE.MathUtils.clamp(k + (indo ? dt : -dt) * 1.4, 0, 1);
+      const voa = suave(Math.min(1, k / 0.6)), abre = suave(Math.max(0, (k - 0.45) / 0.55));
+      leitura.grupo.visible = true;
+      leitura.grupo.position.lerpVectors(deOnde, lugarLeitura, voa);
+      leitura.grupo.position.y += Math.sin(voa * Math.PI) * 0.25;
+      leitura.grupo.quaternion.slerpQuaternions(giroLivro, giroLeitura, voa);
+      leitura.grupo.scale.setScalar(THREE.MathUtils.lerp(0.36, 0.72, voa));
+      leitura.abre(abre);
+      if (!indo && k === 0) { leitura.grupo.visible = false; escolhido = null; }
     });
   }
   if (chave === 'trajetoria') {
-    pendura(d.linhaDoTempo([
-      ['2019', 'I-SINC', 'Full Stack · Agudos, SP', 'ERP, APIs REST, Angular e AWS'],
-      ['2026', 'Next SI', 'Full Stack · Bauru, SP', 'React no front e PHP no back'],
-      ['2026', 'Dialogi', 'Front-end · remoto', 'sites, experiências e minigames'],
-      ['2026', 'SigmaCX', 'Front-end · remoto', 'interfaces e campanhas interativas'],
-    ]), 4.6, 2.0, 0, 0, 1.75, { seed: 30, ppu: 220 });
+    // o aviãozinho espera na plataforma, com o bico para fora; decola assim que você entra
+    const frente = noFundo(1, 0, 0).sub(noFundo(0, 0, 0));
+    const aviao = dobra.aviaozinho();
+    aviao.scale.setScalar(3.2);
+    voo.parado = { pos: noFundo(1.6, 0, 0.55), rotY: Math.atan2(frente.x, frente.z), frente };
+    voo.aviao = aviao;
+    estacionaAviao();
+    paiSala.add(aviao);
   }
   if (chave === 'sobre') {
     fotoDaSala = pendura;
     pendura(d.texto('Murilo Gonzales Trigo', 'Desenvolvedor full stack há mais de 5 anos, em sistemas corporativos de verdade: ERP, APIs, bancos de dados e integrações. Fascinado pelo universo gamer, gosto de criar interações que vão além da funcionalidade.'),
       1.9, 1.5, 0, 0.95, 1.7, { seed: 40 });
+    montaCanto({ interativo, noFundo, rotY, reg, W, paiSala });
   }
   if (chave === 'contato') montaPier({ interativo, noFundo, rotY, reg });
 }
+
+/* ---------- sobre mim: escrivaninha, monitor digitando e quadro de bilhetes ---------- */
+
+const CODIGO_MONITOR = [
+  'const murilo = {',
+  "  cargo: 'dev full stack',",
+  '  desde: 2021,',
+  "  stack: ['React', 'PHP', 'Node'],",
+  "  curte: ['games', 'interfaces vivas'],",
+  '};',
+  '',
+  "murilo.criar('algo legal');",
+];
+const BILHETES = [
+  'full stack desde maio de 2021',
+  'ERP, APIs e integrações de verdade',
+  'React no front, PHP e Node no back',
+  'fã de games: por isso este corredor',
+];
+
+function montaCanto({ interativo, noFundo, rotY, reg, W, paiSala }) {
+  const grupo = new THREE.Group();
+  paiSala.add(grupo);
+  animacoesSala.push(() => { grupo.visible = reg.uPintura.value > 0.35; });
+
+  // escrivaninha encostada na parede da direita, virada para o meio da sala
+  const canto = new THREE.Group();
+  canto.position.copy(noFundo(3.0, W / 2 - 0.45, 0));
+  canto.rotation.y = rotY - Math.PI / 2;
+  grupo.add(canto);
+  const KR = '#ecdcc4', KR2 = '#dcc6a6';
+  dobra.dobradura(new THREE.BoxGeometry(1.7, 0.06, 0.75), KR, canto, { pos: [0, 0.75, 0] });
+  for (const x of [-0.78, 0.78]) for (const z of [-0.3, 0.3]) dobra.dobradura(new THREE.CylinderGeometry(0.03, 0.045, 0.72, 4), KR2, canto, { pos: [x, 0.36, z], rot: [0, Math.PI / 4, 0] });
+  // monitor: a tela é um canvas onde o código vai sendo digitado
+  dobra.dobradura(new THREE.BoxGeometry(0.95, 0.6, 0.05), '#d9d4ca', canto, { pos: [0, 1.2, -0.2] });
+  dobra.dobradura(new THREE.BoxGeometry(0.08, 0.3, 0.05), '#d9d4ca', canto, { pos: [0, 0.92, -0.22] });
+  dobra.dobradura(new THREE.BoxGeometry(0.34, 0.03, 0.2), '#d9d4ca', canto, { pos: [0, 0.79, -0.22] });
+  const telaCanvas = document.createElement('canvas');
+  telaCanvas.width = 640; telaCanvas.height = 384;
+  const telaTex = new THREE.CanvasTexture(telaCanvas);
+  telaTex.colorSpace = THREE.SRGBColorSpace;
+  const tela = new THREE.Mesh(new THREE.PlaneGeometry(0.86, 0.51), new THREE.MeshBasicMaterial({ map: telaTex }));
+  tela.position.set(0, 1.2, -0.172);
+  canto.add(tela);
+  const digita = { linha: 0, letra: 0, espera: 0, cursor: 0 };
+  const desenhaTela = () => {
+    const g = telaCanvas.getContext('2d');
+    g.fillStyle = '#f7f6f2';
+    g.fillRect(0, 0, 640, 384);
+    g.strokeStyle = '#2c2c2c'; g.lineWidth = 6; g.strokeRect(3, 3, 634, 378);
+    g.font = '500 34px Caveat';
+    g.fillStyle = '#2c2c2c';
+    g.textBaseline = 'top';
+    for (let i = 0; i <= digita.linha && i < CODIGO_MONITOR.length; i++) {
+      const texto = i < digita.linha ? CODIGO_MONITOR[i] : CODIGO_MONITOR[i].slice(0, digita.letra);
+      g.fillText(texto, 24, 20 + i * 42);
+      if (i === digita.linha && digita.cursor < 0.5) g.fillRect(28 + g.measureText(texto).width, 26 + i * 42, 14, 30);
+    }
+    telaTex.needsUpdate = true;
+  };
+  desenhaTela();
+  let proximaLetra = 0;
+  animacoesSala.push((tt, dt) => {
+    if (!grupo.visible) return;
+    digita.cursor = (digita.cursor + dt * 1.6) % 1;
+    if (tt < proximaLetra) { if (Math.random() < 0.1) desenhaTela(); return; }
+    proximaLetra = tt + 0.06 + Math.random() * 0.08;
+    if (digita.espera > 0) { digita.espera -= 1; desenhaTela(); return; }
+    const linha = CODIGO_MONITOR[digita.linha] ?? '';
+    if (digita.letra < linha.length) digita.letra += 1;
+    else if (digita.linha < CODIGO_MONITOR.length - 1) { digita.linha += 1; digita.letra = 0; }
+    else { digita.espera = 40; digita.linha = 0; digita.letra = 0; }
+    desenhaTela();
+  });
+  interativo(tela, { rotulo: () => 'recomeçar', aoClicar: () => { digita.linha = 0; digita.letra = 0; som.clique(); } });
+  // teclado, caneca e o controle de videogame
+  dobra.dobradura(new THREE.BoxGeometry(0.6, 0.03, 0.2), '#d9d4ca', canto, { pos: [-0.05, 0.795, 0.12] });
+  dobra.dobradura(new THREE.CylinderGeometry(0.06, 0.055, 0.13, 6), '#efe6d6', canto, { pos: [0.6, 0.845, 0.05] });
+  dobra.dobradura(new THREE.TorusGeometry(0.035, 0.012, 3, 5), '#efe6d6', canto, { pos: [0.67, 0.85, 0.05] });
+  const controle = new THREE.Group();
+  controle.position.set(-0.6, 0.81, 0.1);
+  controle.rotation.y = 0.4;
+  canto.add(controle);
+  const partesControle = [
+    dobra.dobradura(new THREE.BoxGeometry(0.26, 0.05, 0.12), '#8a8a8a', controle),
+    ...[-1, 1].map((s) => dobra.dobradura(new THREE.CylinderGeometry(0.055, 0.06, 0.05, 6), '#8a8a8a', controle, { pos: [s * 0.13, 0, 0.03] })),
+  ];
+  for (const [x, z, cor] of [[0.09, -0.02, '#c47a6a'], [0.12, 0.01, '#6f8fa3'], [-0.1, 0, '#4a4a4a']]) dobra.dobradura(new THREE.CylinderGeometry(0.015, 0.015, 0.02, 6), cor, controle, { pos: [x, 0.03, z] });
+  let treme = 0;
+  for (const parte of partesControle) interativo(parte, { rotulo: () => 'jogar uma?', aoClicar: () => { treme = 1; som.clique(); } });
+  animacoesSala.push((tt, dt) => {
+    treme = Math.max(0, treme - dt * 1.5);
+    controle.position.x = -0.6 + Math.sin(tt * 70) * 0.012 * treme;
+    controle.rotation.y = 0.4 + Math.sin(tt * 55) * 0.08 * treme;
+  });
+
+  // quadro de cortiça na parede da esquerda, com os bilhetes
+  const quadroCortica = new THREE.Group();
+  quadroCortica.position.copy(noFundo(2.6, -(W / 2 - 0.05), 1.75));
+  quadroCortica.rotation.y = rotY + Math.PI / 2;
+  grupo.add(quadroCortica);
+  dobra.dobradura(new THREE.BoxGeometry(2.0, 1.3, 0.04), '#d9c3a0', quadroCortica);
+  dobra.dobradura(new THREE.BoxGeometry(2.1, 1.4, 0.03), KR2, quadroCortica, { pos: [0, 0, -0.02] });
+  BILHETES.forEach((texto, i) => {
+    const b = folha(reg, { w: 0.5, h: 0.5, pos: [-0.66 + i * 0.44, (i % 2 ? -0.18 : 0.2), 0.04], seed: 470 + i, fundo: 'vazado', ppu: 360, desenha: d.notinha(texto) }, quadroCortica);
+    b.rotation.z = (i % 2 ? 1 : -1) * 0.07;
+    let mexe = 0;
+    interativo(b, {
+      rotulo: () => 'ler o bilhete',
+      aoClicar: () => { mexe = 1; som.papel(); abrirLeitura({ topo: 'bilhete', titulo: '', texto }); },
+    });
+    const giroBase = b.rotation.z;
+    animacoesSala.push((tt, dt) => {
+      mexe = Math.max(0, mexe - dt * 1.5);
+      b.rotation.z = giroBase + Math.sin(tt * 14) * 0.08 * mexe;
+    });
+  });
+}
+
+/* ---------- folha de leitura: o texto aparece grande, numa folha na frente da tela ---------- */
+
+const leitor = {
+  caixa: document.getElementById('leitor'),
+  topo: document.getElementById('leitorTopo'),
+  titulo: document.getElementById('leitorTitulo'),
+  texto: document.getElementById('leitorTexto'),
+  link: document.getElementById('leitorLink'),
+  aoFechar: null,
+};
+function abrirLeitura({ topo = '', titulo = '', texto = '', link = null, aoFechar = null }) {
+  leitor.aoFechar?.();
+  leitor.topo.textContent = topo;
+  leitor.titulo.textContent = titulo;
+  leitor.titulo.hidden = !titulo;
+  leitor.texto.textContent = texto;
+  leitor.link.hidden = !link;
+  if (link) { leitor.link.href = link; leitor.link.textContent = `abrir ${link.replace('https://', '')} ↗`; }
+  leitor.aoFechar = aoFechar;
+  leitor.caixa.hidden = false;
+  ui.rotulo.hidden = true;
+}
+function fecharLeitura() {
+  if (leitor.caixa.hidden) return false;
+  leitor.caixa.hidden = true;
+  const f = leitor.aoFechar;
+  leitor.aoFechar = null;
+  f?.();
+  som.papel();
+  return true;
+}
+leitor.caixa.addEventListener('click', (e) => { if (e.target === leitor.caixa || e.target.closest('.fechar')) fecharLeitura(); });
+// Esc fecha a folha antes de qualquer outro atalho (captura)
+addEventListener('keydown', (e) => { if (e.key === 'Escape' && fecharLeitura()) e.stopImmediatePropagation(); }, true);
 
 /* ---------- contato: um píer no mar ---------- */
 
@@ -479,6 +735,62 @@ function spriteContato(texturaSprite, w, h, pos, rotY, opacidade = 1, pai = grup
   return mesh;
 }
 
+// luz do farol: um brilho que pulsa na lâmpada e dois fachos varrendo o mar.
+// O fundo é papel claro, então a luz é um amarelo translúcido (somar luz no branco não aparece).
+function montaLuzFarol(lampada, rotY) {
+  const tela = document.createElement('canvas');
+  tela.width = tela.height = 128;
+  const g = tela.getContext('2d');
+  const grad = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+  grad.addColorStop(0, 'rgba(255, 236, 160, 1)');
+  grad.addColorStop(0.25, 'rgba(250, 214, 110, 0.7)');
+  grad.addColorStop(1, 'rgba(245, 200, 90, 0)');
+  g.fillStyle = grad;
+  g.fillRect(0, 0, 128, 128);
+  const brilho = new THREE.Mesh(new THREE.PlaneGeometry(2.6, 2.6), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(tela), transparent: true, depthWrite: false }));
+  brilho.position.copy(lampada);
+  brilho.rotation.y = rotY;
+  grupoContato.add(brilho);
+
+  const ALCANCE = 26;
+  const geoFacho = new THREE.ConeGeometry(2.2, ALCANCE, 32, 1, true);
+  geoFacho.translate(0, -ALCANCE / 2, 0);   // ponta do cone na lâmpada
+  geoFacho.rotateZ(Math.PI / 2);            // deitado, apontando para +x
+  const matFacho = new THREE.ShaderMaterial({
+    uniforms: { uAlcance: { value: ALCANCE } },
+    vertexShader: /* glsl */ `
+      uniform float uAlcance;
+      varying float vAo;
+      void main() {
+        vAo = position.x / uAlcance;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: /* glsl */ `
+      varying float vAo;
+      void main() {
+        gl_FragColor = vec4(0.98, 0.84, 0.42, 0.32 * pow(1.0 - clamp(vAo, 0.0, 1.0), 1.6));
+      }
+    `,
+    transparent: true,
+    depthWrite: false,
+    side: THREE.DoubleSide,
+  });
+  const giro = new THREE.Group();
+  giro.position.copy(lampada);
+  for (const sentido of [0, Math.PI]) {
+    const facho = new THREE.Mesh(geoFacho, matFacho);
+    facho.rotation.y = sentido;
+    facho.rotation.z = -0.04;   // levemente para baixo, varrendo a água
+    giro.add(facho);
+  }
+  grupoContato.add(giro);
+  animacoesSala.push((tt) => {
+    giro.rotation.y = tt * 0.5;
+    brilho.scale.setScalar(1 + Math.sin(tt * 3) * 0.08 + Math.max(0, Math.cos(tt * 0.5 * 2)) * 0.25);
+  });
+}
+
 function montaPier({ interativo, noFundo, rotY, reg }) {
   folha(reg, { w: 2.05, h: 5.2, pos: noFundo(2.6, 0, 0.02).toArray(), rotX: -Math.PI / 2, rotY, seed: 640, ppu: 140, fundo: 'vazado', desenha: d.deck(2.05) }, grupoContato);
 
@@ -497,8 +809,13 @@ function montaPier({ interativo, noFundo, rotY, reg }) {
         if (dot(vMundo - uOrigem, uDir) > mix(-2.0, 70.0, uPintura)) discard;
         vec2 uvA = vMundo.xz / 9.0 + vec2(uTempo * 0.009, uTempo * 0.014);
         vec2 uvB = vMundo.xz / 13.0 + vec2(-uTempo * 0.004, uTempo * 0.007);
-        vec3 c = min(texture2D(uMapa, uvA).rgb, texture2D(uMapa, uvB).rgb);
-        c = mix(c, uPapel, smoothstep(16.0, 58.0, vProf) * 0.78);
+        float tinta = min(texture2D(uMapa, uvA).r, texture2D(uMapa, uvB).r);
+        // mar a grafite: água cinza clara, traços das ondas em grafite escuro e manchas
+        // de esfumado (como lápis espalhado com o dedo); longe, vira papel
+        vec3 c = mix(vec3(0.52, 0.53, 0.55), vec3(0.9, 0.9, 0.89), tinta);
+        float mancha = sin(vMundo.x * 0.21 + uTempo * 0.05) * sin(vMundo.z * 0.17 - uTempo * 0.04) + sin((vMundo.x + vMundo.z) * 0.07);
+        c *= 1.0 - smoothstep(0.2, 1.6, mancha) * 0.07;
+        c = mix(c, uPapel, smoothstep(14.0, 58.0, vProf) * 0.8);
         gl_FragColor = vec4(c, 1.0);
       }
     `,
@@ -507,7 +824,11 @@ function montaPier({ interativo, noFundo, rotY, reg }) {
   mar.position.copy(noFundo(60, 0, -0.35));
   grupoContato.add(mar);
 
-  spriteContato(texFarol, 3.8, 3.7, noFundo(22, -8.5, 1.45), rotY, 0.78);
+  // farol grande no horizonte; a base das pedras fica rente à água
+  const FAROL = { w: 8.4, h: 8.2, dist: 24, lateral: -9.5 };
+  const yFarol = -0.23 + FAROL.h * 0.453;
+  spriteContato(texFarol, FAROL.w, FAROL.h, noFundo(FAROL.dist, FAROL.lateral, yFarol), rotY, 0.85);
+  montaLuzFarol(noFundo(FAROL.dist - 0.1, FAROL.lateral, yFarol + FAROL.h * 0.306), rotY);
   for (let k = 0; k < 7; k++) {
     const w = 4 + (k % 3) * 1.4;
     const compacta = k % 2 === 1;
@@ -613,6 +934,7 @@ const vida = criaVida({ cena, folha, corredor, som, ALT });
 
 const fachada = regiao([0, 0, 9], [0, 0, -1], 10);
 const portasDaCasa = [];
+let tampaPorta = null;
 const alvosFachada = [];
 {
   const P = { w: 1.8, h: 2.5 }, largura = 16, alto = 6;
@@ -633,10 +955,9 @@ const alvosFachada = [];
   folha(fachada, { w: P.w + 0.18, h: P.h + 0.09, pos: [0, (P.h + 0.09) / 2, 0.04], seed: 806, fundo: 'vazado', ppu: 200, desenha: d.batente(P.w + 0.18) });
   folha(fachada, { w: 5.2, h: 1.25, pos: [0, 4.45, 0.055], seed: 797, fundo: 'vazado', ppu: 180, desenha: d.logo('MURILO', 'DEV FULL STACK  ·  ENTRE E EXPLORE') });
   const cordaoEntrada = folha(fachada, { w: 12.5, h: 1.0, pos: [0, 5.25, 0.07], seed: 798, fundo: 'vazado', ppu: 115, desenha: d.cordaoLuzes() });
-  folha(fachada, { w: 2.75, h: 0.72, pos: [0, 2.74, 0.1], seed: 799, fundo: 'vazado', ppu: 220, desenha: d.marquiseEntrada() });
   const arandelasEntrada = [-1, 1].map((ladoLuz) => folha(fachada, { w: 0.55, h: 0.85, pos: [ladoLuz * 1.38, 1.92, 0.1], seed: 820 + ladoLuz, fundo: 'vazado', ppu: 220, desenha: d.arandelaEntrada() }));
   folha(fachada, { w: 1.55, h: 0.72, pos: [0, 0.018, 1.05], rotX: -Math.PI / 2, seed: 821, fundo: 'vazado', ppu: 220, desenha: d.capachoEntrada() });
-  const placa = folha(fachada, { w: 2.35, h: 0.58, pos: [0, P.h + 0.78, 0.08], seed: 807, fundo: 'vazado', ppu: 220, comCor: true, desenha: d.placaMadeira('Portfólio vivo') });
+  const placa = folha(fachada, { w: 2.35, h: 0.58, pos: [0, P.h + 0.5, 0.08], seed: 807, fundo: 'vazado', ppu: 220, comCor: true, desenha: d.placaMadeira('Portfólio') });
   placa.rotation.z = -0.03;
   // A árvore fica fisicamente à frente da parede e recebe uma marca de
   // contato no piso. O recorte possui margem transparente inferior, por isso
@@ -645,8 +966,7 @@ const alvosFachada = [];
   spriteEntrada(texturaArvoreEntrada, 4.3, 4.3, [-3.8, 1.7, 0.82]);
   const janelaEntrada = folha(fachada, { w: 1.55, h: 1.42, pos: [3.05, 1.85, 0.05], seed: 809, fundo: 'vazado', ppu: 170, comCor: true, desenha: d.janelaCasa() });
   janelaEntrada.material.uniforms.uPintar.value = 0.35;
-  const floreiraEntrada = folha(fachada, { w: 2.35, h: 0.86, pos: [3.08, 0.43, 0.3], seed: 810, fundo: 'vazado', ppu: 170, comCor: true, desenha: d.floreira() });
-  floreiraEntrada.material.uniforms.uPintar.value = 0.52;
+  spriteEntrada(texturaVasoEntrada, 2.35, 0.86, [3.08, 0.43, 0.3]);
   animacoesSala.push((tt) => {
     cordaoEntrada.material.uniforms.uRealce.value = 0.035 + Math.sin(tt * 2.2) * 0.025;
     arandelasEntrada.forEach((luz, i) => luz.scale.setScalar(1 + Math.sin(tt * 2.8 + i * 1.7) * 0.018));
@@ -661,6 +981,10 @@ const alvosFachada = [];
   const gatinho = spriteEntrada(texturaGatoEntrada, 0.72, 1.08, [-1.5, 0.47, 0.76]);
   gatinho.userData.alvo = { rotulo: () => 'fazer carinho', aoClicar: () => som.miau(), aoEntrar: () => { gatinho.material.color.set('#f1dfba'); }, aoSair: () => { gatinho.material.color.set('#ffffff'); } };
   alvosFachada.push(gatinho);
+  // atrás da porta fechada só tem papel: o corredor não aparece pelas frestas antes de você entrar
+  tampaPorta = new THREE.Mesh(new THREE.PlaneGeometry(P.w + 0.3, P.h + 0.2), new THREE.MeshBasicMaterial({ color: PAPEL }));
+  tampaPorta.position.set(0, (P.h + 0.2) / 2, -0.13);
+  cena.add(tampaPorta);
   // porta dupla, abrindo para dentro
   for (const sx of [-1, 1]) {
     const dobradica = new THREE.Group();
@@ -676,6 +1000,7 @@ const alvosFachada = [];
     );
     f.position.set(-sx * P.w / 4, P.h / 2, 0);
     dobradica.add(f);
+    espessuraPorta(dobradica, P.w / 2, P.h, -sx * P.w / 4);
     const adesivos = folha(fachada, { w: P.w / 2, h: P.h, pos: [-sx * P.w / 4, P.h / 2, 0.012], seed: 815 + sx, ppu: 240, fundo: 'vazado', comCor: true, desenha: d.adesivosPortaDupla(sx) }, dobradica);
     const folhaCasa = { dobradica, f, adesivos, sx, abertura: 0, alvo: 0, pintar: 0 };
     portasDaCasa.push(folhaCasa);
@@ -714,7 +1039,7 @@ const ui = {
   tituloSub: document.getElementById('tituloSub'),
 };
 
-const estado = { modo: 'fachada', alvo: 0, t: 0, mx: 0, my: 0, alvoMx: 0, alvoMy: 0, sala: null, anim: null, intro: 0, yaw: 0, pitch: 0, passos: 0 };
+const estado = { dentro: false, modo: 'fachada', alvo: 0, t: 0, mx: 0, my: 0, alvoMx: 0, alvoMy: 0, sala: null, anim: null, intro: 0, yaw: 0, pitch: 0, passos: 0 };
 const Z_INI = -0.2, Z_FIM = FIM + 3.2;
 
 function lerRolagem() {
@@ -755,6 +1080,8 @@ function poseFachada(pos, olhar) {
 function entrarNaCasa() {
   if (estado.modo !== 'fachada') return;
   estado.modo = 'entrando';
+  estado.dentro = true;   // só agora o corredor começa a se desenhar
+  tampaPorta.visible = false;
   ui.rotulo.hidden = true;
   som.clique();
   setTimeout(() => som.rangido(), 150);
@@ -784,7 +1111,8 @@ function poseCorredor(t, pos, olhar) {
 }
 function poseSala(p, pos, olhar) {
   pos.copy(p.c).addScaledVector(p.n, -(p.olhar.entrada ?? 1.2)).setY(p.olhar.cameraY ?? 1.6);
-  olhar.copy(p.c).addScaledVector(p.n, -p.olhar.dist).addScaledVector(p.t, -estado.mx * 1.6 * (p.olhar.dist / SALA.prof)).setY(p.olhar.y - estado.my * 0.6);
+  // o olhar segue o mouse, só um pouco: dá para mirar e clicar sem a cena fugir do cursor
+  olhar.copy(p.c).addScaledVector(p.n, -p.olhar.dist).addScaledVector(p.t, estado.mx * 0.7 * (p.olhar.dist / SALA.prof)).setY(p.olhar.y - estado.my * 0.3);
 }
 function poseNaPorta(p, pos, olhar) {
   pos.copy(p.c).addScaledVector(p.n, 1.5).setY(1.6);
@@ -812,6 +1140,7 @@ function entrar(p) {
   anima(cam, naPorta, 0.9, () => {
     p.alvo = 1;
     som.rangido();
+    if (p.def.chave === 'trajetoria') { visitou(p.def.nome); setTimeout(decolar, 450); return; }
     setTimeout(() => som.rabisco(0.8), 500);
     const dentro = pose();
     poseSala(p, dentro.pos, dentro.olhar);
@@ -826,10 +1155,12 @@ function entrar(p) {
 
 function sair() {
   if (estado.modo !== 'sala') return;
+  fecharLeitura();
   const p = estado.sala;
   estado.modo = 'voltando';
   ui.voltar.hidden = true;
   ui.sala.textContent = '';
+  dica(null);
   document.activeElement?.blur?.();
   const naPorta = pose();
   poseNaPorta(p, naPorta.pos, naPorta.olhar);
@@ -854,6 +1185,324 @@ botaoSom.addEventListener('click', () => {
   botaoSom.setAttribute('aria-pressed', String(ligado));
 });
 
+/* ---------- voo da trajetória ---------- */
+
+// Lógica do céu infinito adaptada do portfolio-itom (MIT, Tomasz Szmajda):
+// a câmera fica parada atrás do avião e o "mundo" anda em z conforme a rolagem
+// (com inércia). O céu é feito de trechos de 40 m de nuvens, criados à frente e
+// descartados atrás; as paradas da trajetória se repetem a cada 160 m.
+const TRECHO = 40, CICLO = 160, OFFSETS_PARADAS = [15, 55, 95, 135];
+const grupoCeu = new THREE.Group();
+grupoCeu.visible = false;
+grupoCeu.position.copy(CEU);
+cena.add(grupoCeu);
+const mundoCeu = new THREE.Group();   // tudo que passa por você
+grupoCeu.add(mundoCeu);
+const regCeu = regiao(CEU.toArray(), [0, 0, -1], 4000);
+regCeu.uPintura.value = 1;
+const FOV_BASE = camera.fov;
+const vento = new THREE.LineSegments(new THREE.BufferGeometry(), new THREE.LineBasicMaterial({ color: '#2c2c2c', transparent: true, opacity: 0, depthWrite: false }));
+{
+  const pts = [];
+  for (let i = 0; i < 70; i++) {
+    const ang = Math.random() * Math.PI * 2, raio = 1.6 + Math.random() * 4.5, z = -Math.random() * 40;
+    const x = Math.cos(ang) * raio, y = Math.sin(ang) * raio * 0.7;
+    pts.push(x, y, z, x, y, z - 0.4);
+  }
+  vento.geometry.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
+}
+grupoCeu.add(vento);
+const aviaoCeu = dobra.aviaozinho();
+aviaoCeu.scale.setScalar(3.2);
+aviaoCeu.position.set(0, -0.42, -1.7);
+grupoCeu.add(aviaoCeu);
+// o céu desenhado a lápis: uma folha bem ao fundo, presa à câmera, com hachura
+// leve no alto (mais forte em cima)
+{
+  const c = document.createElement('canvas');
+  c.width = 2048; c.height = 1024;
+  const g = c.getContext('2d');
+  g.fillStyle = PAPEL;
+  g.fillRect(0, 0, 2048, 1024);
+  g.lineCap = 'round';
+  let r = 3;
+  const aleat = () => ((r = (r * 16807) % 2147483647) / 2147483647);
+  // hachura que dá a volta inteira (a folha vira um cilindro em volta de você)
+  for (let i = 0; i < 3600; i++) {
+    const y = Math.pow(aleat(), 1.8) * 560, x = aleat() * 2048, comp = 30 + aleat() * 70;
+    g.strokeStyle = `rgba(44, 44, 44, ${0.03 + (1 - y / 560) * 0.08 * aleat()})`;
+    g.lineWidth = 1 + aleat() * 1.4;
+    for (const dx of [0, -2048]) { g.beginPath(); g.moveTo(x + dx, y); g.lineTo(x + dx + comp, y - comp * 0.55); g.stroke(); }
+  }
+  const tex = new THREE.CanvasTexture(c);
+  tex.anisotropy = 8;
+  tex.wrapS = THREE.RepeatWrapping;
+  tex.repeat.x = 2;
+  const fundo = new THREE.Mesh(new THREE.CylinderGeometry(72, 72, 150, 48, 1, true), new THREE.MeshBasicMaterial({ map: tex, depthWrite: false, side: THREE.BackSide }));
+  fundo.position.set(0, 20, 0);
+  fundo.renderOrder = -1;
+  grupoCeu.add(fundo);
+}
+
+const aleatorioCom = (semente) => { let x = semente; return () => { x = Math.sin(x * 9999) * 10000; return x - Math.floor(x); }; };
+const trechos = new Map(), ciclos = new Map();
+const geoNuvem = new THREE.PlaneGeometry(1, 1);
+
+function criaTrecho(i) {
+  const g = new THREE.Group();
+  const r = aleatorioCom(42 + i * 1000 + 1);
+  const qtd = 15 + Math.floor(r() * 8);
+  for (let k = 0; k < qtd; k++) {
+    const compacta = r() < 0.4;
+    const larg = 3 * (0.8 + r() * 1.5);
+    const m = new THREE.Mesh(geoNuvem, new THREE.MeshBasicMaterial({ map: compacta ? texNuvemPequena : texNuvem, transparent: true, depthWrite: false, side: THREE.DoubleSide }));
+    m.scale.set(larg, larg / (compacta ? 1.78 : 2.36), 1);
+    m.userData = {
+      base: new THREE.Vector3((r() - 0.5) * 20, (r() - 0.5) * 12, -(i * TRECHO) - 15 - r() * TRECHO),
+      opacidade: 0.55 + r() * 0.4, vel: 0.3 + r() * 0.4, deriva: 0.5 + r(), boia: 0.1 + r() * 0.2, fase: r() * Math.PI * 2,
+    };
+    g.add(m);
+  }
+  mundoCeu.add(g);
+  return g;
+}
+
+function criaCiclo(c) {
+  const g = new THREE.Group();
+  TRAJETORIA.forEach(([ano, nome, cargo, texto], i) => {
+    const lado = i % 2 ? 1 : -1;
+    const parada = new THREE.Group();
+    parada.userData = { z: -(c * CICLO + OFFSETS_PARADAS[i]), lado, fase: i * 1.7 };
+    // a placa fica em cima de uma nuvem grande
+    const nuvem = new THREE.Mesh(geoNuvem, new THREE.MeshBasicMaterial({ map: texNuvem, transparent: true, depthWrite: false }));
+    nuvem.scale.set(6, 2.5, 1);
+    nuvem.position.set(0, -1.55, -0.05);
+    const placa = folha(regCeu, { w: 3.6, h: 2.35, pos: [0, 0.35, 0], seed: 900 + i, fundo: 'vazado', ppu: 260, desenha: d.marcoVoo(ano, nome, cargo, texto) }, parada);
+    parada.add(nuvem);
+    parada.userData.placa = placa;
+    g.add(parada);
+  });
+  mundoCeu.add(g);
+  return g;
+}
+
+function descarta(grupo) {
+  mundoCeu.remove(grupo);
+  grupo.traverse((o) => {
+    if (!o.material) return;
+    for (const u of Object.values(o.material.uniforms ?? {})) if (u.value?.isTexture && u.value !== texNuvem && u.value !== texNuvemPequena) u.value.dispose();
+    o.material.dispose();
+    if (o.geometry !== geoNuvem) o.geometry.dispose();
+  });
+}
+
+// mantém só os trechos e ciclos perto de você
+function sincronizaCeu() {
+  const t = Math.floor(voo.s / TRECHO), c = Math.floor(voo.s / CICLO);
+  const querTrechos = [t - 1, t, t + 1, t + 2], querCiclos = [c - 1, c, c + 1];
+  for (const [i, g] of trechos) if (!querTrechos.includes(i)) { descarta(g); trechos.delete(i); }
+  for (const i of querTrechos) if (!trechos.has(i)) trechos.set(i, criaTrecho(i));
+  for (const [i, g] of ciclos) if (!querCiclos.includes(i)) { descarta(g); ciclos.delete(i); }
+  for (const i of querCiclos) if (!ciclos.has(i)) ciclos.set(i, criaCiclo(i));
+}
+
+const nevoa = document.getElementById('nevoa');
+const botaoPular = document.getElementById('pular');
+const vooDica = document.getElementById('vooDica');
+const vooDicaTexto = document.getElementById('vooDicaTexto');
+const dica = (texto) => { vooDicaTexto.textContent = texto ?? ''; vooDica.hidden = !texto; };
+let paradoHa = 0;   // segundos sem voar: a dica de rolar volta
+const COR_CEU = new THREE.Color(PAPEL);   // céu de papel: o desenho do fundo faz o resto
+const giroNuvem = new THREE.Quaternion().setFromEuler(new THREE.Euler(0, -Math.PI / 3, 0));
+
+function estacionaAviao() {
+  voo.aviao.position.copy(voo.parado.pos);
+  voo.aviao.rotation.set(0, voo.parado.rotY, 0);
+}
+
+function decolar() {
+  estado.modo = 'voo';
+  voo.fase = 'decolando';
+  voo.t = 0;
+  voo.camDe = { pos: cam.pos.clone(), olhar: cam.olhar.clone() };
+  ui.voltar.hidden = true;
+  ui.rotulo.hidden = true;
+  ui.sala.textContent = estado.sala.def.nome;
+  emFoco?.aoSair?.();
+  emFoco = null;
+  som.papel();
+}
+
+function pular() {
+  if (estado.modo !== 'voo' || voo.fase !== 'ceu') return;
+  voo.fase = 'caindo';
+  voo.t = 0;
+  botaoPular.hidden = true;
+  dica(null);
+  som.papel();
+}
+botaoPular.addEventListener('click', pular);
+addEventListener('keydown', (e) => { if (e.key === 'Escape' && estado.modo === 'voo') pular(); });
+// no céu, rolar dá impulso (para trás também)
+addEventListener('wheel', (e) => { if (estado.modo === 'voo' && voo.fase === 'ceu') voo.vel = THREE.MathUtils.clamp(voo.vel + e.deltaY * 0.002, -0.12, 1.2); }, { passive: true });
+let toqueY = 0;
+addEventListener('touchstart', (e) => { toqueY = e.touches[0]?.clientY ?? 0; }, { passive: true });
+addEventListener('touchmove', (e) => {
+  const y = e.touches[0]?.clientY ?? 0;
+  if (estado.modo === 'voo' && voo.fase === 'ceu') voo.vel += (toqueY - y) * 0.005;
+  toqueY = y;
+}, { passive: true });
+
+// sai do voo: cai de volta no corredor, em frente à porta da Trajetória, e a porta fecha
+function aterrissar() {
+  const p = portas.find((q) => q.def.chave === 'trajetoria');
+  grupoCeu.visible = false;
+  renderer.setClearColor(PAPEL);
+  camera.fov = FOV_BASE;
+  camera.updateProjectionMatrix();
+  estacionaAviao();
+  estado.modo = 'aterrissando';
+  voo.fase = null;
+  voo.rolo = 0;
+  p.alvo = 0;
+  ui.sala.textContent = '';
+  dica(null);
+  const naPorta = pose();
+  poseNaPorta(p, naPorta.pos, naPorta.olhar);
+  cam.pos.copy(naPorta.pos).setY(ALT - 0.15);
+  cam.olhar.copy(naPorta.olhar).setY(0.2);
+  anima(cam, naPorta, 0.8, () => {
+    som.passo();
+    const volta = pose();
+    poseCorredor(estado.t, volta.pos, volta.olhar);
+    anima(cam, volta, 0.9, () => {
+      estado.modo = 'corredor';
+      estado.sala = null;
+      document.documentElement.classList.remove('na-sala');
+    });
+  });
+}
+
+const tmpVoo = new THREE.Vector3();
+
+function atualizaVoo(dt) {
+  voo.t += dt;
+  if (voo.fase === 'decolando') {
+    // o aviãozinho dispara para a parede do fundo; a câmera vai atrás e tudo some no branco
+    const k = Math.min(1, voo.t / 1.8), a = voo.aviao, f = voo.parado.frente;
+    a.position.copy(voo.parado.pos).addScaledVector(f, k * k * 3.2);
+    a.position.y += Math.max(0, k - 0.3) * 0.5;
+    a.rotation.set(-k * 0.25, voo.parado.rotY, Math.sin(k * 6) * 0.08, 'YXZ');
+    const segue = suave(Math.min(1, k / 0.7));
+    tmpVoo.copy(a.position).addScaledVector(f, -1.6).setY(a.position.y + 0.4);
+    cam.pos.lerpVectors(voo.camDe.pos, tmpVoo, segue);
+    tmpVoo.copy(a.position).addScaledVector(f, 5);
+    cam.olhar.lerpVectors(voo.camDe.olhar, tmpVoo, segue);
+    voo.nevoa = Math.max(0, (k - 0.6) / 0.4);
+    if (k >= 1) {
+      voo.fase = 'ceu';
+      voo.t = 0;
+      voo.s = 0;
+      voo.vel = 0.25;
+      sincronizaCeu();
+      grupoCeu.visible = true;
+      renderer.setClearColor(COR_CEU);
+      botaoPular.hidden = false;
+      paradoHa = 0;
+      voo.cruzeiro = 0.16;
+      voo.anda = 0.16;
+      ui.sala.textContent = 'Trajetória · em voo';
+    }
+    return;
+  }
+  if (voo.fase === 'ceu') {
+    // voa sozinho em velocidade de cruzeiro; rolar acelera (ou segura) por cima disso
+    voo.vel *= Math.pow(0.95, dt * 60);
+    if (Math.abs(voo.vel) < 0.001) voo.vel = 0;
+    // perto de uma parada o cruzeiro cai, para dar tempo de ler (sem parar)
+    const naParada = OFFSETS_PARADAS.some((o) => { const rel = (((voo.s - o) % CICLO) + CICLO) % CICLO - CICLO; return rel > -13 && rel < -5; });
+    const cruzeiro = naParada ? 0.06 : 0.16;
+    voo.cruzeiro += (cruzeiro - voo.cruzeiro) * Math.min(1, dt * 2);
+    voo.anda = Math.max(0.03, voo.cruzeiro + voo.vel);
+    voo.s += voo.anda * dt * 60;
+    paradoHa += dt;
+    // nos primeiros segundos, avisa que dá para acelerar
+    const querDica = paradoHa < 5 && voo.vel < 0.05 ? (toque ? 'arraste para cima para acelerar' : 'role para acelerar') : '';
+    if (vooDicaTexto.textContent !== querDica) dica(querDica || null);
+    mundoCeu.position.z = voo.s;
+    sincronizaCeu();
+    voo.nevoa = Math.max(0, 1 - voo.t / 0.8);
+
+    // manobras que não se repetem: somas de ondas com períodos que não batem, de vez
+    // em quando um giro completo; o mouse guia o avião para os lados e para cima/baixo
+    const ss = voo.s, entra = THREE.MathUtils.clamp(ss / 5, 0, 1);
+    const suaviza = 1 - Math.pow(0.02, dt);
+    const alvoRolo = (Math.sin(ss * 0.071) * 0.11 + Math.sin(ss * 0.023 + 1.3) * 0.08 - estado.mx * 0.35) * entra;
+    const alvoInclina = (Math.sin(ss * 0.053 + 0.7) * 0.04 + Math.sin(ss * 0.131) * 0.02 + estado.my * 0.12) * entra;
+    voo.rolo += (alvoRolo - voo.rolo) * suaviza;
+    voo.inclina += (alvoInclina - voo.inclina) * suaviza;
+    const giro = ((ss % 150) + 150) % 150, piruetaK = THREE.MathUtils.clamp((giro - 120) / 12, 0, 1);
+    const pirueta = suave(piruetaK) * Math.PI * 2;
+    voo.lado += ((estado.mx * 1.1 + Math.sin(ss * 0.037) * 0.5) - voo.lado) * Math.min(1, dt * 1.5);
+    voo.alto += ((-estado.my * 0.45 + Math.sin(ss * 0.061 + 2) * 0.18) - voo.alto) * Math.min(1, dt * 1.5);
+    aviaoCeu.rotation.set(voo.inclina * 3 + 0.1, Math.PI, -voo.rolo * 2 + pirueta, 'YXZ');
+    aviaoCeu.position.set(voo.lado, -0.42 + voo.alto + Math.sin(tempo.value * 1.3) * 0.04, -1.7);
+
+    cam.pos.copy(CEU).add(tmpVoo.set(voo.lado * 0.55, voo.alto * 0.5, 0));
+    cam.olhar.copy(CEU).add(tmpVoo.set(voo.lado * 0.9, voo.alto * 0.6 + voo.inclina * 4 - 0.2, -10));
+
+    const tt = tempo.value;
+    for (const g of trechos.values()) {
+      for (const m of g.children) {
+        const u = m.userData, z = u.base.z + voo.s;   // z em relação a você
+        // perto de você as nuvens abrem caminho para os lados
+        const abre = suave(THREE.MathUtils.clamp((z + 60) / 50, 0, 1));
+        m.position.set(u.base.x + Math.sin(tt * u.vel + u.fase) * u.deriva + abre * 15 * Math.sign(u.base.x || 1), u.base.y + Math.sin(tt * u.vel * 0.7 + u.fase + 1.5) * u.boia, u.base.z);
+        m.material.opacity = z > -2 ? 0 : u.opacidade;
+        m.quaternion.copy(camera.quaternion).multiply(giroNuvem);
+      }
+    }
+    for (const g of ciclos.values()) {
+      for (const parada of g.children) {
+        const u = parada.userData, z = u.z + voo.s;
+        parada.visible = z < -1;
+        if (!parada.visible) continue;
+        // sobe de baixo das nuvens ao se aproximar, para bem do lado do caminho na altura
+        // dos olhos, e só no finalzinho sai da frente
+        const sobe = 1 - (1 - THREE.MathUtils.clamp((z + 90) / 60, 0, 1)) ** 2;
+        const afasta = suave(THREE.MathUtils.clamp((z + 5.5) / 4.5, 0, 1));
+        parada.position.set(u.lado * (2.35 + afasta * 6), -3.6 + sobe * 3.9 + Math.sin(tt * 0.5 + u.fase) * 0.12, u.z);
+        parada.rotation.set(0, -u.lado * 0.18, Math.sin(tt * 0.3 + u.fase) * 0.03);
+      }
+    }
+    // riscos de vento: aparecem e esticam com a velocidade
+    const rapidez = THREE.MathUtils.clamp((voo.anda - 0.1) / 0.8, 0, 1);
+    vento.material.opacity = 0.12 + rapidez * 0.4;
+    const pos = vento.geometry.attributes.position;
+    for (let i = 0; i < pos.count; i += 2) {
+      let z = pos.getZ(i) + voo.anda * dt * 60 * 1.8;
+      if (z > 1) z -= 40;
+      if (z < -39) z += 40;
+      pos.setZ(i, z);
+      pos.setZ(i + 1, z - 0.4 - rapidez * 2.6);
+    }
+    pos.needsUpdate = true;
+    // o campo de visão abre com a velocidade, como um zoom para trás
+    const fovAlvo = FOV_BASE + rapidez * 16;
+    camera.fov += (fovAlvo - camera.fov) * Math.min(1, dt * 4);
+    camera.updateProjectionMatrix();
+    return;
+  }
+  if (voo.fase === 'caindo') {
+    // pulou: despenca olhando para baixo, atravessa o branco e cai de volta na sala
+    voo.rolo *= 0.9;
+    cam.pos.y -= (2 + voo.t * 14) * dt;
+    cam.olhar.copy(cam.pos).add(tmpVoo.set(Math.sin(voo.t * 3) * 0.3, -1, -0.6 + voo.t * 0.3));
+    voo.nevoa = Math.min(1, voo.t / 1.0);
+    if (voo.t > 1.15) aterrissar();
+  }
+}
+
 /* ---------- andar livre (WASD / joystick) ---------- */
 
 const teclas = new Set();
@@ -873,10 +1522,23 @@ function entrarLivre() {
   document.documentElement.classList.remove('na-sala');
   ui.voltar.hidden = true;
   ui.rotulo.hidden = true;
+  dica(null);
   ui.modo.textContent = toque ? 'voltar ao passeio' : '[G] voltar ao passeio';
   ui.dicasLivre.hidden = toque;
   ui.joystick.hidden = !toque;
   if (!toque) renderer.domElement.requestPointerLock?.()?.catch?.(() => {});
+}
+
+function voarDoLivre(p) {
+  document.exitPointerLock?.();
+  document.documentElement.classList.remove('livre');
+  document.documentElement.classList.add('na-sala');
+  ui.modo.textContent = toque ? 'andar livre' : '[WASD] andar livre';
+  ui.dicasLivre.hidden = true;
+  ui.joystick.hidden = true;
+  teclas.clear();
+  estado.sala = p;
+  decolar();
 }
 
 function voltarPasseio() {
@@ -978,6 +1640,9 @@ function andar(dt) {
   olharLivre.set(-sy * Math.cos(estado.pitch), Math.sin(estado.pitch), -cy * Math.cos(estado.pitch));
   cam.olhar.copy(p).add(olharLivre);
   ui.sala.textContent = lugarDa(p);
+  // andando para dentro da plataforma da Trajetória, o avião decola com você
+  const traj = portas.find((q) => q.def.chave === 'trajetoria');
+  if (traj && tmp.copy(p).sub(traj.c).dot(traj.n) < -1.2 && Math.abs(tmp.dot(traj.t)) < 2.4) voarDoLivre(traj);
   visitou(ui.sala.textContent);
   // portas abrem sozinhas quando você chega perto (a não ser que você as tenha fechado)
   for (const q of portas) {
@@ -1062,7 +1727,7 @@ addEventListener('pointerup', (e) => {
   if (!toque) renderer.domElement.requestPointerLock?.()?.catch?.(() => {});
 });
 addEventListener('click', (e) => {
-  if (e.target.closest?.('button, #joystick, input, textarea') || estado.modo === 'livre') return;
+  if (e.target.closest?.('button, #joystick, input, textarea, .leitor') || estado.modo === 'livre') return;
   if (toque) apontar((e.clientX / innerWidth) * 2 - 1, -(e.clientY / innerHeight) * 2 + 1, e);
   emFoco?.aoClicar?.(hitFoco);
 });
@@ -1097,15 +1762,32 @@ function quadro() {
   } else if (estado.modo === 'livre') {
     andar(dt);
     apontar(0, 0);
+  } else if (estado.modo === 'voo') {
+    atualizaVoo(dt);
+  }
+  if (estado.modo !== 'voo') voo.nevoa = Math.max(0, voo.nevoa - dt * 2.5);
+  nevoa.style.opacity = voo.nevoa;
+  if (voo.aviao && !voo.fase) {
+    // esperando na plataforma: balança de leve, como papel no vento
+    voo.aviao.position.y = voo.parado.pos.y + Math.sin(tempo.value * 1.4) * 0.03;
+    voo.aviao.rotation.set(0, voo.parado.rotY, Math.sin(tempo.value * 0.9) * 0.05, 'YXZ');
   }
   // a câmera anda com a rolagem mesmo com o mouse parado: o hover precisa acompanhar
   if (ultimoPonteiro && !toque && (estado.modo === 'corredor' || estado.modo === 'sala' || estado.modo === 'fachada')) {
     apontar((ultimoPonteiro.clientX / innerWidth) * 2 - 1, -(ultimoPonteiro.clientY / innerHeight) * 2 + 1, ultimoPonteiro);
   }
   camera.position.copy(cam.pos);
+  // no voo a câmera inclina junto com o avião
+  const rolo = estado.modo === 'voo' ? voo.rolo * 0.8 : 0;
+  camera.up.set(Math.sin(rolo), Math.cos(rolo), 0);
   camera.lookAt(cam.olhar);
   grupoContato.visible = estado.sala?.def.chave === 'contato' || (estado.modo === 'livre' && camera.position.z < FIM - 0.2);
   grupoProjetos.visible = estado.sala?.def.chave === 'projetos' || Math.abs(camera.position.z - SALAS[0].z) < 6;
+  // na varanda (aberta) só ela aparece: nada de portas, paredes e salas atrás
+  if (estado.modo === 'sala' && estado.sala?.def.chave === 'projetos') camera.layers.set(CAMADA_VARANDA);
+  else camera.layers.set(0);
+  const portaTrajetoria = SALAS.find((q) => q.chave === 'trajetoria');
+  grupoTrajetoria.visible = estado.sala?.def.chave === 'trajetoria' || (Math.abs(camera.position.z - portaTrajetoria.z) < 3.5 && camera.position.x < 0.5);
 
   // passos e rabiscos acompanham o movimento
   distPassos += Math.abs(camera.position.z - ultimoZ) + Math.abs(camera.position.x - ultimoX);
@@ -1116,7 +1798,7 @@ function quadro() {
   // o corredor se desenha uns 14 m à frente de quem anda; salas quando você chega na porta
   fachada.uPintura.value = estado.intro;
   const andado = Math.max(Z_INI - camera.position.z, 0);
-  corredor.uPintura.value = Math.max(corredor.uPintura.value, limita((andado + 16) / (corredor.uComprimento.value + 6)) * estado.intro);
+  corredor.uPintura.value = Math.max(corredor.uPintura.value, limita((andado + 16) / (corredor.uComprimento.value + 6)) * estado.intro * (estado.dentro ? 1 : 0));
   for (const p of portas) {
     const dist = camera.position.distanceTo(tmp.copy(p.c).setY(1.6));
     p.reg.uPintura.value = Math.max(p.reg.uPintura.value, limita(1 - (dist - 1.2) / 5) * estado.intro);
@@ -1140,6 +1822,7 @@ function quadro() {
 
   vida.anima(tempo.value, dt, camera);
   for (const f of animacoesSala) f(tempo.value, dt);
+  dobra.tempoDesenho.value = tempo.value;
   renderer.render(cena, camera);
   requestAnimationFrame(quadro);
 }
@@ -1153,10 +1836,34 @@ scrollTo(0, 0);
 lerRolagem();
 atualizaTitulo();
 poseFachada(cam.pos, cam.olhar);
-document.getElementById('carregando').classList.add('pronto');
-const inicio = performance.now();
-(function intro() {
-  estado.intro = menosMovimento ? 1 : Math.min(1, (performance.now() - inicio) / 1800);
-  if (estado.intro < 1) requestAnimationFrame(intro);
-})();
+// prepara tudo durante o carregamento: compila os materiais e manda as texturas
+// para a placa de vídeo. Sem isso, a primeira vez que cada coisa aparece (ao entrar
+// na casa, numa sala ou no voo) dá um tranco.
+{
+  // o que aparece na varanda isolada: ela, a porta dela e as luzes
+  grupoProjetos.traverse((o) => o.layers.enable(CAMADA_VARANDA));
+  portas.find((q) => q.def.chave === 'projetos').dobradica.traverse((o) => o.layers.enable(CAMADA_VARANDA));
+  cena.traverse((o) => { if (o.isLight) o.layers.enable(CAMADA_VARANDA); });
+  sincronizaCeu();
+  const escondidos = [];
+  cena.traverse((o) => { if (!o.visible) { escondidos.push(o); o.visible = true; } });
+  renderer.compile(cena, camera);
+  cena.traverse((o) => {
+    for (const mat of [].concat(o.material ?? [])) {
+      if (mat.map) renderer.initTexture(mat.map);
+      for (const u of Object.values(mat.uniforms ?? {})) if (u.value?.isTexture) renderer.initTexture(u.value);
+    }
+  });
+  for (const o of escondidos) o.visible = false;
+}
+// a tela de carregamento fica pelo menos ~2 s, para dar tempo de ler; a fachada
+// só começa a se desenhar quando ela sai
+setTimeout(() => {
+  document.getElementById('carregando').classList.add('pronto');
+  const inicio = performance.now();
+  (function intro() {
+    estado.intro = menosMovimento ? 1 : Math.min(1, (performance.now() - inicio) / 1800);
+    if (estado.intro < 1) requestAnimationFrame(intro);
+  })();
+}, Math.max(0, 2000 - performance.now()));
 quadro();
