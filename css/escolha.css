@@ -1,0 +1,543 @@
+/* ---------- Escolha de experiência: fatias de mundos ----------
+   Cada experiência é uma fatia com o seu mundo dentro. A fatia sob o mouse se abre como uma lente e
+   ganha vida (js/escolha.js mexe no --peso de cada uma); as apertadas viram uma faixa com o nome de pé
+   (container query). O clique faz a fatia tomar a tela e abre a experiência. Funciona com 2 ou com 6. */
+
+.escolha {
+  position: relative;
+  padding: 2rem 0 4rem;
+  background: var(--black, #0b0b0b);
+  color: #fff;
+}
+
+.escolha_container {
+  width: min(1240px, calc(100% - 3rem));
+  margin: 0 auto;
+}
+
+.escolha_topo {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 2.5rem;
+}
+
+.escolha_titulo {
+  margin: 0;
+  font-family: Roboto, sans-serif;
+  font-size: clamp(1.9rem, 3.4vw, 3rem);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.escolha_titulo span {
+  color: var(--red);
+}
+
+.escolha_sub {
+  max-width: 24rem;
+  margin: 0;
+  font-family: Roboto, sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+/* ---------- a vitrine: a moldura que segura os mundos e o aviso de rolar ---------- */
+.vitrine {
+  position: relative;
+  padding: 1.1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 22px;
+  background:
+    radial-gradient(ellipse 60% 70% at 30% 40%, rgba(244, 239, 228, 0.06), transparent 70%),
+    radial-gradient(ellipse 60% 70% at 75% 45%, rgba(242, 160, 60, 0.08), transparent 70%),
+    #111;
+  box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.vitrine_topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 0.2rem 0.4rem 1rem;
+  font-family: Roboto, sans-serif;
+}
+
+.vitrine_rotulo {
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+/* o pé da vitrine: dizer com todas as letras que não precisa escolher */
+.vitrine_rolar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.9rem;
+  margin-top: 1.1rem;
+  padding: 1rem 1.2rem;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  font: 400 1rem/1.4 Roboto, sans-serif;
+  color: rgba(255, 255, 255, 0.72);
+  text-decoration: none;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+.vitrine_rolar b {
+  font-weight: 500;
+  color: #fff;
+}
+
+.vitrine_rolar:hover,
+.vitrine_rolar:focus-visible {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.vitrine_rolar > svg {
+  width: 1.1em;
+  height: 1.1em;
+  fill: none;
+  stroke: var(--red);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  animation: desce 1.6s ease-in-out infinite;
+}
+
+.rolar_mouse {
+  position: relative;
+  flex: none;
+  width: 20px;
+  height: 30px;
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  border-radius: 11px;
+}
+
+.rolar_mouse i {
+  position: absolute;
+  left: 50%;
+  top: 6px;
+  width: 3px;
+  height: 6px;
+  margin-left: -1.5px;
+  border-radius: 2px;
+  background: var(--red);
+  animation: rodinha 1.6s ease-in-out infinite;
+}
+
+@keyframes rodinha {
+  0% { transform: translateY(0); opacity: 1; }
+  70% { transform: translateY(9px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 0; }
+}
+
+@keyframes desce {
+  50% { transform: translateY(4px); }
+}
+
+.escolha_aviso {
+  margin: 1.1rem 0 0;
+  font-family: Roboto, sans-serif;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.4);
+  text-align: center;
+}
+
+/* ---------- a faixa ---------- */
+.mundos {
+  display: flex;
+  gap: 6px;
+  height: clamp(420px, 64vh, 620px);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.mundo {
+  --peso: 1;
+  --vida: 0; /* 0 apertada, 1 aberta: quanto o mundo está acordado */
+  position: relative;
+  flex: var(--peso) 1 0;
+  min-width: 0;
+  overflow: hidden;
+  container-type: inline-size;
+  text-decoration: none;
+  color: inherit;
+  border-radius: 6px;
+  isolation: isolate;
+  outline: none;
+}
+
+.mundo_cena {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+/* o número e o texto, em cima da cena */
+.mundo_num {
+  position: absolute;
+  top: 1.1rem;
+  left: 1.2rem;
+  z-index: 2;
+  font: 500 0.78rem/1 Roboto, sans-serif;
+  letter-spacing: 0.18em;
+  opacity: 0.55;
+}
+
+.mundo_texto {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  padding: 1.6rem 1.8rem 1.7rem;
+  transform: translateY(calc((1 - var(--vida)) * 0.6rem));
+  transition: transform 0.4s ease;
+}
+
+.mundo_nome {
+  margin: 0 0 0.45rem;
+  white-space: nowrap;
+}
+
+.mundo_desc {
+  max-width: 26rem;
+  margin: 0 0 1rem;
+  font-size: 1rem;
+  line-height: 1.45;
+  opacity: calc(0.25 + var(--vida) * 0.75);
+}
+
+.mundo_ir {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  opacity: calc(var(--vida) * 1.2 - 0.2);
+}
+
+.mundo_ir svg {
+  width: 1.05em;
+  height: 1.05em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 0.25s ease;
+}
+
+.mundo:hover .mundo_ir svg {
+  transform: translateX(4px);
+}
+
+/* apertada: só o nome, de pé, subindo pela fatia */
+@container (max-width: 240px) {
+  .mundo_texto {
+    top: 3.2rem;
+    bottom: 1.4rem;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    transform: none;
+  }
+  .mundo_nome {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    margin: 0;
+  }
+  .mundo_desc,
+  .mundo_ir {
+    display: none;
+  }
+}
+
+.mundo:focus-visible::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  z-index: 3;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+/* ---------- mundo de papel: o corredor ---------- */
+.mundo--papel {
+  color: #2d2a26;
+  background:
+    linear-gradient(90deg, transparent 2.6rem, rgba(214, 90, 90, 0.55) 2.6rem, rgba(214, 90, 90, 0.55) calc(2.6rem + 2px), transparent calc(2.6rem + 2px)),
+    repeating-linear-gradient(180deg, transparent 0 31px, rgba(110, 150, 200, 0.28) 31px 32px),
+    #f4efe4;
+}
+
+.papel_rabiscos {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: #6b665e;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.55;
+}
+
+/* os rabiscos se desenham quando o mundo acorda */
+.papel_rabiscos path,
+.papel_rabiscos circle {
+  stroke-dasharray: 260;
+  stroke-dashoffset: calc(260 - var(--vida) * 260);
+}
+
+.papel_codigo {
+  position: absolute;
+  top: 1.2rem;
+  right: 1.4rem;
+  font: 600 1.25rem/1 Caveat, cursive;
+  color: #8a857c;
+  white-space: nowrap;
+  transform: rotate(-3deg);
+}
+
+.papel_fachada {
+  position: absolute;
+  left: 50%;
+  bottom: 30%;
+  width: min(420px, 86%);
+  aspect-ratio: 2.2 / 1;
+  transform: translateX(-50%) scale(calc(0.9 + var(--vida) * 0.1));
+  transform-origin: 50% 100%;
+  transition: transform 0.5s ease;
+}
+
+.papel_fachada img {
+  position: absolute;
+  bottom: 0;
+  height: auto;
+  filter: grayscale(calc(1 - var(--vida))) contrast(1.05);
+  transition: filter 0.5s ease, transform 0.6s cubic-bezier(.3, 1.4, .5, 1);
+}
+
+.papel_arvore { left: 0; width: 34%; }
+.papel_gato { left: 31%; width: 8%; }
+.papel_porta { left: 40%; width: 24%; }
+.papel_vaso { right: 2%; width: 26%; }
+
+/* a porta entreabre um tiquinho quando o mundo acorda */
+.mundo--papel .papel_porta {
+  transform: translateY(calc(var(--vida) * -4px)) perspective(400px) rotateY(calc(var(--vida) * -14deg));
+  transform-origin: 0 100%;
+}
+
+.papel_chao {
+  position: absolute;
+  left: -4%;
+  right: -4%;
+  bottom: 0;
+  height: 2px;
+  background: #6b665e;
+  border-radius: 2px;
+}
+
+.mundo--papel .mundo_nome {
+  font: 700 clamp(2rem, 3.2vw, 2.7rem)/1 Caveat, cursive;
+}
+
+.mundo--papel .mundo_desc {
+  font: 500 1.3rem/1.25 Caveat, cursive;
+}
+
+.mundo--papel .mundo_ir {
+  font: 700 1.35rem/1 Caveat, cursive;
+}
+
+/* ---------- mundo do RPG: a mesa ---------- */
+.mundo--rpg {
+  color: #f2e2bd;
+  background:
+    radial-gradient(ellipse at 50% 38%, rgba(120, 72, 28, 0.55), transparent 62%),
+    repeating-linear-gradient(92deg, rgba(0, 0, 0, 0.12) 0 2px, transparent 2px 9px),
+    #1a120b;
+}
+
+.rpg_luz {
+  position: absolute;
+  left: 50%;
+  top: 36%;
+  width: 70%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(242, 193, 78, 0.35), transparent 65%);
+  opacity: calc(0.25 + var(--vida) * 0.75);
+  transition: opacity 0.5s ease;
+}
+
+.rpg_selo {
+  position: absolute;
+  left: 50%;
+  top: 36%;
+  width: clamp(90px, 28cqi, 150px);
+  transform: translate(-50%, -50%) scale(calc(0.88 + var(--vida) * 0.16)) rotate(calc(var(--vida) * 8deg));
+  filter: drop-shadow(0 0 calc(6px + var(--vida) * 26px) rgba(242, 193, 78, 0.6));
+  transition: transform 0.6s cubic-bezier(.3, 1.4, .5, 1), filter 0.5s ease;
+}
+
+.rpg_brasas i {
+  position: absolute;
+  bottom: -10px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #ffb35c;
+  box-shadow: 0 0 8px #ff9a3c;
+  opacity: 0;
+  animation: brasa 6s linear infinite;
+  animation-duration: calc(7s - var(--vida) * 3s);
+}
+
+.rpg_brasas i:nth-child(1) { left: 12%; animation-delay: 0s; }
+.rpg_brasas i:nth-child(2) { left: 26%; animation-delay: 1.4s; }
+.rpg_brasas i:nth-child(3) { left: 40%; animation-delay: 2.8s; }
+.rpg_brasas i:nth-child(4) { left: 52%; animation-delay: 0.7s; }
+.rpg_brasas i:nth-child(5) { left: 63%; animation-delay: 3.6s; }
+.rpg_brasas i:nth-child(6) { left: 74%; animation-delay: 2.1s; }
+.rpg_brasas i:nth-child(7) { left: 84%; animation-delay: 4.3s; }
+.rpg_brasas i:nth-child(8) { left: 92%; animation-delay: 1.1s; }
+
+@keyframes brasa {
+  0% { transform: translate(0, 0); opacity: 0; }
+  15% { opacity: 0.9; }
+  100% { transform: translate(22px, -36rem); opacity: 0; }
+}
+
+.mundo--rpg .mundo_texto {
+  text-align: center;
+}
+
+.mundo--rpg .mundo_desc {
+  margin-left: auto;
+  margin-right: auto;
+  font-family: "EB Garamond", Georgia, serif;
+  font-size: 1.15rem;
+}
+
+.mundo--rpg .mundo_nome {
+  font: 700 clamp(1.6rem, 2.6vw, 2.2rem)/1.05 Cinzel, Georgia, serif;
+  color: #f6e2ae;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.7);
+}
+
+.mundo--rpg .mundo_ir {
+  font: 700 0.95rem/1 Cinzel, Georgia, serif;
+  letter-spacing: 0.04em;
+  color: #e6b552;
+}
+
+/* ---------- clicou: a fatia toma a tela (js/escolha.js) ----------
+   No fim ela vira exatamente o fundo da primeira imagem da experiência (o papel liso do corredor, o
+   gradiente da taverna do RPG): a página nova entra por cima de uma tela igual, sem emenda, e quem
+   aparece em seguida já é o carregamento dela. */
+.mundo--papel { --fundo-final: #f3f2ef; }
+.mundo--rpg { --fundo-final: radial-gradient(ellipse at 50% 42%, #2a1709 0%, #120a05 45%, #0d0805 80%); }
+
+.mundo.tomando::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  background: var(--fundo-final);
+  opacity: 0;
+  transition: opacity 0.4s ease 0.3s;
+  pointer-events: none;
+}
+
+.mundo.tomando.cheio::before {
+  opacity: 1;
+}
+
+.mundo.tomando {
+  position: fixed;
+  z-index: 1000;
+  margin: 0;
+  border-radius: 6px;
+  transition: top 0.7s cubic-bezier(.7, 0, .2, 1), left 0.7s cubic-bezier(.7, 0, .2, 1), width 0.7s cubic-bezier(.7, 0, .2, 1), height 0.7s cubic-bezier(.7, 0, .2, 1), border-radius 0.7s ease;
+}
+
+.mundo.tomando.cheio {
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  border-radius: 0;
+}
+
+.mundo.tomando .mundo_texto,
+.mundo.tomando .mundo_num {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* o lugar que a fatia deixou na faixa enquanto toma a tela */
+.mundo_vaga {
+  flex: var(--peso) 1 0;
+}
+
+/* ---------- telas estreitas: fatias empilhadas, todas acordadas ---------- */
+@media (max-width: 760px) {
+  .escolha_topo {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.8rem;
+    margin-bottom: 1.6rem;
+  }
+  .mundos {
+    flex-direction: column;
+    height: auto;
+    gap: 10px;
+  }
+  .mundo {
+    --vida: 1;
+    flex: none;
+    height: 360px;
+  }
+  .vitrine {
+    padding: 0.7rem;
+    border-radius: 18px;
+  }
+  .vitrine_topo {
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  /* (a fatia é baixa: os desenhos sobem para não ficarem atrás do título) */
+  .papel_fachada {
+    bottom: 50%;
+    width: 72%;
+  }
+  .vitrine_rolar {
+    font-size: 0.92rem;
+    text-align: left;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mundo,
+  .mundo * {
+    transition: none !important;
+  }
+  .rpg_brasas i,
+  .rolar_mouse i,
+  .vitrine_rolar > svg {
+    animation: none;
+  }
+}

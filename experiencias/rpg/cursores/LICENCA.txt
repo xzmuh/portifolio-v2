@@ -1,0 +1,3 @@
+PixelRPGCursors Lite (indigolay), só a ampulheta (espera-*): uso livre, comercial ou não, inclusive modificar. Não é permitido revender ou redistribuir os arquivos em si.
+
+Mãozinhas (padrao, clique, mover, agarra, pocao, duvida): geradas para o jogo com o gerador de imagens do Codex (OpenAI), 02/10/2026.

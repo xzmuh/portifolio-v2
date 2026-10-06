@@ -1,0 +1,4 @@
+plantas.glb — "Farm plants models (mobile game-ready, lowpoly)", de LOLIPOP (https://sketchfab.com/lolipop_1707)
+https://sketchfab.com/3d-models/farm-plants-models-mobile-game-ready-lowpoly-9b59e7cf3bcd4feb80ff0cf5fb780055
+Licença CC-BY 4.0 (http://creativecommons.org/licenses/by/4.0/).
+Alterações: texturas reduzidas para 512 px (WebP), malhas comprimidas (meshopt).

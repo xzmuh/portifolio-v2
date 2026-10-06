@@ -1,0 +1,5 @@
+fonte-jarros.glb — "Stylized Water Fountain", de MiloB (https://sketchfab.com/MiloBM)
+https://sketchfab.com/3d-models/stylized-water-fountain-e760f98e47eb4aabb60cdfae0e3e212b
+Licença CC-BY 4.0 (http://creativecommons.org/licenses/by/4.0/).
+Alterações: texturas reduzidas para 512 px (WebP), malha simplificada e comprimida (meshopt);
+materiais trocados no jogo (src/fontes.js) para pegar luz.

@@ -1,0 +1,17 @@
+tenda.glb — "Camping Tent" por Adeel Qadir
+https://sketchfab.com/3d-models/camping-tent-21cc274c86104fc997e0f172938d4205
+Licença CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+
+lanterna.glb — do pacote "low_poly_camp_props" (convertido do .fbx). Autor e licença: conferir.
+
+velas.glb — "Adventurer's Camp - Candles" por Ruben Van Ostaeyen (simplificado para 2% dos triângulos)
+https://sketchfab.com/3d-models/adventurers-camp-candles-6ba2ad43ea0c4611989cf4ec93775864
+Licença CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+
+livro.glb — "Book Open" por FlukierJupiter
+https://sketchfab.com/3d-models/book-open-bcc69dacd1bc4eadaf4b9fc0d6e2430b
+Licença CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+
+caldeirao.glb — o suporte e o caldeirão de "av_the_camp" por AlexVitaen
+https://sketchfab.com/3d-models/av-the-camp-2c27fa01442c417f9dae81e6e216ca54
+Licença CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
