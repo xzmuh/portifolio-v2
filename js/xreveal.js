@@ -83,8 +83,10 @@
     render(progress);
   }
 
-  function render(p) {
-    progress = p;
+  function render(pScroll) {
+    progress = pScroll;
+    // a animação acaba junto com o pin: antes sobrava um trecho parado no fim, que parecia travar
+    var p = clamp01(pScroll / 0.88);
     var vmin = Math.min(W, HH), diag = Math.sqrt(W * W + HH * HH);
     // 0 -> .3: M é esmagado (resiste, treme, cede de uma vez e espirra para os lados);
     // .3 -> .85: a linha volta ao centro, gira e cresce; .68 -> .88: círculo fecha o
@@ -129,8 +131,6 @@
     // gradiente escorrega de leve junto com o scroll
     grad.setAttribute('gradientTransform', 'translate(' + (-0.15 + p * 0.15) + ' 0) scale(1.15 1)');
 
-    var radius = clamp01((p - 0.88) / 0.12) * Math.min(48, W * 0.04);
-    pin.style.borderBottomLeftRadius = pin.style.borderBottomRightRadius = radius + 'px';
   }
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -144,8 +144,9 @@
     ScrollTrigger.create({
       trigger: section,
       start: 'top top',
-      end: function () { return '+=' + window.innerHeight * 2; },
+      end: function () { return '+=' + window.innerHeight * 1.76; },
       pin: pin,
+      anticipatePin: 1,
       scrub: true,
       // criada depois do pin da Trajetória (que espera as fontes): recalcular por último
       refreshPriority: -1,
@@ -161,6 +162,9 @@
     ? document.fonts.load('400 100px "Inter Tight"').then(function () { return document.fonts.ready; })
     : Promise.resolve();
   fontsReady.then(setup, setup);
+  // imagens carregando depois mudam a altura da página: sem isso o pin começava no lugar errado
+  // e dava o pulo (rola, volta, aí desce)
+  window.addEventListener('load', function () { if (window.ScrollTrigger) ScrollTrigger.refresh(); });
 
   var resizeTimer;
   window.addEventListener('resize', function () {
