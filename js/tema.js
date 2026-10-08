@@ -131,14 +131,14 @@
       item.addEventListener('pointerleave', volta);
       item.addEventListener('blur', volta);
     });
-    // clicar na foto abre a versão que ela está mostrando
+    // clicar na foto abre, em outra aba, a versão que ela está mostrando
     var linkDaFoto = function () {
       var item = document.querySelector('.curriculo_lista [data-foto="' + atual + '"]');
       return item && item.getAttribute('href');
     };
     palco.addEventListener('click', function () {
       var href = linkDaFoto();
-      if (href) window.location.href = href;
+      if (href) window.open(href, '_blank', 'noopener');
     });
     palco.addEventListener('pointerenter', function () { clearTimeout(solta); });
     palco.addEventListener('pointerleave', function () { solta = setTimeout(function () { vai(padrao.src, padrao.selo); }, 160); });
