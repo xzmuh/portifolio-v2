@@ -3414,6 +3414,7 @@ body::-webkit-scrollbar {
 }
 
 /* a foto das experiências abre a versão que está mostrando (js/tema.js) */
-.curriculo_foto {
+.curriculo_foto,
+.curriculo_foto * {
   cursor: pointer;
 }
