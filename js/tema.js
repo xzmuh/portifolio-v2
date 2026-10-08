@@ -111,14 +111,17 @@
       atual = src;
       clearTimeout(t1); clearTimeout(t2);
       if (calma) { img.src = src; selo.textContent = nome; return; }
-      giro.classList.add('fechado');
+      giro.classList.add('ativo', 'esmaga');
+      // espremida: gira, troca a imagem ainda espremida e abre
       t1 = setTimeout(function () {
-        img.src = src;
-        selo.textContent = nome;
         graus += 90;
         giro.style.setProperty('--giro', graus + 'deg');
-        t2 = setTimeout(function () { giro.classList.remove('fechado'); }, 480);
-      }, 300);
+        t2 = setTimeout(function () {
+          img.src = src;
+          selo.textContent = nome;
+          t2 = setTimeout(function () { giro.classList.remove('esmaga'); }, 230);
+        }, 250);
+      }, 260);
     };
     Array.prototype.forEach.call(document.querySelectorAll('[data-foto]'), function (item) {
       var mostra = function () { clearTimeout(solta); vai(item.getAttribute('data-foto'), item.getAttribute('data-selo')); };
@@ -132,15 +135,29 @@
     Array.prototype.forEach.call(document.querySelectorAll('[data-foto]'), function (item) { new Image().src = item.getAttribute('data-foto'); });
   }
 
-  // Projetos em destaque: cada card sobe e aparece junto com o scroll (vai e volta com a rolagem),
-  // em vez de estalar de uma vez quando entra na tela
-  if (window.gsap && window.ScrollTrigger && !calma) {
-    Array.prototype.forEach.call(document.querySelectorAll('.works-item'), function (item) {
-      gsap.fromTo(item, { opacity: 0, y: 140, scale: .94 }, {
-        opacity: 1, y: 0, scale: 1, ease: 'none',
-        scrollTrigger: { trigger: item, start: 'top 105%', end: 'top 55%', scrub: 0.6 }
+  // Projetos em destaque: cada card sobe e aparece conforme a posição real dele na tela (medida a cada
+  // quadro, já com o parallax do card), na velocidade da rolagem. Depois de aparecer, não some mais.
+  var cards = Array.prototype.slice.call(document.querySelectorAll('.works-item'));
+  if (cards.length && !calma) {
+    var feito = cards.map(function () { return 0; });
+    var pinta = function () {
+      var vh = window.innerHeight, faltam = 0;
+      cards.forEach(function (el, n) {
+        if (feito[n] >= 1) return;
+        faltam++;
+        var topo = el.getBoundingClientRect().top;
+        // 0 quando o topo encosta no pé da tela, 1 quando chega a 40% dela
+        var p = Math.min(1, Math.max(0, (vh - topo) / (vh * 0.6)));
+        if (p <= feito[n]) return;
+        feito[n] = p;
+        var e = 1 - Math.pow(1 - p, 3);
+        el.style.opacity = e;
+        el.style.transform = 'translate3d(0,' + ((1 - e) * 120) + 'px,0) scale(' + (0.94 + 0.06 * e) + ')';
       });
-    });
+      if (faltam) requestAnimationFrame(pinta);
+    };
+    cards.forEach(function (el) { el.style.opacity = 0; el.style.transform = 'translate3d(0,120px,0) scale(.94)'; });
+    requestAnimationFrame(pinta);
   }
 
   // header: texto escuro sobre as seções claras, claro sobre as escuras

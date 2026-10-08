@@ -855,9 +855,9 @@ body {
   text-transform: uppercase;
 }
 
-/* troca de versão: as duas partes laranja fecham sobre a imagem (de cima e de baixo, até o meio),
-   o palco gira 90° com elas fechadas, a imagem troca escondida e elas abrem. O giro acumula, então
-   os blocos de fora vão parar num lado diferente a cada troca. js/tema.js põe .fechado e --giro. */
+/* troca de versão: os dois blocos laranja (o de cima e o de baixo) se esmagam contra a imagem, o palco
+   gira 90° e eles se abrem de novo, agora em outro lado. O giro acumula. A imagem gira ao contrário
+   (sempre em pé) e troca no meio do giro. js/tema.js põe .ativo, .esmaga e --giro. */
 .palco_giro {
   --giro: 0deg;
   position: relative;
@@ -868,38 +868,38 @@ body {
 
 .curriculo_eu {
   transform: rotate(calc(-1 * var(--giro)));
-  transition: transform .5s cubic-bezier(.7, 0, .2, 1);
+  transition: transform .5s cubic-bezier(.7, 0, .2, 1), opacity .2s ease;
 }
 
-.mandibula {
-  position: absolute;
-  left: 0;
-  right: 0;
-  z-index: 1;
-  height: 50.5%;
-  background: var(--laranja);
-  transform: scaleY(0);
+/* depois da entrada, os blocos respondem rápido */
+.palco_giro.ativo .curriculo_bloco {
+  transition: transform .34s cubic-bezier(.3, .8, .2, 1);
+}
+
+/* espremida: o bloco de cima desce e o de baixo sobe até o meio, e a foto entre eles vira uma linha */
+.curriculo_moldura {
   transition: transform .3s cubic-bezier(.7, 0, .3, 1);
 }
 
-.mandibula--a {
-  top: 0;
-  transform-origin: 50% 0;
+.palco_giro.esmaga .curriculo_moldura {
+  transform: scaleY(.03);
 }
 
-.mandibula--b {
-  bottom: 0;
-  transform-origin: 50% 100%;
+/* (deslocamento em % da altura do próprio bloco: o de cima tem 22% do palco e anda 28%; o de baixo
+   tem 16% e anda 34%, e os dois encostam no meio) */
+.curriculo_foto.on .palco_giro.esmaga .curriculo_bloco--cima {
+  transform: translateY(127%);
+  transition: transform .3s cubic-bezier(.7, 0, .3, 1);
 }
 
-.palco_giro.fechado .mandibula {
-  transform: none;
+.curriculo_foto.on .palco_giro.esmaga .curriculo_bloco--baixo {
+  transform: translateY(-212%);
+  transition: transform .3s cubic-bezier(.7, 0, .3, 1);
 }
 
 @media (prefers-reduced-motion: reduce) {
   .palco_giro,
-  .curriculo_eu,
-  .mandibula {
+  .curriculo_eu {
     transition: none;
   }
 }
@@ -1075,7 +1075,18 @@ body {
   border-right-color: var(--laranja);
 }
 
-/* a entrada dos cards fica presa ao scroll (js/tema.js); sem o estalo do .reveal */
+/* o filtro cinza/cor vinha do Webflow ao entrar e sair da tela (piscava); agora P&B fixo e cor só no
+   hover, com transição */
+.project_wrap {
+  filter: grayscale(1) !important;
+  transition: filter .6s ease;
+}
+
+.project_item:hover .project_wrap {
+  filter: grayscale(0) !important;
+}
+
+/* a entrada dos cards segue a posição real deles na tela (js/tema.js); sem o estalo do .reveal */
 .works-item,
 .works-item.reveal {
   opacity: 1;
