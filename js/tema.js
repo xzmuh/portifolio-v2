@@ -98,6 +98,25 @@
     });
   }
 
+  // Outras experiências: passando num item da lista, a foto do meio vira a imagem dele
+  var palco = document.querySelector('[data-foto-palco]');
+  if (palco) {
+    var troca = palco.querySelector('.curriculo_troca');
+    var solta;
+    Array.prototype.forEach.call(document.querySelectorAll('[data-foto]'), function (item) {
+      var mostra = function () {
+        clearTimeout(solta);
+        troca.src = item.getAttribute('data-foto');
+        palco.classList.add('trocando');
+      };
+      var volta = function () { solta = setTimeout(function () { palco.classList.remove('trocando'); }, 120); };
+      item.addEventListener('pointerenter', mostra);
+      item.addEventListener('focus', mostra);
+      item.addEventListener('pointerleave', volta);
+      item.addEventListener('blur', volta);
+    });
+  }
+
   // header: texto escuro sobre as seções claras, claro sobre as escuras
   var header = document.querySelector('.header');
   var claras = document.querySelectorAll('.section.hero, .section.projects, .numeros, .section.about, .section.call-to-action_mid');
