@@ -692,32 +692,297 @@ body {
   }
 }
 
-/* ---------- escolha (escuro, emenda com a intro) ---------- */
+/* ---------- outras experiências com meu currículo (escuro, emenda com a intro) ---------- */
 
-.escolha {
+.curriculo {
+  position: relative;
+  padding: 4rem 0 8rem;
   background: var(--preto);
-  padding: 2rem 0 6rem;
+  color: var(--cinza-claro);
+  overflow: hidden;
 }
 
-.escolha .rotulo {
-  margin-bottom: 1.6rem;
+.curriculo_inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr) minmax(0, 1.05fr);
+  gap: clamp(2rem, 3.5vw, 4rem);
+  align-items: center;
 }
 
-.escolha_titulo {
-  font-weight: 500;
+.curriculo_pre {
+  margin: 0 0 .4rem;
+  font-size: clamp(.85rem, 1.05vw, 1.15rem);
+  font-weight: 400;
+  letter-spacing: .32em;
   text-transform: uppercase;
-  letter-spacing: -.01em;
+  color: #e9e9e9;
 }
 
-.vitrine {
-  border-radius: 0;
-  border-color: rgba(255, 255, 255, .08);
-  background: var(--carvao);
-  box-shadow: none;
+.curriculo_titulo {
+  margin: 0;
+  font-size: clamp(3.2rem, 6.2vw, 7.4rem);
+  font-weight: 800;
+  line-height: .92;
+  letter-spacing: -.04em;
+  text-transform: uppercase;
+  color: #f3efe8;
 }
 
-.vitrine_rolar {
-  border-radius: 0;
+.curriculo_titulo span {
+  color: var(--laranja);
+}
+
+.curriculo_sub {
+  max-width: 30em;
+  margin: 1.4rem 0 2.2rem;
+  font-size: clamp(.95rem, 1.1vw, 1.2rem);
+  line-height: 1.5;
+  color: #bdbdbd;
+}
+
+.botao-linha {
+  display: inline-flex;
+  align-items: center;
+  gap: 3rem;
+  padding: 1rem 1.4rem;
+  border: 1px solid rgba(255, 255, 255, .35);
+  color: #f2f2f2;
+  font-size: .95rem;
+  text-decoration: none;
+  transition: border-color .4s, background-color .4s var(--suave), color .4s;
+}
+
+.botao-linha svg,
+.curriculo_item svg {
+  width: 1.1em;
+  height: 1.1em;
+  fill: none;
+  stroke: var(--laranja);
+  stroke-width: 2;
+  transition: transform .5s var(--suave), stroke .3s;
+}
+
+.botao-linha:hover {
+  border-color: var(--laranja);
+  background: var(--laranja);
+  color: var(--tinta);
+}
+
+.botao-linha:hover svg {
+  stroke: var(--tinta);
+  transform: translateX(.3em);
+}
+
+.curriculo_aviso {
+  margin-top: 1.4rem;
+  font-size: .75rem;
+  letter-spacing: .04em;
+  color: #6f6f6f;
+}
+
+/* a foto com os blocos laranja atrás, a mira fina e o manuscrito */
+.curriculo_foto {
+  position: relative;
+  margin: 0;
+  padding: 2.4rem 1.6rem;
+}
+
+/* linhas finas da mira passando por trás */
+.curriculo_foto:before,
+.curriculo_foto:after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  background: rgba(255, 255, 255, .14);
+}
+
+.curriculo_foto:before {
+  left: -10%;
+  right: -10%;
+  top: 14%;
+  height: 1px;
+}
+
+.curriculo_foto:after {
+  top: -6%;
+  bottom: -6%;
+  left: 12%;
+  width: 1px;
+}
+
+.curriculo_bloco {
+  position: absolute;
+  background: var(--laranja);
+  transform: scaleY(0);
+  transition: transform 1.1s var(--suave) .35s;
+}
+
+.curriculo_foto.on .curriculo_bloco {
+  transform: none;
+}
+
+.curriculo_bloco--cima {
+  top: 0;
+  left: 32%;
+  width: 34%;
+  height: 22%;
+  transform-origin: 50% 100%;
+}
+
+.curriculo_bloco--lado {
+  top: 42%;
+  left: 0;
+  width: 6%;
+  height: 16%;
+  transform-origin: 50% 0;
+  transition-delay: .5s;
+}
+
+.curriculo_bloco--baixo {
+  bottom: 0;
+  left: 36%;
+  width: 52%;
+  height: 16%;
+  transform-origin: 50% 0;
+  transition-delay: .6s;
+}
+
+.curriculo_moldura {
+  position: relative;
+  z-index: 1;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: #222;
+}
+
+.curriculo_moldura img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(1) contrast(1.1);
+}
+
+.curriculo_eu {
+  object-position: 50% 30%;
+  transition: transform 1.4s var(--suave), opacity .5s;
+}
+
+.curriculo_troca {
+  opacity: 0;
+  transform: scale(1.08);
+  transition: opacity .45s ease, transform 1s var(--suave);
+}
+
+.curriculo_foto.trocando .curriculo_troca {
+  opacity: 1;
+  transform: none;
+}
+
+.curriculo_foto.trocando .curriculo_eu {
+  transform: scale(1.05);
+}
+
+.curriculo_script {
+  position: absolute;
+  z-index: 2;
+  right: -14%;
+  top: 46%;
+  display: flex;
+  flex-direction: column;
+  font-family: "Pinyon Script", cursive;
+  font-size: clamp(1.8rem, 2.6vw, 3rem);
+  line-height: 1.05;
+  color: rgba(255, 255, 255, .85);
+  pointer-events: none;
+}
+
+.curriculo_script span {
+  opacity: 0;
+  transform: translateX(1rem);
+  transition: opacity 1s ease, transform 1.2s var(--suave);
+}
+
+.curriculo_script span:nth-child(2) { margin-left: .8em; transition-delay: .25s; }
+.curriculo_script span:nth-child(3) { margin-left: .2em; transition-delay: .5s; }
+
+.curriculo_foto.on .curriculo_script span {
+  opacity: 1;
+  transform: none;
+}
+
+/* a lista numerada */
+.curriculo_lista {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid rgba(255, 255, 255, .12);
+}
+
+.curriculo_lista li {
+  border-bottom: 1px solid rgba(255, 255, 255, .12);
+}
+
+.curriculo_item {
+  display: grid;
+  grid-template-columns: 2.4rem 7.5rem minmax(0, 1fr) auto;
+  gap: 1.1rem;
+  align-items: center;
+  padding: 1.05rem .9rem;
+  color: #f2f2f2;
+  text-decoration: none;
+  transition: background-color .4s;
+}
+
+.curriculo_num {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--laranja);
+  font-variant-numeric: tabular-nums;
+}
+
+.curriculo_thumb {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, .25);
+  filter: grayscale(1);
+  transition: filter .5s, border-color .4s;
+}
+
+.curriculo_nome {
+  display: flex;
+  flex-direction: column;
+  gap: .3rem;
+  min-width: 0;
+}
+
+.curriculo_nome b {
+  font-size: clamp(.95rem, 1.05vw, 1.1rem);
+  font-weight: 500;
+}
+
+.curriculo_nome small {
+  font-size: .82rem;
+  color: #8a8a8a;
+}
+
+.curriculo_item:hover,
+.curriculo_item:focus-visible {
+  background: rgba(255, 255, 255, .04);
+  outline: none;
+}
+
+.curriculo_item:hover .curriculo_thumb,
+.curriculo_item:focus-visible .curriculo_thumb {
+  filter: none;
+  border-color: var(--laranja);
+}
+
+.curriculo_item:hover svg,
+.curriculo_item:focus-visible svg {
+  transform: translateX(.35em);
 }
 
 /* ---------- projetos (cinza) ---------- */
@@ -1090,10 +1355,6 @@ body {
 
 /* ---------- cantos retos: o site perdeu o redondo, as peças acompanham ---------- */
 
-.mundos,
-.mundo,
-.mundo.tomando,
-.rolar_mouse,
 .xp-card-toggle,
 .footer-pill {
   border-radius: 0;
@@ -1108,13 +1369,37 @@ body {
   border: 1px solid currentColor;
 }
 
-@media (max-width: 760px) {
-  .vitrine {
-    border-radius: 0;
+/* ---------- responsivo ---------- */
+
+@media (max-width: 1200px) {
+  .curriculo_inner {
+    grid-template-columns: minmax(0, 1fr) minmax(0, .8fr);
+  }
+
+  .curriculo_lista {
+    grid-column: 1 / -1;
+  }
+
+  .curriculo_script {
+    right: -4%;
   }
 }
 
-/* ---------- responsivo ---------- */
+@media (max-width: 700px) {
+  .curriculo_inner {
+    grid-template-columns: 1fr;
+  }
+
+  .curriculo_foto {
+    max-width: 22rem;
+  }
+
+  .curriculo_item {
+    grid-template-columns: 2rem 5.5rem minmax(0, 1fr) auto;
+    gap: .8rem;
+    padding-inline: .2rem;
+  }
+}
 
 /* sem espaço dos lados do título: o botão desce para o pé do topo */
 @media (max-width: 1200px) {
