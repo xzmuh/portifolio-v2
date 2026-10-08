@@ -167,6 +167,20 @@
   var oficio = document.querySelector('[data-oficio]');
   if (oficio) {
     var abasOficio = oficio.querySelectorAll('.oficio_aba');
+    // aba Web: o navegador passa pelos sites de verdade, trocando o endereço junto
+    var sites = oficio.querySelector('[data-sites]'), timerSites = null;
+    var rodaSites = function (liga) {
+      clearInterval(timerSites);
+      if (!liga || !sites || calma) return;
+      var imgs = sites.querySelectorAll('img'), url = sites.querySelector('[data-url]'), k = 0;
+      timerSites = setInterval(function () {
+        if (sites.getBoundingClientRect().bottom < 0 || sites.getBoundingClientRect().top > window.innerHeight) return;
+        imgs[k].classList.remove('on');
+        k = (k + 1) % imgs.length;
+        imgs[k].classList.add('on');
+        url.textContent = imgs[k].getAttribute('data-url');
+      }, 3200);
+    };
     var tituloOficio = oficio.querySelector('[data-oficio-titulo]');
     var textoOficio = oficio.querySelector('[data-oficio-texto]');
     Array.prototype.forEach.call(abasOficio, function (aba) {
@@ -175,6 +189,7 @@
         Array.prototype.forEach.call(oficio.querySelectorAll('.oficio_tela'), function (t) {
           t.classList.toggle('on', t.getAttribute('data-tela') === aba.getAttribute('data-aba'));
         });
+        rodaSites(aba.getAttribute('data-aba') === 'web');
         tituloOficio.textContent = aba.getAttribute('data-titulo');
         textoOficio.textContent = aba.getAttribute('data-texto');
         // no celular, a aba escolhida vem para a vista na fileira
