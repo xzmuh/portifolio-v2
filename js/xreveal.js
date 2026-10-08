@@ -140,8 +140,11 @@
   // Borda de baixo do painel: enquanto a página rola (para baixo ou para cima) as pontas sobem e
   // a borda vira uma curva; parando, ela volta a ficar reta. É uma faixa da cor do footer que
   // cobre os cantos, mais funda quanto mais rápida a rolagem.
+  // no celular fica sem a curva: a barra do navegador some/aparece na rolagem, a altura muda o
+  // tempo todo e a borda ficava dobrando sem parar
+  var celular = window.matchMedia('(hover: none), (max-width: 767px)').matches;
   (function () {
-    if (reduceMotion) return;
+    if (reduceMotion || celular) return;
     var NS = 'http://www.w3.org/2000/svg';
     var curva = document.createElementNS(NS, 'svg');
     curva.setAttribute('class', 'xreveal-curva');
@@ -199,6 +202,8 @@
       render(1);
       return;
     }
+    // a barra de endereço do celular mexe na altura ao rolar: não recalcular o pin por isso
+    ScrollTrigger.config({ ignoreMobileResize: true });
     ScrollTrigger.create({
       trigger: section,
       start: 'top top',
@@ -224,8 +229,11 @@
   // e dava o pulo (rola, volta, aí desce)
   window.addEventListener('load', function () { if (window.ScrollTrigger) ScrollTrigger.refresh(); });
 
-  var resizeTimer;
+  // só a largura conta: no celular a altura muda sozinha quando a barra do navegador some
+  var resizeTimer, larguraAntes = window.innerWidth;
   window.addEventListener('resize', function () {
+    if (celular && window.innerWidth === larguraAntes) return;
+    larguraAntes = window.innerWidth;
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(measure, 150);
   });

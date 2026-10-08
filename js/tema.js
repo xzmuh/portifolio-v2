@@ -213,6 +213,32 @@
     botoesCarrossel[0].addEventListener('click', function () { passaCartao(-1); });
     botoesCarrossel[1].addEventListener('click', function () { passaCartao(1); });
     carrossel.addEventListener('scroll', marcaCarrossel, { passive: true });
+    // arrastar de lado: o navegador só cuida da rolagem vertical (touch-action: pan-y no css), então
+    // um gesto de lado não desce a página; aqui o card segue o dedo e, ao soltar, encaixa no vizinho
+    var toque = null;
+    carrossel.addEventListener('touchstart', function (e) {
+      var t = e.touches[0];
+      toque = { x: t.clientX, y: t.clientY, left: carrossel.scrollLeft, eixo: null, i: cartaoAtual() };
+    }, { passive: true });
+    carrossel.addEventListener('touchmove', function (e) {
+      if (!toque) return;
+      var t = e.touches[0], dx = t.clientX - toque.x, dy = t.clientY - toque.y;
+      if (!toque.eixo && Math.abs(dx) + Math.abs(dy) > 6) toque.eixo = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+      if (toque.eixo !== 'x') return;
+      carrossel.classList.add('arrastando');
+      carrossel.scrollLeft = toque.left - dx;
+    }, { passive: true });
+    carrossel.addEventListener('touchend', function (e) {
+      if (!toque) return;
+      var foi = toque.eixo === 'x', dx = e.changedTouches[0].clientX - toque.x, i = toque.i;
+      toque = null;
+      if (!foi) return;
+      carrossel.classList.remove('arrastando');
+      var alvo = Math.abs(dx) > 40 ? i + (dx < 0 ? 1 : -1) : i;
+      alvo = Math.max(0, Math.min(cartoes.length - 1, alvo));
+      carrossel.scrollTo({ left: cartoes[alvo].offsetLeft - cartoes[0].offsetLeft, behavior: 'smooth' });
+    });
+    carrossel.addEventListener('touchcancel', function () { toque = null; carrossel.classList.remove('arrastando'); });
     window.addEventListener('resize', marcaCarrossel);
     marcaCarrossel();
   }
