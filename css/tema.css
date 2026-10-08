@@ -1194,6 +1194,22 @@ body::-webkit-scrollbar {
 
 /* ---------- projetos (cinza) ---------- */
 
+.projetos_mais {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .section.projects:not(.mostra-todos) .projeto-extra {
+    display: none;
+  }
+
+  .section.projects:not(.mostra-todos) .projetos_mais {
+    display: flex;
+    justify-content: center;
+    margin-top: 2.5rem;
+  }
+}
+
 .section.projects {
   background: var(--cinza);
   color: var(--tinta);
@@ -1519,8 +1535,134 @@ body::-webkit-scrollbar {
   color: var(--laranja);
 }
 
+/* cards com canto cortado (como os botões), número da ordem e uma régua laranja que enche no
+   hover */
 .xp-card {
+  --corte: 18px;
   border-radius: 0;
+  clip-path: polygon(0 0, calc(100% - var(--corte)) 0, 100% var(--corte), 100% 100%, var(--corte) 100%, 0 calc(100% - var(--corte)));
+}
+
+.xp-card-num {
+  position: absolute;
+  z-index: 3;
+  top: clamp(.8rem, 1.6vw, 1.5rem);
+  left: clamp(.8rem, 1.6vw, 1.5rem);
+  font-size: clamp(.75rem, .9vw, .95rem);
+  font-weight: 600;
+  letter-spacing: .08em;
+  color: var(--laranja);
+  font-variant-numeric: tabular-nums;
+}
+
+.xp-card-num:after {
+  content: "";
+  display: inline-block;
+  width: 1.6em;
+  height: 1px;
+  margin-left: .5em;
+  vertical-align: middle;
+  background: currentColor;
+}
+
+.xp-card:after {
+  content: "";
+  position: absolute;
+  z-index: 4;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 4px;
+  background: var(--laranja);
+  transform: scaleX(.12);
+  transform-origin: 0 50%;
+  transition: transform .7s var(--suave);
+}
+
+.xp-card:hover:after,
+.xp-card.is-open:after {
+  transform: none;
+}
+
+.xp-card .xp-card-toggle {
+  background: var(--laranja);
+  color: var(--tinta);
+}
+
+/* folha dos detalhes no celular (js/experience.js) */
+.xp-folha {
+  position: fixed;
+  z-index: 9500;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  background: rgba(0, 0, 0, .6);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .3s, visibility 0s .3s;
+}
+
+.xp-folha.aberta {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity .3s;
+}
+
+.xp-folha_painel {
+  position: relative;
+  width: 100%;
+  max-height: 82vh;
+  padding: 1.6rem 1.25rem 2rem;
+  overflow-y: auto;
+  border-top: 4px solid var(--laranja);
+  background: var(--preto);
+  color: #f2f0ea;
+  transform: translateY(100%);
+  transition: transform .4s var(--suave);
+}
+
+.xp-folha.aberta .xp-folha_painel {
+  transform: none;
+}
+
+.xp-folha_fecha {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: grid;
+  place-items: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  padding: 0;
+  border: 0;
+  background: var(--laranja);
+  color: var(--tinta);
+}
+
+.xp-folha_fecha svg {
+  width: 1.1rem;
+  height: 1.1rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+}
+
+.xp-folha_nome {
+  margin: 0 3rem 1rem 0;
+  font-size: 1.4rem;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.xp-card-detail.xp-card-detail--folha {
+  position: static;
+  display: block;
+  padding: 0;
+  overflow: visible;
+  background: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  clip-path: none;
 }
 
 .xp-badge {
@@ -1638,11 +1780,105 @@ body::-webkit-scrollbar {
     max-width: 22rem;
   }
 
-  .curriculo_item {
-    grid-template-columns: 2rem 5.5rem minmax(0, 1fr) auto;
-    gap: .8rem;
-    padding-inline: .2rem;
+  /* no celular as versões viram um carrossel de lado, com setinhas (js/tema.js); o palco grande
+     some porque cada card já tem a própria imagem */
+  .curriculo_foto {
+    display: none;
   }
+
+  .curriculo_lista {
+    display: flex;
+    gap: 1rem;
+    margin-inline: -1.25rem;
+    padding: 0 1.25rem;
+    border-top: 0;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 1.25rem;
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+  }
+
+  .curriculo_lista::-webkit-scrollbar {
+    display: none;
+  }
+
+  .curriculo_lista li {
+    flex: 0 0 84%;
+    border: 1px solid rgba(255, 255, 255, .14);
+    scroll-snap-align: start;
+  }
+
+  .curriculo_item {
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "thumb thumb"
+      "nome nome"
+      "num ir";
+    gap: 1rem;
+    height: 100%;
+    padding: 1rem;
+  }
+
+  .curriculo_thumb { grid-area: thumb; filter: none; }
+  .curriculo_nome { grid-area: nome; }
+  .curriculo_num { grid-area: num; }
+  .curriculo_ir { grid-area: ir; }
+
+  .curriculo_setas {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 1.25rem;
+  }
+}
+
+.curriculo_setas {
+  display: none;
+}
+
+.curriculo_contagem {
+  font-size: .85rem;
+  font-weight: 500;
+  color: #8a8a8a;
+  font-variant-numeric: tabular-nums;
+}
+
+.curriculo_contagem b {
+  color: var(--laranja);
+  font-weight: 500;
+}
+
+.curriculo_setas_botoes {
+  display: flex;
+  gap: .6rem;
+}
+
+.curriculo_seta {
+  --corte: 8px;
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  padding: 0;
+  border: 0;
+  background: var(--laranja);
+  color: var(--tinta);
+  clip-path: polygon(var(--corte) 0, calc(100% - var(--corte)) 0, 100% var(--corte), 100% calc(100% - var(--corte)), calc(100% - var(--corte)) 100%, var(--corte) 100%, 0 calc(100% - var(--corte)), 0 var(--corte));
+}
+
+.curriculo_seta:disabled {
+  background: #2a2a2a;
+  color: #6a6a6a;
+}
+
+.curriculo_seta svg {
+  width: 1.2rem;
+  height: 1.2rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: square;
 }
 
 /* sem espaço dos lados do título: o botão desce para o pé do topo */

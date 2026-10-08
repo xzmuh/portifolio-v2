@@ -79,6 +79,8 @@
     mask.setAttribute('x', 0); mask.setAttribute('y', 0);
     mask.setAttribute('width', W); mask.setAttribute('height', HH);
     xCircle.setAttribute('cx', W / 2); xCircle.setAttribute('cy', HH / 2);
+    // gradiente fixo (antes escorregava a cada quadro e obrigava a redesenhar a tela inteira)
+    grad.setAttribute('gradientTransform', 'translate(-0.08 0) scale(1.15 1)');
     layoutText();
     render(progress);
   }
@@ -129,12 +131,11 @@
     var tx = lerp(W * 0.62, 0, easeInOut(clamp01((p - 0.1) / 0.75)));
     text.setAttribute('transform', 'translate(' + (W / 2 + tx) + ' 0)');
 
-    // gradiente escorrega de leve junto com o scroll
-    grad.setAttribute('gradientTransform', 'translate(' + (-0.15 + p * 0.15) + ' 0) scale(1.15 1)');
 
   }
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var pinFim = false;
 
   // Borda de baixo do painel: enquanto a página rola (para baixo ou para cima) as pontas sobem e
   // a borda vira uma curva; parando, ela volta a ficar reta. É uma faixa da cor do footer que
@@ -177,7 +178,8 @@
       var y = window.scrollY;
       var vel = Math.abs(y - ultimoY) / dt;   // px por ms
       ultimoY = y;
-      var alvo = Math.min(1, vel / 2.5);
+      // só curva depois que a animação acabou e o painel está subindo; antes ela cobria a animação
+      var alvo = pinFim ? Math.min(1, vel / 2.5) : 0;
       // sobe rápido, volta devagar
       dobra += (alvo - dobra) * (alvo > dobra ? 0.35 : 0.08);
       if (dobra < 0.003) dobra = 0;
@@ -208,7 +210,7 @@
       refreshPriority: -1,
       invalidateOnRefresh: true,
       onRefresh: function () { measure(); },
-      onUpdate: function (self) { render(self.progress); }
+      onUpdate: function (self) { pinFim = self.progress >= 1; render(self.progress); }
     });
     render(0);
     ScrollTrigger.refresh();

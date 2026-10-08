@@ -29,6 +29,9 @@
 }
 
 .xreveal-svg {
+  /* troca precisão por velocidade: a máscara cobre a tela toda e é refeita a cada quadro */
+  shape-rendering: optimizeSpeed;
+  text-rendering: optimizeSpeed;
   position: absolute;
   inset: 0;
   width: 100%;
