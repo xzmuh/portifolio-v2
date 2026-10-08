@@ -3196,6 +3196,12 @@ body::-webkit-scrollbar {
     scroll-padding-inline: 1.25rem;
     scrollbar-width: none;
     overscroll-behavior-x: contain;
+    /* o arrasto de lado é feito no js/tema.js: assim o gesto não desce a página junto */
+    touch-action: pan-y;
+  }
+
+  .curriculo_lista.arrastando {
+    scroll-snap-type: none;
   }
 
   .curriculo_lista::-webkit-scrollbar {
