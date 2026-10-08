@@ -104,17 +104,16 @@
     var troca = palco.querySelector('.curriculo_troca');
     var selo = palco.querySelector('[data-selo]'), seloPadrao = selo.textContent;
     var moldura = palco.querySelector('.curriculo_moldura'), base = palco.querySelector('.curriculo_eu');
-    var prismas = palco.querySelectorAll('.prisma img'), fimGlitch, atual = base.getAttribute('src');
-    // o soluço prismático: as cópias pegam a imagem que vai ficar e a classe reinicia a animação
-    var glitch = function (src) {
+    var fimVira, atual = base.getAttribute('src');
+    // a cortina laranja passa e a imagem troca atrás dela (a classe reinicia a animação)
+    var vira = function (src) {
       if (src === atual) return;
       atual = src;
-      Array.prototype.forEach.call(prismas, function (p) { p.src = src; });
-      moldura.classList.remove('glitch');
+      moldura.classList.remove('virando');
       void moldura.offsetWidth;
-      moldura.classList.add('glitch');
-      clearTimeout(fimGlitch);
-      fimGlitch = setTimeout(function () { moldura.classList.remove('glitch'); }, 450);
+      moldura.classList.add('virando');
+      clearTimeout(fimVira);
+      fimVira = setTimeout(function () { moldura.classList.remove('virando'); }, 650);
     };
     var solta;
     Array.prototype.forEach.call(document.querySelectorAll('[data-foto]'), function (item) {
@@ -123,13 +122,13 @@
         troca.src = item.getAttribute('data-foto');
         selo.textContent = item.getAttribute('data-selo');
         palco.classList.add('trocando');
-        glitch(item.getAttribute('data-foto'));
+        vira(item.getAttribute('data-foto'));
       };
       var volta = function () {
         solta = setTimeout(function () {
           palco.classList.remove('trocando');
           selo.textContent = seloPadrao;
-          glitch(base.getAttribute('src'));
+          vira(base.getAttribute('src'));
         }, 120);
       };
       item.addEventListener('pointerenter', mostra);
