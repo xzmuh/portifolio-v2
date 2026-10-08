@@ -66,18 +66,77 @@
     });
   });
   var timerToast;
+  var avisa = function (texto) {
+    toast.textContent = texto;
+    toast.classList.add('on');
+    clearTimeout(timerToast);
+    timerToast = setTimeout(function () { toast.classList.remove('on'); }, 1800);
+  };
   $$('[data-site-acao]').forEach(function (b) {
-    b.addEventListener('click', function () {
-      toast.classList.add('on');
-      clearTimeout(timerToast);
-      timerToast = setTimeout(function () { toast.classList.remove('on'); }, 1800);
+    b.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var plano = b.closest('.site_plano');
+      if (plano) $$('.site_plano', site).forEach(function (p) { p.classList.toggle('on', p === plano); });
+      avisa(b.getAttribute('data-site-acao'));
     });
   });
-  if (site) $$('.site_planos > div', site).forEach(function (plano) {
-    plano.addEventListener('click', function () {
-      $$('.site_planos > div', site).forEach(function (p) { p.classList.toggle('on', p === plano); });
+  if (site) {
+    // planos: clicar no card escolhe; mensal/anual recalcula os preços
+    $$('.site_plano', site).forEach(function (plano) {
+      plano.addEventListener('click', function () {
+        $$('.site_plano', site).forEach(function (p) { p.classList.toggle('on', p === plano); });
+      });
     });
-  });
+    $$('[data-periodo]', site).forEach(function (bt) {
+      bt.addEventListener('click', function () {
+        var anual = bt.getAttribute('data-periodo') === 'ano';
+        $$('[data-periodo]', site).forEach(function (o) { o.classList.toggle('on', o === bt); });
+        $$('[data-preco]', site).forEach(function (pr) {
+          var base = +pr.getAttribute('data-preco');
+          pr.textContent = anual ? Math.round(base * 0.8) : base;
+          acorda(pr.parentNode);
+        });
+      });
+    });
+
+    // contato: clicar num campo "digita" um exemplo; enviar completa o que faltar
+    var form = $('[data-site-form]');
+    var timersForm = [];
+    var calmo = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var digita = function (campo, depois) {
+      var alvo = campo.querySelector('span'), texto = campo.getAttribute('data-campo');
+      if (campo.classList.contains('cheio')) { if (depois) depois(); return; }
+      campo.classList.add('foco', 'cheio');
+      var k = 0;
+      var passo = function () {
+        alvo.textContent = texto.slice(0, ++k);
+        if (k < texto.length) timersForm.push(setTimeout(passo, calmo ? 0 : 28));
+        else { campo.classList.remove('foco'); if (depois) depois(); }
+      };
+      passo();
+    };
+    var campos = $$('[data-campo]', form);
+    campos.forEach(function (c) { c.addEventListener('click', function () { digita(c); }); });
+    var enviar = $('[data-site-enviar]', form), enviando = false;
+    enviar.addEventListener('click', function () {
+      if (enviando) return;
+      enviando = true;
+      var i = 0;
+      var proximo = function () {
+        if (i < campos.length) return digita(campos[i++], proximo);
+        enviar.classList.add('ok');
+        enviar.textContent = 'Enviado ✓';
+        avisa('Mensagem enviada ✓');
+        timersForm.push(setTimeout(function () {
+          campos.forEach(function (c) { c.classList.remove('cheio'); c.querySelector('span').textContent = ''; });
+          enviar.classList.remove('ok');
+          enviar.textContent = 'Enviar mensagem →';
+          enviando = false;
+        }, 2200));
+      };
+      proximo();
+    });
+  }
 
   // ---------- Desktop: cada aba de agente mostra outro trabalho ----------
   var AGENTES = [

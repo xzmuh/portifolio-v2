@@ -32,7 +32,7 @@
   <link href="css/footer.css?v=20261008" rel="stylesheet" type="text/css" />
   <link href="css/xreveal.css?v=20261008w" rel="stylesheet" type="text/css" />
   <link href="css/pixel-seam.css" rel="stylesheet" type="text/css" />
-  <link href="css/tema.css?v=20261008z" rel="stylesheet" type="text/css" />
+  <link href="css/tema.css?v=20261008za" rel="stylesheet" type="text/css" />
   <link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com" rel="preconnect" />
   <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin="anonymous" />
@@ -622,13 +622,26 @@
                     <div class="site" data-site>
                       <div class="site_menu"><b>marca<i>.</i></b><button class="on" type="button" data-pagina="0">Início</button><button type="button" data-pagina="1">Planos</button><button type="button" data-pagina="2">Contato</button></div>
                       <div class="site_pagina on" data-pagina-corpo="0">
-                        <div class="site_hero"><div><span class="site_selo">novo</span><strong>Seu produto,<br />do jeito certo.</strong><p>Uma página rápida, clara e feita para quem chega continuar rolando.</p><button class="site_botao" type="button" data-site-acao>Começar agora</button></div><div class="site_arte"><i></i><i></i><i></i></div></div>
+                        <div class="site_hero"><div><span class="site_selo">novo</span><strong>Seu produto,<br />do jeito certo.</strong><p>Uma página rápida, clara e feita para quem chega continuar rolando.</p><button class="site_botao" type="button" data-site-acao="Conta criada ✓">Começar agora</button></div><div class="site_arte"><i></i><i></i><i></i></div></div>
                       </div>
                       <div class="site_pagina" data-pagina-corpo="1">
-                        <div class="site_planos"><div><em>Básico</em><b>R$ 49</b><span></span><span></span></div><div class="on"><em>Pro</em><b>R$ 99</b><span></span><span></span><span></span></div><div><em>Time</em><b>R$ 199</b><span></span><span></span></div></div>
+                        <div class="site_planos_topo"><strong>Planos simples</strong><div class="site_periodo"><button class="on" type="button" data-periodo="mes">Mensal</button><button type="button" data-periodo="ano">Anual <i>-20%</i></button></div></div>
+                        <div class="site_planos">
+                          <div class="site_plano"><em>Básico</em><b>R$ <span data-preco="49">49</span><small>/mês</small></b><ul><li>1 usuário</li><li>Site de 1 página</li><li>Suporte por e-mail</li></ul><button class="site_botao site_botao--linha" type="button" data-site-acao="Plano Básico escolhido ✓">Escolher</button></div>
+                          <div class="site_plano on"><span class="site_plano_selo">mais escolhido</span><em>Pro</em><b>R$ <span data-preco="99">99</span><small>/mês</small></b><ul><li>5 usuários</li><li>Páginas ilimitadas</li><li>Suporte no WhatsApp</li></ul><button class="site_botao" type="button" data-site-acao="Plano Pro escolhido ✓">Escolher</button></div>
+                          <div class="site_plano"><em>Time</em><b>R$ <span data-preco="199">199</span><small>/mês</small></b><ul><li>Usuários ilimitados</li><li>Loja integrada</li><li>Gerente dedicado</li></ul><button class="site_botao site_botao--linha" type="button" data-site-acao="Plano Time escolhido ✓">Escolher</button></div>
+                        </div>
                       </div>
                       <div class="site_pagina" data-pagina-corpo="2">
-                        <div class="site_contato"><strong>Fale com a gente</strong><span class="site_campo">seu nome</span><span class="site_campo">seu e-mail</span><button class="site_botao" type="button" data-site-acao>Enviar</button></div>
+                        <div class="site_contato">
+                          <div class="site_contato_info"><strong>Fale com<br />a gente.</strong><p>Responde em até 1 dia útil.</p><span><i>@</i>oi@seusite.com</span><span><i>☏</i>(11) 99999-0000</span><span><i>◷</i>seg a sex, 9h às 18h</span></div>
+                          <div class="site_form" data-site-form>
+                            <button class="site_campo" type="button" data-campo="Ana Costa"><em>Nome</em><span></span></button>
+                            <button class="site_campo" type="button" data-campo="ana@email.com"><em>E-mail</em><span></span></button>
+                            <button class="site_campo site_campo--texto" type="button" data-campo="Quero um site novo para a minha loja."><em>Mensagem</em><span></span></button>
+                            <button class="site_botao" type="button" data-site-enviar>Enviar mensagem →</button>
+                          </div>
+                        </div>
                       </div>
                       <div class="site_toast" data-site-toast>Pronto! Recebemos ✓</div>
                     </div>
@@ -1573,7 +1586,7 @@
   <script src="js/abstrato.js?v=20261008s"></script>
   <script src="js/onda.js?v=20261008"></script>
   <script src="js/tema.js?v=20261008y"></script>
-  <script src="js/oficio.js?v=20261008z"></script>
+  <script src="js/oficio.js?v=20261008za"></script>
   <script src="js/rolagem.js?v=20261008u"></script>
 </body>
 

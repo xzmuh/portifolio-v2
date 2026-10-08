@@ -1447,69 +1447,267 @@ body::-webkit-scrollbar {
 .site_arte i:nth-child(2) { inset: 38% 2% 4% 40%; background: var(--tinta); border-radius: 0; }
 .site_arte i:nth-child(3) { width: 22%; aspect-ratio: 1; top: 4%; right: 6%; border: 2px solid var(--tinta); }
 
+.site_botao--linha {
+  background: none;
+  box-shadow: inset 0 0 0 1px var(--tinta);
+}
+
+/* planos: três cards com o do meio em destaque; mensal/anual muda o preço */
+.site_planos_topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: .6rem;
+}
+
+.site_planos_topo strong {
+  font-size: .95rem;
+  font-weight: 800;
+  letter-spacing: -.03em;
+}
+
+.site_periodo {
+  display: flex;
+  padding: .15rem;
+  background: #e6e4e0;
+}
+
+.site_periodo button {
+  padding: .2rem .5rem;
+  border: 0;
+  background: none;
+  color: #777;
+  font-size: .56rem;
+  font-weight: 600;
+}
+
+.site_periodo button.on {
+  background: #fff;
+  color: var(--tinta);
+}
+
+.site_periodo i {
+  font-style: normal;
+  color: var(--laranja);
+}
+
 .site_planos {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: .5rem;
-  height: 100%;
+  align-items: stretch;
 }
 
-.site_planos div {
+.site_plano {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: .35rem;
-  padding: .7rem;
+  gap: .25rem;
+  padding: .65rem .65rem .6rem;
   border: 1px solid #dcd9d4;
   background: #fff;
   cursor: pointer;
-  transition: transform .2s, border-color .2s;
+  transition: transform .25s cubic-bezier(.22, 1, .36, 1), background .2s, color .2s, border-color .2s;
 }
 
-.site_planos div.on {
-  border-color: var(--laranja);
+.site_plano.on {
+  border-color: var(--tinta);
+  background: var(--tinta);
+  color: #fff;
   transform: translateY(-4px);
-  box-shadow: 0 .6rem 1rem -.5rem rgba(0, 0, 0, .25);
+  box-shadow: 0 .7rem 1.2rem -.6rem rgba(0, 0, 0, .35);
 }
 
-.site_planos em {
+.site_plano_selo {
+  position: absolute;
+  top: 0;
+  right: .5rem;
+  transform: translateY(-50%);
+  padding: .08rem .35rem;
+  background: var(--laranja);
+  color: var(--tinta);
+  font-size: .46rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+.site_plano em {
   font-style: normal;
-  font-size: .6rem;
-  color: #777;
+  font-size: .58rem;
+  font-weight: 600;
+  color: #888;
 }
 
-.site_planos b {
-  font-size: 1rem;
-  font-weight: 800;
-}
-
-.site_planos span {
-  height: .28rem;
-  background: #e4e2de;
-}
-
-.site_contato {
-  display: flex;
-  flex-direction: column;
-  gap: .45rem;
-  max-width: 14rem;
-}
-
-.site_contato strong {
+.site_plano b {
   font-size: 1.05rem;
   font-weight: 800;
   letter-spacing: -.03em;
 }
 
-.site_campo {
-  padding: .4rem .55rem;
+.site_plano b small {
+  font-size: .52rem;
+  font-weight: 500;
+  color: #888;
+}
+
+.site_plano ul {
+  flex: 1;
+  margin: .25rem 0 .45rem;
+  padding: .4rem 0 0;
+  border-top: 1px solid #e6e4e0;
+  list-style: none;
+}
+
+.site_plano li {
+  position: relative;
+  padding-left: .75rem;
+  font-size: .54rem;
+  line-height: 1.7;
+  color: #555;
+}
+
+.site_plano li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: var(--laranja);
+  font-weight: 700;
+}
+
+.site_plano.on ul { border-color: #333; }
+.site_plano.on li { color: #ccc; }
+.site_plano.on .site_botao--linha { box-shadow: inset 0 0 0 1px #fff; color: #fff; }
+
+.site_plano .site_botao {
+  width: 100%;
+  padding: .35rem;
+}
+
+/* contato: informações à esquerda, formulário que se preenche sozinho à direita */
+.site_contato {
+  display: grid;
+  grid-template-columns: .9fr 1.1fr;
+  gap: 1rem;
+  height: 100%;
+  align-items: center;
+}
+
+.site_contato_info strong {
+  display: block;
+  font-size: 1.15rem;
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -.04em;
+}
+
+.site_contato_info p {
+  margin: .35rem 0 .6rem;
+  font-size: .58rem;
+  color: #777;
+}
+
+.site_contato_info span {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  margin-top: .3rem;
+  font-size: .58rem;
+  font-weight: 600;
+}
+
+.site_contato_info i {
+  display: grid;
+  place-items: center;
+  width: 1.1rem;
+  height: 1.1rem;
+  background: var(--laranja);
+  color: var(--tinta);
+  font-style: normal;
+  font-size: .55rem;
+}
+
+.site_form {
+  display: flex;
+  flex-direction: column;
+  gap: .35rem;
+  padding: .65rem;
   border: 1px solid #dcd9d4;
   background: #fff;
-  font-size: .6rem;
+}
+
+.site_campo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: .1rem;
+  padding: .3rem .45rem;
+  border: 1px solid #dcd9d4;
+  background: #faf9f7;
+  text-align: left;
+  cursor: text;
+  transition: border-color .2s, box-shadow .2s;
+}
+
+.site_campo em {
+  font-style: normal;
+  font-size: .48rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .06em;
   color: #999;
 }
 
-.site_contato .site_botao {
-  align-self: flex-start;
+.site_campo span {
+  min-height: .8rem;
+  font-size: .6rem;
+  color: var(--tinta);
+}
+
+.site_campo span:empty::before {
+  content: 'clique para preencher';
+  color: #bbb;
+}
+
+.site_campo--texto span {
+  min-height: 1.6rem;
+}
+
+.site_campo:hover,
+.site_campo.foco {
+  border-color: var(--laranja);
+  box-shadow: 0 0 0 2px rgba(255, 106, 43, .18);
+}
+
+.site_campo.foco span::after {
+  content: '';
+  display: inline-block;
+  width: 1px;
+  height: .7rem;
+  margin-left: 1px;
+  vertical-align: -.1rem;
+  background: var(--tinta);
+}
+
+.site_form .site_botao {
+  margin-top: .15rem;
+  transition: background .2s, color .2s;
+}
+
+.site_form .site_botao.ok {
+  background: var(--tinta);
+  color: #fff;
+}
+
+@media (max-width: 600px) {
+  .site_planos_topo strong { font-size: .8rem; }
+  .site_planos { gap: .3rem; }
+  .site_plano { padding: .55rem .4rem .45rem; }
+  .site_plano li { font-size: .5rem; padding-left: .65rem; }
+  .site_contato { grid-template-columns: 1fr; gap: .5rem; align-items: start; }
+  .site_contato_info p,
+  .site_contato_info span { display: none; }
+  .site_contato_info strong br { display: none; }
 }
 
 .site_toast {
