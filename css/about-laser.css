@@ -38,24 +38,85 @@
 
 .about-thread path {
   fill: none;
-  stroke: #2e2e2e;
   stroke-linecap: butt;
   stroke-linejoin: miter;
   stroke-miterlimit: 8;
   vector-effect: non-scaling-stroke;
+}
+
+/* só a máscara é desenhada com a rolagem; larga para caber o glitch deslocado */
+.about-thread__revela {
+  stroke: #fff;
+  stroke-width: 60;
   stroke-dasharray: 99999;
   stroke-dashoffset: 99999;
 }
 
-.about-thread__glow {
-  stroke-width: 40;
-  opacity: .05;
-  filter: blur(10px);
+/* o traço inteiro troca de cor, preto <-> laranja, sempre com um tremido de glitch na virada */
+.about-thread__line {
+  stroke: var(--tinta, #121212);
+  stroke-width: 20;
+  animation: about-troca-linha 2.6s steps(1, end) infinite;
 }
 
-.about-thread__line {
+@keyframes about-troca-linha {
+  0% { stroke: var(--tinta, #121212); transform: none; }
+  40% { stroke: var(--laranja, #ff6a2b); transform: translate(4px, 0); }
+  42% { stroke: var(--tinta, #121212); transform: translate(-3px, 6px); }
+  44% { stroke: #fff; transform: translate(2px, 0); }
+  46% { stroke: var(--laranja, #ff6a2b); transform: none; }
+  90% { stroke: var(--tinta, #121212); transform: translate(-4px, 0); }
+  92% { stroke: var(--laranja, #ff6a2b); transform: translate(3px, -6px); }
+  94% { stroke: #fff; transform: none; }
+  96% { stroke: var(--tinta, #121212); transform: none; }
+}
+
+/* o prisma: uma cópia branca e uma laranja que escapam para os lados por um instante */
+.about-thread__fantasma {
   stroke-width: 20;
-  opacity: .9;
+  opacity: 0;
+}
+
+.about-thread__fantasma--branco {
+  stroke: #fff;
+  animation: about-glitch-branco 2.6s steps(1, end) infinite;
+}
+
+.about-thread__fantasma--laranja {
+  stroke: var(--laranja, #ff6a2b);
+  animation: about-glitch-laranja 2.6s steps(1, end) infinite;
+}
+
+@keyframes about-glitch-branco {
+  0%, 100% { opacity: 0; transform: none; }
+  40% { opacity: 1; transform: translate(-8px, 0); }
+  42% { opacity: 1; transform: translate(6px, -12px); }
+  45% { opacity: 0; transform: none; }
+  90% { opacity: 1; transform: translate(9px, 5px); }
+  93% { opacity: 0; transform: none; }
+}
+
+@keyframes about-glitch-laranja {
+  0%, 100% { opacity: 0; transform: none; }
+  41% { opacity: 1; transform: translate(10px, 0); }
+  44% { opacity: 0; transform: none; }
+  91% { opacity: 1; transform: translate(-10px, -8px); }
+  95% { opacity: 0; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-thread path {
+    animation: none !important;
+  }
+}
+
+/* fundo do texto grande: campo de pixels (js/about-pixels.js), de "Fascinado" até a emenda */
+.about-pixels {
+  position: absolute;
+  z-index: 0;
+  left: 0;
+  width: 100%;
+  pointer-events: none;
 }
 
 /* texto grande um pouco menor */
@@ -88,12 +149,13 @@
     --thread-width: 11vw;
   }
 
-  .about-thread__glow {
-    stroke-width: 22;
+  .about-thread__line,
+  .about-thread__fantasma {
+    stroke-width: 10;
   }
 
-  .about-thread__line {
-    stroke-width: 10;
+  .about-thread__revela {
+    stroke-width: 34;
   }
 
   .section_body.large.about {

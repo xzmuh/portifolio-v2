@@ -3,12 +3,13 @@
  * Como o SVG estica (preserveAspectRatio="none") e o traço usa
  * vector-effect: non-scaling-stroke, o tracejado é medido em pixels de tela:
  * amostramos o path, somamos o comprimento já transformado e animamos o
- * stroke-dashoffset de L até 0.
+ * stroke-dashoffset de L até 0. Só a máscara é desenhada assim; o traço visível
+ * (troca de cor e glitch) fica por baixo dela, no CSS.
  */
 (function () {
   var svg = document.querySelector('.about-thread');
   if (!svg) return;
-  var paths = Array.prototype.slice.call(svg.querySelectorAll('path'));
+  var paths = Array.prototype.slice.call(svg.querySelectorAll('.about-thread__revela'));
   var screenLen = 0, progress = 0;
 
   function measure() {

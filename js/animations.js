@@ -359,6 +359,9 @@
       } else if (ev.eventTypeId === "MOUSE_MOVE") {
         setupMouseParallax(ev, actionList);
       } else if (ev.eventTypeId === "SCROLLING_IN_VIEW") {
+        // .grow-text (crescer e girar com a rolagem) foi trocado por uma entrada seca em js/tema.js
+        var t2 = ev.targets && ev.targets[0];
+        if (t2 && t2.selector === ".grow-text") return;
         setupScrollTrigger(ev, actionList);
       } else if (ev.eventTypeId === "SCROLL_INTO_VIEW") {
         var t3 = ev.targets && ev.targets[0];

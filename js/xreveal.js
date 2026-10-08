@@ -85,12 +85,13 @@
 
   function render(pScroll) {
     progress = pScroll;
-    // a animação acaba junto com o pin: antes sobrava um trecho parado no fim, que parecia travar
-    var p = clamp01(pScroll / 0.88);
+    // a animação acaba junto com o pin: o laranja fecha a tela (p = .88) no fim exato da rolagem
+    // fixada, sem trecho parado depois (ele fazia a rolagem parecer presa na tela laranja)
+    var p = clamp01(pScroll) * 0.88;
     var vmin = Math.min(W, HH), diag = Math.sqrt(W * W + HH * HH);
     // 0 -> .3: M é esmagado (resiste, treme, cede de uma vez e espirra para os lados);
     // .3 -> .85: a linha volta ao centro, gira e cresce; .68 -> .88: círculo fecha o
-    // que falta; .88 -> 1: segura cheio.
+    // que falta. (O trecho .88 -> 1, segurando cheio, não é mais usado.)
     var t = clamp01(p / 0.3), k;
     if (t < 0.4) k = 1 - 0.14 * easeOut(t / 0.4);                 // resiste
     else k = 0.86 * (1 - easeIn(clamp01((t - 0.4) / 0.45)));       // cede
@@ -135,6 +136,61 @@
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  // Borda de baixo do painel: enquanto a página rola (para baixo ou para cima) as pontas sobem e
+  // a borda vira uma curva; parando, ela volta a ficar reta. É uma faixa da cor do footer que
+  // cobre os cantos, mais funda quanto mais rápida a rolagem.
+  (function () {
+    if (reduceMotion) return;
+    var NS = 'http://www.w3.org/2000/svg';
+    var curva = document.createElementNS(NS, 'svg');
+    curva.setAttribute('class', 'xreveal-curva');
+    curva.setAttribute('aria-hidden', 'true');
+    curva.setAttribute('preserveAspectRatio', 'none');
+    var forma = document.createElementNS(NS, 'path');
+    curva.appendChild(forma);
+    pin.appendChild(curva);
+
+    // tamanhos medidos só no resize: ler o layout a cada quadro brigava com o pin do ScrollTrigger
+    var w = 0, B = 0;
+    function mede() {
+      w = window.innerWidth;
+      B = Math.min(160, window.innerHeight * 0.18);
+      curva.setAttribute('viewBox', '0 0 ' + w + ' ' + B);
+      desenha(-1);
+    }
+    var ultimoB = -1;
+    function desenha(b) {
+      if (Math.abs(b - ultimoB) < 0.5) return;
+      ultimoB = b;
+      b = Math.max(0, b);
+      // pontas sobem b; o meio continua encostado embaixo
+      forma.setAttribute('d', 'M0 ' + (B - b) + ' Q' + (w / 2) + ' ' + (B + b) + ' ' + w + ' ' + (B - b) +
+        ' L' + w + ' ' + B + ' L0 ' + B + 'Z');
+    }
+    window.addEventListener('resize', mede);
+    mede();
+
+    var perto = false, rodando = false, ultimoY = 0, ultimoT = 0, dobra = 0;
+    function quadro(agora) {
+      var dt = ultimoT ? Math.max(1, agora - ultimoT) : 16;
+      ultimoT = agora;
+      var y = window.scrollY;
+      var vel = Math.abs(y - ultimoY) / dt;   // px por ms
+      ultimoY = y;
+      var alvo = Math.min(1, vel / 2.5);
+      // sobe rápido, volta devagar
+      dobra += (alvo - dobra) * (alvo > dobra ? 0.35 : 0.08);
+      if (dobra < 0.003) dobra = 0;
+      desenha(dobra * B);
+      if (perto || dobra > 0) requestAnimationFrame(quadro);
+      else { rodando = false; ultimoT = 0; }
+    }
+    new IntersectionObserver(function (es) {
+      perto = es[0].isIntersecting;
+      if (perto && !rodando) { rodando = true; ultimoY = window.scrollY; requestAnimationFrame(quadro); }
+    }).observe(section);
+  })();
+
   function setup() {
     measure();
     if (reduceMotion || !window.gsap || !window.ScrollTrigger) {
@@ -144,7 +200,7 @@
     ScrollTrigger.create({
       trigger: section,
       start: 'top top',
-      end: function () { return '+=' + window.innerHeight * 1.76; },
+      end: function () { return '+=' + window.innerHeight * 1.36; },
       pin: pin,
       anticipatePin: 1,
       scrub: true,

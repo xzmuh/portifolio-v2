@@ -16,6 +16,18 @@
   will-change: border-radius;
 }
 
+/* borda curva de baixo (js/xreveal.js): a faixa tem a cor do footer */
+.xreveal-curva {
+  position: absolute;
+  z-index: 3;
+  left: 0;
+  bottom: -1px;
+  width: 100%;
+  height: min(160px, 18%);
+  fill: var(--preto, #111);
+  pointer-events: none;
+}
+
 .xreveal-svg {
   position: absolute;
   inset: 0;
