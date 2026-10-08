@@ -49,7 +49,7 @@
 /* anos gigantes só no contorno */
 .xp-bg-year {
   position: absolute;
-  font-family: Roboto, sans-serif;
+  font-family: "Inter Tight", sans-serif;
   font-weight: 900;
   font-size: clamp(9rem, 26vw, 30rem);
   line-height: .8;

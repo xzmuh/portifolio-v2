@@ -109,7 +109,7 @@
 .footer-headline {
   position: relative;
   margin: 0;
-  font-family: Roboto, sans-serif;
+  font-family: "Inter Tight", sans-serif;
   font-weight: 400;
   font-size: clamp(3rem, 7.6vw, 9.5rem);
   line-height: .93;

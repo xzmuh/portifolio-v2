@@ -287,12 +287,12 @@
     resizeTimer = setTimeout(refresh, 150);
   });
 
-  // O WebFont loader injeta a Roboto de forma assíncrona: garante o peso certo
+  // O WebFont loader injeta a Inter Tight de forma assíncrona: garante o peso certo
   // antes de medir/desenhar, senão a textura sai com a fonte fallback.
   var fontReady = document.fonts && document.fonts.load
     ? Promise.all([
-      document.fonts.load('400 100px Roboto'),
-      document.fonts.load('700 100px Roboto')
+      document.fonts.load('400 100px "Inter Tight"'),
+      document.fonts.load('700 100px "Inter Tight"')
     ]).then(function () { return document.fonts.ready; })
     : Promise.resolve();
   fontReady.then(setup, setup);

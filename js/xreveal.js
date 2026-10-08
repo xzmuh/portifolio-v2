@@ -158,7 +158,7 @@
   }
 
   var fontsReady = document.fonts && document.fonts.load
-    ? document.fonts.load('400 100px Roboto').then(function () { return document.fonts.ready; })
+    ? document.fonts.load('400 100px "Inter Tight"').then(function () { return document.fonts.ready; })
     : Promise.resolve();
   fontsReady.then(setup, setup);
 
