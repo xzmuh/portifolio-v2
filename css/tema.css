@@ -795,7 +795,6 @@ body {
 .curriculo_foto {
   position: relative;
   margin: 0;
-  padding: 2.4rem 1.6rem;
 }
 
 .curriculo_bloco {
@@ -845,8 +844,8 @@ body {
 .curriculo_selo {
   position: absolute;
   z-index: 2;
-  left: 0;
-  bottom: 0;
+  left: 2.4rem;
+  bottom: 2.4rem;
   padding: .55rem .8rem;
   background: var(--tinta);
   color: var(--laranja);
@@ -856,31 +855,51 @@ body {
   text-transform: uppercase;
 }
 
-/* troca de versão: a nova sobe por cima com a borda em diagonal e um zoom que assenta; a de baixo
-   afasta e escurece. Uma camada só (clip-path e transform), leve. */
+/* troca de versão: as duas partes laranja fecham sobre a imagem (de cima e de baixo, até o meio),
+   o palco gira 90° com elas fechadas, a imagem troca escondida e elas abrem. O giro acumula, então
+   os blocos de fora vão parar num lado diferente a cada troca. js/tema.js põe .fechado e --giro. */
+.palco_giro {
+  --giro: 0deg;
+  position: relative;
+  padding: 2.4rem;
+  transform: rotate(var(--giro));
+  transition: transform .5s cubic-bezier(.7, 0, .2, 1);
+}
+
 .curriculo_eu {
-  transition: transform 1.1s var(--suave), filter .8s ease;
+  transform: rotate(calc(-1 * var(--giro)));
+  transition: transform .5s cubic-bezier(.7, 0, .2, 1);
 }
 
-.curriculo_troca {
-  clip-path: polygon(0 112%, 100% 128%, 100% 128%, 0 112%);
-  transform: scale(1.18);
-  transition: clip-path .85s cubic-bezier(.77, 0, .18, 1), transform 1.2s var(--suave);
+.mandibula {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  height: 50.5%;
+  background: var(--laranja);
+  transform: scaleY(0);
+  transition: transform .3s cubic-bezier(.7, 0, .3, 1);
 }
 
-.curriculo_foto.trocando .curriculo_troca {
-  clip-path: polygon(0 -28%, 100% 0, 100% 100%, 0 100%);
+.mandibula--a {
+  top: 0;
+  transform-origin: 50% 0;
+}
+
+.mandibula--b {
+  bottom: 0;
+  transform-origin: 50% 100%;
+}
+
+.palco_giro.fechado .mandibula {
   transform: none;
 }
 
-.curriculo_foto.trocando .curriculo_eu {
-  transform: scale(1.08);
-  filter: brightness(.45);
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .curriculo_troca,
-  .curriculo_eu {
+  .palco_giro,
+  .curriculo_eu,
+  .mandibula {
     transition: none;
   }
 }
