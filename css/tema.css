@@ -842,31 +842,51 @@ body {
   object-fit: cover;
 }
 
-/* troca de versão: uma cortina laranja varre a imagem (o mesmo bloco que revela a foto do topo);
-   a imagem troca escondida atrás dela, no meio da passada. js/tema.js põe .virando */
-.cortina {
+/* troca de versão: o palco vira um mosaico de 7x7 peças que giram como cartas, em onda diagonal,
+   com a imagem nova no verso; no meio do giro as frestas mostram o laranja do fundo. js/tema.js
+   monta as peças e põe .on (aparece) e .virou (gira). */
+.mosaico {
   position: absolute;
   inset: 0;
   z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(7, 1fr);
   background: var(--laranja);
-  transform: scaleX(0);
-  transform-origin: 0 50%;
+  perspective: 900px;
+  opacity: 0;
   pointer-events: none;
 }
 
-.curriculo_moldura.virando .cortina {
-  animation: cortina .62s cubic-bezier(.7, 0, .2, 1) both;
+.mosaico.on {
+  opacity: 1;
 }
 
-@keyframes cortina {
-  0% { transform: scaleX(0); transform-origin: 0 50%; }
-  45% { transform: scaleX(1); transform-origin: 0 50%; }
-  55% { transform: scaleX(1); transform-origin: 100% 50%; }
-  100% { transform: scaleX(0); transform-origin: 100% 50%; }
+.mosaico i {
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform .55s cubic-bezier(.6, 0, .2, 1);
+  transition-delay: var(--d, 0ms);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .curriculo_moldura.virando .cortina { animation: none; }
+.mosaico.sem i {
+  transition: none;
+}
+
+.mosaico.virou i {
+  transform: rotateY(180deg);
+}
+
+.mosaico b {
+  position: absolute;
+  inset: 0;
+  background-repeat: no-repeat;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+.mosaico b + b {
+  transform: rotateY(180deg);
 }
 
 .curriculo_selo {
@@ -889,7 +909,7 @@ body {
 
 .curriculo_troca {
   opacity: 0;
-  transition: opacity 0s linear .28s;
+  transition: none;
 }
 
 .curriculo_foto.trocando .curriculo_troca {
@@ -1065,6 +1085,14 @@ body {
 
 .project_info {
   border-right-color: var(--laranja);
+}
+
+/* a entrada dos cards fica presa ao scroll (js/tema.js); sem o estalo do .reveal */
+.works-item,
+.works-item.reveal {
+  opacity: 1;
+  transform: none;
+  transition: none;
 }
 
 /* ---------- números (cinza) ---------- */

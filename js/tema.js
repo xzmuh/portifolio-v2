@@ -104,16 +104,53 @@
     var troca = palco.querySelector('.curriculo_troca');
     var selo = palco.querySelector('[data-selo]'), seloPadrao = selo.textContent;
     var moldura = palco.querySelector('.curriculo_moldura'), base = palco.querySelector('.curriculo_eu');
-    var fimVira, atual = base.getAttribute('src');
-    // a cortina laranja passa e a imagem troca atrás dela (a classe reinicia a animação)
+    var atual = base.getAttribute('src'), fimVira;
+    // as peças do mosaico (frente: a versão que sai; verso: a que entra)
+    var mosaico = palco.querySelector('[data-mosaico]'), N = 7, pecas = [];
+    for (var p = 0; p < N * N; p++) {
+      var peca = document.createElement('i');
+      peca.innerHTML = '<b></b><b></b>';
+      mosaico.appendChild(peca);
+      pecas.push(peca);
+    }
+    // tamanhos reais das imagens, para recortar cada peça como object-fit: cover
+    var cache = {};
+    var imagem = function (src) {
+      if (!cache[src]) { cache[src] = new Image(); cache[src].src = src; }
+      return cache[src];
+    };
+    Array.prototype.forEach.call(document.querySelectorAll('[data-foto]'), function (el) { imagem(el.getAttribute('data-foto')); });
+    imagem(atual);
+    var pinta = function (face, src, col, lin, W, H) {
+      var img = imagem(src), r = img.naturalWidth / img.naturalHeight;
+      var bw = r > W / H ? H * r : W, bh = r > W / H ? H : W / r;
+      var ox = (W - bw) / 2, oy = (H - bh) / 2, tw = W / N, th = H / N;
+      face.style.backgroundImage = 'url("' + src + '")';
+      face.style.backgroundSize = bw + 'px ' + bh + 'px';
+      face.style.backgroundPosition = (ox - col * tw) + 'px ' + (oy - lin * th) + 'px';
+    };
     var vira = function (src) {
       if (src === atual) return;
+      var de = atual;
       atual = src;
-      moldura.classList.remove('virando');
-      void moldura.offsetWidth;
-      moldura.classList.add('virando');
+      var pronta = imagem(de).naturalWidth && imagem(src).naturalWidth;
+      if (calma || !pronta) return;
+      var W = moldura.clientWidth, H = moldura.clientHeight;
+      mosaico.classList.add('sem');
+      mosaico.classList.remove('virou');
+      pecas.forEach(function (peca, n) {
+        var col = n % N, lin = Math.floor(n / N);
+        pinta(peca.children[0], de, col, lin, W, H);
+        pinta(peca.children[1], src, col, lin, W, H);
+        // onda diagonal do canto de cima à esquerda, com um pouco de acaso
+        peca.style.setProperty('--d', ((col + lin) * 38 + Math.random() * 70) + 'ms');
+      });
+      mosaico.classList.add('on');
+      void mosaico.offsetWidth;
+      mosaico.classList.remove('sem');
+      mosaico.classList.add('virou');
       clearTimeout(fimVira);
-      fimVira = setTimeout(function () { moldura.classList.remove('virando'); }, 650);
+      fimVira = setTimeout(function () { mosaico.classList.remove('on', 'virou'); }, 1150);
     };
     var solta;
     Array.prototype.forEach.call(document.querySelectorAll('[data-foto]'), function (item) {
@@ -135,6 +172,17 @@
       item.addEventListener('focus', mostra);
       item.addEventListener('pointerleave', volta);
       item.addEventListener('blur', volta);
+    });
+  }
+
+  // Projetos em destaque: cada card sobe e aparece junto com o scroll (vai e volta com a rolagem),
+  // em vez de estalar de uma vez quando entra na tela
+  if (window.gsap && window.ScrollTrigger && !calma) {
+    Array.prototype.forEach.call(document.querySelectorAll('.works-item'), function (item) {
+      gsap.fromTo(item, { opacity: 0, y: 140, scale: .94 }, {
+        opacity: 1, y: 0, scale: 1, ease: 'none',
+        scrollTrigger: { trigger: item, start: 'top 105%', end: 'top 55%', scrub: 0.6 }
+      });
     });
   }
 
