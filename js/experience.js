@@ -7,10 +7,44 @@
   if (!section) return;
   var cards = Array.prototype.slice.call(section.querySelectorAll('.xp-card'));
 
+  // Número de cada card (ordem da trajetória, não da coluna)
+  cards.forEach(function (card) {
+    var n = document.createElement('span');
+    n.className = 'xp-card-num';
+    n.setAttribute('aria-hidden', 'true');
+    n.textContent = ('0' + (Number(card.getAttribute('data-xp')) + 1)).slice(-2);
+    card.appendChild(n);
+  });
+
+  // No celular os cards ficam pequenos (dois por linha): os detalhes abrem numa folha que
+  // sobe de baixo, em vez de cobrir o card
+  var celular = window.matchMedia('(max-width: 767px)');
+  var folha = document.createElement('div');
+  folha.className = 'xp-folha';
+  folha.setAttribute('role', 'dialog');
+  folha.setAttribute('aria-modal', 'true');
+  folha.innerHTML = '<div class="xp-folha_painel"><button class="xp-folha_fecha" type="button" aria-label="Fechar">' +
+    '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg></button>' +
+    '<div class="xp-folha_corpo"></div></div>';
+  document.body.appendChild(folha);
+  var corpoFolha = folha.querySelector('.xp-folha_corpo');
+  var fechaFolha = function () { folha.classList.remove('aberta'); };
+  folha.addEventListener('click', function (e) {
+    if (e.target === folha || e.target.closest('.xp-folha_fecha')) fechaFolha();
+  });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') fechaFolha(); });
+  var abreFolha = function (card) {
+    corpoFolha.innerHTML = '<h3 class="xp-folha_nome">' + card.querySelector('.xp-card-name').innerHTML + '</h3>' +
+      '<div class="xp-card-detail xp-card-detail--folha">' + card.querySelector('.xp-card-detail').innerHTML + '</div>';
+    folha.scrollTop = 0;
+    folha.classList.add('aberta');
+  };
+
   // Detalhes
   cards.forEach(function (card) {
     var btn = card.querySelector('.xp-card-toggle');
     btn.addEventListener('click', function () {
+      if (celular.matches) { abreFolha(card); return; }
       var open = !card.classList.contains('is-open');
       card.classList.toggle('is-open', open);
       btn.setAttribute('aria-expanded', open ? 'true' : 'false');

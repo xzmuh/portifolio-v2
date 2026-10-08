@@ -451,20 +451,52 @@
   }
 }
 
+/* celular: igual ao computador, duas colunas com a da direita um pouco mais baixa; os detalhes
+   abrem na folha de baixo (js/experience.js) */
 @media (max-width: 767px) {
-  .xp-cards {
-    grid-template-columns: 1fr;
+  .xp-cards,
+  .xp-col {
+    gap: .75rem;
+  }
+
+  .xp-col {
+    will-change: auto;
   }
 
   .xp-col--b {
-    margin-top: 0;
+    margin-top: 5rem;
   }
 
   .xp-card {
-    aspect-ratio: 1 / 1.15;
+    aspect-ratio: 3 / 4;
+  }
+
+  .xp-card-logo {
+    inset: 0 0 34%;
+    padding: 0 16%;
+  }
+
+  .xp-card-foot {
+    padding: .8rem;
+    gap: .4rem;
+  }
+
+  .xp-card-name {
+    font-size: .9rem;
+  }
+
+  .xp-card-meta {
+    display: block;
+    font-size: .68rem;
+    line-height: 1.3;
+  }
+
+  .xp-card-toggle {
+    width: 2rem;
+    height: 2rem;
   }
 
   .xp-card-detail {
-    padding-bottom: 6rem;
+    display: none;
   }
 }

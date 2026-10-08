@@ -104,6 +104,10 @@
   95% { opacity: 0; transform: none; }
 }
 
+.about-thread.parado path {
+  animation-play-state: paused;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .about-thread path {
     animation: none !important;
@@ -125,12 +129,14 @@
 }
 
 @media (max-width: 991px) {
+  /* sem empurrar o texto para a direita: o traço passa por trás dele, mais fraco */
   .container.small.about {
-    padding-left: 18vw;
+    padding-left: 8vw;
   }
 
   .about-thread {
     --thread-left: 3vw;
+    opacity: .35;
     --thread-width: 11vw;
   }
 
@@ -141,7 +147,7 @@
 
 @media (max-width: 767px) {
   .container.small.about {
-    padding-left: 17vw;
+    padding-left: 5vw;
   }
 
   .about-thread {

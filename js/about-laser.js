@@ -37,6 +37,13 @@
 
   measure();
 
+  // o glitch do traço (animações CSS sem fim) só roda com o traço na tela
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (es) {
+      svg.classList.toggle('parado', !es[0].isIntersecting);
+    }).observe(svg);
+  }
+
   if (!window.gsap || !window.ScrollTrigger || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     draw(1);
     return;
