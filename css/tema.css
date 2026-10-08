@@ -405,21 +405,13 @@ body {
   position: relative;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  align-items: start;
-}
-
-.intro_topo > .rotulo {
-  padding-top: .9em;
-  color: #d6d6d6;
-}
-
-.intro_topo > div {
-  grid-column: 2 / 5;
-  padding-left: 1.5rem;
+  align-items: end;
 }
 
 .intro_titulo {
+  grid-column: 1 / 4;
   margin: 0;
+  padding-right: 2rem;
   font-size: clamp(1.7rem, 2.75vw, 3.4rem);
   font-weight: 400;
   line-height: 1.12;
@@ -428,9 +420,10 @@ body {
 }
 
 .intro_sub {
-  max-width: 34em;
-  margin-top: 2rem;
-  font-size: clamp(.95rem, 1.05vw, 1.15rem);
+  grid-column: 4;
+  margin: 0;
+  padding-left: 1.5rem;
+  font-size: clamp(.9rem, .95vw, 1.05rem);
   line-height: 1.6;
   color: var(--apagado);
 }
@@ -439,15 +432,15 @@ body {
   position: relative;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  margin-top: 7rem;
+  margin-top: 6rem;
 }
 
 .pilar {
   --c: rgba(255, 255, 255, .55);
   display: flex;
   flex-direction: column;
-  min-height: clamp(19rem, 24vw, 26rem);
-  padding: 1.7rem 1.6rem;
+  min-height: clamp(24rem, 30vw, 32rem);
+  padding: 1.4rem;
   background:
     linear-gradient(var(--c), var(--c)) 0 0 / 12px 1px no-repeat,
     linear-gradient(var(--c), var(--c)) 0 0 / 1px 12px no-repeat,
@@ -458,25 +451,15 @@ body {
     linear-gradient(var(--c), var(--c)) 100% 100% / 12px 1px no-repeat,
     linear-gradient(var(--c), var(--c)) 100% 100% / 1px 12px no-repeat,
     var(--carvao);
-  transition: background-color .5s;
 }
 
-.pilar_icone {
-  width: 2.6rem;
-  height: 2.6rem;
-  fill: none;
-  stroke: #e9e9e9;
-  stroke-width: 1.4;
-  transition: stroke .4s, transform .8s var(--suave);
-}
-
-.pilar:hover .pilar_icone {
-  stroke: var(--laranja);
-  transform: rotate(-12deg) scale(1.06);
+.pilar--experiencias {
+  grid-column: span 2;
+  background-color: #000;
 }
 
 .pilar_titulo {
-  margin-top: auto;
+  margin-top: 1.4rem;
   font-size: clamp(1.05rem, 1.25vw, 1.4rem);
   font-weight: 500;
   letter-spacing: .01em;
@@ -484,30 +467,174 @@ body {
 }
 
 .pilar_texto {
-  margin-top: .9rem;
+  margin-top: .7rem;
   font-size: clamp(.85rem, .9vw, 1rem);
   line-height: 1.55;
   color: var(--apagado);
 }
 
-.intro_figura {
-  grid-column: 4;
-  margin: 0;
+/* a cena ocupa o que sobra do card */
+.pilar_cena {
+  position: relative;
+  flex: 1;
+  min-height: 11rem;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, .08);
+  background: #141414;
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: clamp(.68rem, .72vw, .8rem);
+}
+
+.cena_barra {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: .55rem .7rem;
+  border-bottom: 1px solid rgba(255, 255, 255, .08);
+  color: #6f6f6f;
+}
+
+.cena_barra i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #333;
+}
+
+.cena_barra i:first-child {
+  background: var(--laranja);
+}
+
+.cena_barra span {
+  margin-left: auto;
+  letter-spacing: .04em;
+}
+
+/* Sistemas: o log da API correndo */
+.cena_log {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: .45rem;
+  margin: 0;
+  padding: .8rem .7rem;
+  list-style: none;
+  color: #bdbdbd;
+  -webkit-mask-image: linear-gradient(transparent, #000 45%);
+  mask-image: linear-gradient(transparent, #000 45%);
+}
+
+.cena_log li {
+  display: flex;
+  gap: .6em;
+  white-space: nowrap;
+  overflow: hidden;
+  animation: logEntra .5s var(--suave);
+}
+
+.cena_log b {
+  flex: none;
+  width: 3.4em;
+  font-weight: 600;
+  color: var(--laranja);
+}
+
+.cena_log em {
+  margin-left: auto;
+  font-style: normal;
+  color: #6f6f6f;
+}
+
+@keyframes logEntra {
+  from { opacity: 0; transform: translateY(.6rem); }
+}
+
+/* Experiências: a escultura que segue o mouse */
+.pilar--experiencias .pilar_cena {
+  border: 0;
   background: #000;
+  container-type: size;
 }
 
-.intro_figura img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transform: scale(1.12);
-  transition: transform 2.4s var(--suave) .2s;
+.cena_escultura {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  /* girada 90°: a altura dela vira a largura do quadro */
+  height: 118cqw;
+  width: auto;
+  max-width: none;
+  transform: translate(-50%, -50%) rotate(-90deg) translate3d(var(--ty, 0px), var(--tx, 0px), 0) scale(var(--zoom, 1));
+  transition: transform 1.2s var(--suave);
 }
 
-.intro_figura.on img {
-  transform: scale(1);
+.cena_dica {
+  position: absolute;
+  left: .8rem;
+  bottom: .7rem;
+  color: #8a8a8a;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  font-size: .68rem;
+  transition: opacity .4s;
+}
+
+.pilar--experiencias:hover .cena_dica {
+  opacity: 0;
+}
+
+.pilar_rodape {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
+  gap: 1.5rem;
+  align-items: end;
+}
+
+/* IA: o chat */
+.cena_chat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: .55rem;
+  padding: .8rem .7rem;
+  font-family: var(--fonte);
+  font-size: clamp(.78rem, .82vw, .9rem);
+  line-height: 1.4;
+}
+
+.cena_chat p {
+  max-width: 88%;
+  margin: 0;
+  padding: .55em .75em;
+  animation: logEntra .5s var(--suave);
+}
+
+.cena_chat .eu {
+  align-self: flex-end;
+  background: #2a2a2a;
+  color: #e9e9e9;
+}
+
+.cena_chat .ia {
+  align-self: flex-start;
+  border-left: 2px solid var(--laranja);
+  background: rgba(255, 106, 43, .08);
+  color: #f0f0f0;
+}
+
+.cena_chat .ia.digitando:after {
+  content: "▍";
+  margin-left: .1em;
+  color: var(--laranja);
+  animation: pisca .8s steps(2) infinite;
+}
+
+@keyframes pisca {
+  50% { opacity: 0; }
 }
 
 /* ---------- escolha (escuro, emenda com a intro) ---------- */
@@ -587,10 +714,17 @@ body {
 
 .numero_frase {
   margin: 0;
-  font-size: clamp(1.25rem, 1.7vw, 1.9rem);
+  font-size: clamp(1.1rem, 1.35vw, 1.55rem);
   font-weight: 500;
-  line-height: 1.22;
+  line-height: 1.25;
   letter-spacing: -.015em;
+}
+
+.numero_extra {
+  margin: 1.1rem 0 1.8rem;
+  font-size: clamp(.88rem, .92vw, 1rem);
+  line-height: 1.55;
+  color: #555;
 }
 
 .numero_rodape {
@@ -943,9 +1077,10 @@ body {
     gap: 2rem;
   }
 
-  .intro_topo > div {
+  .intro_titulo,
+  .intro_sub {
     grid-column: auto;
-    padding-left: 0;
+    padding: 0;
   }
 
   .intro_grade {
@@ -954,9 +1089,9 @@ body {
     margin-top: 4rem;
   }
 
-  .intro_figura {
-    grid-column: auto;
-    aspect-ratio: auto;
+  .pilar--experiencias {
+    grid-column: 1 / -1;
+    order: -1;
   }
 
   .numeros_grade {
@@ -998,11 +1133,16 @@ body {
   }
 
   .pilar {
-    min-height: 15rem;
+    min-height: 22rem;
   }
 
-  .intro_figura {
-    aspect-ratio: 4 / 5;
+  .pilar--experiencias {
+    grid-column: auto;
+  }
+
+  .pilar_rodape {
+    grid-template-columns: 1fr;
+    gap: 0;
   }
 
   .numero--foto {

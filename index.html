@@ -33,7 +33,7 @@
   <link href="css/xreveal.css?v=20261008" rel="stylesheet" type="text/css" />
   <link href="css/pixel-seam.css" rel="stylesheet" type="text/css" />
   <link href="css/escolha.css?v=20261008" rel="stylesheet" type="text/css" />
-  <link href="css/tema.css?v=20261008" rel="stylesheet" type="text/css" />
+  <link href="css/tema.css?v=20261008b" rel="stylesheet" type="text/css" />
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Cinzel:wght@600;700&family=EB+Garamond:ital@0;1&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com" rel="preconnect" />
   <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin="anonymous" />
@@ -554,36 +554,43 @@
         <div class="grade" aria-hidden="true"></div>
         <div class="container">
           <div class="intro_topo">
-            <div class="rotulo surge">Quem sou</div>
-            <div>
-              <h1 class="intro_titulo surge">
-                Mais do que escrever código, gosto de <span class="hl">construir experiências</span>. Sistemas que
-                escondem toda a complexidade atrás de algo fluido e intuitivo.
-              </h1>
-              <p class="intro_sub surge">Bem-vindo ao meu portfólio <span class="emoji">👋</span> Role a página e
-                conheça alguns dos projetos, tecnologias e experiências que fazem parte da minha trajetória como
-                desenvolvedor.</p>
-            </div>
+            <h1 class="intro_titulo surge">
+              Mais do que escrever código, gosto de <span class="hl">construir experiências</span>. Sistemas que
+              escondem toda a complexidade atrás de algo fluido e intuitivo.
+            </h1>
+            <p class="intro_sub surge">Bem-vindo ao meu portfólio <span class="emoji">👋</span> Role a página e
+              conheça alguns dos projetos, tecnologias e experiências que fazem parte da minha trajetória como
+              desenvolvedor.</p>
           </div>
+          <!-- cada card tem uma cena viva do que ele diz (js/tema.js): o log de uma API, a escultura que segue o
+               mouse e um chat com a IA local -->
           <div class="intro_grade">
-            <article class="pilar surge">
-              <svg class="pilar_icone" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 4 43 18l-7 22H12L5 18z" /><path d="M24 4v18M5 18l19 4 19-4M12 40l12-18 12 18" /></svg>
+            <article class="pilar pilar--sistemas surge">
+              <div class="pilar_cena">
+                <div class="cena_barra"><i></i><i></i><i></i><span>api · produção</span></div>
+                <ol class="cena_log" data-log aria-hidden="true"></ol>
+              </div>
               <h3 class="pilar_titulo">Sistemas</h3>
               <p class="pilar_texto">CRMs, ERPs, gestão de clínicas e APIs orientadas a eventos: regra de negócio de ponta a ponta, do banco de dados à tela.</p>
             </article>
-            <article class="pilar surge">
-              <svg class="pilar_icone" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="19" /><circle cx="24" cy="24" r="7" /><path d="M24 5v12M24 31v12" /></svg>
-              <h3 class="pilar_titulo">Experiências</h3>
-              <p class="pilar_texto">Sites, landing pages, apps e experiências em 3D com animação na medida, feitos para a pessoa querer continuar rolando.</p>
+            <article class="pilar pilar--experiencias surge" data-tilt>
+              <div class="pilar_cena">
+                <img class="cena_escultura" src="img/tema/particulas.webp" alt="" loading="lazy" />
+                <span class="cena_dica">mexa o mouse aqui</span>
+              </div>
+              <div class="pilar_rodape">
+                <h3 class="pilar_titulo">Experiências</h3>
+                <p class="pilar_texto">Sites, landing pages, apps e experiências em 3D com animação na medida, feitos para a pessoa querer continuar rolando.</p>
+              </div>
             </article>
-            <article class="pilar surge">
-              <svg class="pilar_icone" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 6v8M24 34v8M6 24h8M34 24h8M11 11l6 6M31 31l6 6M37 11l-6 6M17 31l-6 6" /><circle cx="24" cy="24" r="5" /></svg>
+            <article class="pilar pilar--ia surge">
+              <div class="pilar_cena">
+                <div class="cena_barra"><i></i><i></i><i></i><span>ia local</span></div>
+                <div class="cena_chat" data-chat aria-hidden="true"></div>
+              </div>
               <h3 class="pilar_titulo">IA &amp; Integrações</h3>
               <p class="pilar_texto">Chat com IA local, automações e integrações com AWS, Cloudflare e serviços externos, conectando sistemas com segurança.</p>
             </article>
-            <figure class="intro_figura surge">
-              <img src="img/tema/particulas.webp" alt="" loading="lazy" />
-            </figure>
           </div>
         </div>
       </section>
@@ -806,7 +813,8 @@
       <div class="container">
         <div class="numeros_grade">
           <div class="numero numero--claro surge">
-            <p class="numero_frase">Do back ao front, do web ao mobile: ERPs, CRMs, sistemas de gestão, APIs orientadas a eventos, chat com IA local, sites e experiências interativas em 3D.</p>
+            <p class="numero_frase">Desenvolvimento full stack de ponta a ponta, do backend ao frontend, web e mobile: sistemas corporativos, SaaS, APIs, arquiteturas orientadas a eventos, automações, integrações, soluções com IA, aplicações em tempo real e experiências interativas em 3D.</p>
+            <p class="numero_extra">Atuação também em arquitetura, cloud, bancos de dados, segurança, analytics, deploy e evolução de produtos digitais.</p>
             <div class="numero_rodape"><b>6+</b><span>anos construindo<br />para a web</span></div>
           </div>
           <div class="numero numero--foto surge">
@@ -817,7 +825,7 @@
             <h3 class="numero_titulo">Stack principal</h3>
             <p class="numero_texto">O que uso no dia a dia, do banco de dados à tela, passando por nuvem e IA.</p>
             <ul class="numero_chips">
-              <li>TypeScript</li><li>JavaScript</li><li>Node.js</li><li>NestJS</li><li>PHP</li><li>Python</li><li>React</li><li>React Native</li><li>Angular</li><li>Tailwind</li><li>PostgreSQL</li><li>MySQL</li><li>MongoDB</li><li>AWS</li><li>Cloudflare</li><li>Three.js</li><li>GSAP</li><li>IA / Ollama</li><li>Git</li>
+              <li>TypeScript</li><li>JavaScript</li><li>Node.js</li><li>NestJS</li><li>PHP</li><li>Python</li><li>React</li><li>React Native</li><li>Angular</li><li>Tailwind</li><li>PostgreSQL</li><li>MySQL</li><li>MongoDB</li><li>AWS</li><li>Cloudflare</li><li>Three.js</li><li>GSAP</li><li>IA</li><li>Git</li>
             </ul>
             <a href="#skills" class="botao botao--escuro">Ver tecnologias <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" /></svg></a>
           </div>
@@ -1463,7 +1471,7 @@
 
   <script src="js/escolha.js?v=20261006d"></script>
   <script src="js/onda.js?v=20261008"></script>
-  <script src="js/tema.js?v=20261008"></script>
+  <script src="js/tema.js?v=20261008b"></script>
 </body>
 
 </html>
