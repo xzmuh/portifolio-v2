@@ -732,9 +732,14 @@ body {
   color: var(--laranja);
 }
 
+.curriculo_sub b {
+  font-weight: 500;
+  color: #fff;
+}
+
 .curriculo_sub {
   max-width: 30em;
-  margin: 1.4rem 0 2.2rem;
+  margin: 1.4rem 0 1.6rem;
   font-size: clamp(.95rem, 1.1vw, 1.2rem);
   line-height: 1.5;
   color: #bdbdbd;
@@ -774,10 +779,21 @@ body {
 }
 
 .curriculo_aviso {
-  margin-top: 1.4rem;
+  display: flex;
+  align-items: center;
+  gap: .7em;
+  margin: 0;
   font-size: .75rem;
-  letter-spacing: .04em;
-  color: #6f6f6f;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: #8a8a8a;
+}
+
+.curriculo_aviso:before {
+  content: "";
+  width: 2.2rem;
+  height: 1px;
+  background: var(--laranja);
 }
 
 /* a foto com os blocos laranja atrás, a mira fina e o manuscrito */
@@ -850,7 +866,7 @@ body {
 .curriculo_moldura {
   position: relative;
   z-index: 1;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 4 / 4.6;
   overflow: hidden;
   background: #222;
 }
@@ -864,8 +880,21 @@ body {
   filter: grayscale(1) contrast(1.1);
 }
 
+.curriculo_selo {
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  bottom: 0;
+  padding: .55rem .8rem;
+  background: var(--tinta);
+  color: var(--laranja);
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
 .curriculo_eu {
-  object-position: 50% 30%;
   transition: transform 1.4s var(--suave), opacity .5s;
 }
 
@@ -926,10 +955,10 @@ body {
 
 .curriculo_item {
   display: grid;
-  grid-template-columns: 2.4rem 7.5rem minmax(0, 1fr) auto;
+  grid-template-columns: 2rem 7rem minmax(0, 1fr) auto;
   gap: 1.1rem;
   align-items: center;
-  padding: 1.05rem .9rem;
+  padding: 1.3rem .9rem;
   color: #f2f2f2;
   text-decoration: none;
   transition: background-color .4s;
@@ -956,6 +985,59 @@ body {
   flex-direction: column;
   gap: .3rem;
   min-width: 0;
+}
+
+.curriculo_nome i {
+  font-style: normal;
+  font-size: .68rem;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--laranja);
+}
+
+.curriculo_ir {
+  display: inline-flex;
+  align-items: center;
+  gap: .5em;
+  font-size: .85rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.curriculo_ir--aqui {
+  font-size: .72rem;
+  font-weight: 500;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: #8a8a8a;
+}
+
+.curriculo_ir--aqui:before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  margin-right: .2em;
+  background: var(--laranja);
+  animation: pisca 1.6s steps(2) infinite;
+}
+
+@keyframes pisca {
+  50% { opacity: .2; }
+}
+
+.curriculo_item--aqui {
+  color: #9a9a9a;
+}
+
+.curriculo_thumb--aqui {
+  display: grid;
+  place-items: center;
+  background: #161616;
+}
+
+.curriculo_thumb--aqui img {
+  width: 34%;
 }
 
 .curriculo_nome b {

@@ -98,18 +98,22 @@
     });
   }
 
-  // Outras experiências: passando num item da lista, a foto do meio vira a imagem dele
+  // Outras versões do currículo: passando num item da lista, o palco do meio mostra aquela versão
   var palco = document.querySelector('[data-foto-palco]');
   if (palco) {
     var troca = palco.querySelector('.curriculo_troca');
+    var selo = palco.querySelector('[data-selo]'), seloPadrao = selo.textContent;
     var solta;
     Array.prototype.forEach.call(document.querySelectorAll('[data-foto]'), function (item) {
       var mostra = function () {
         clearTimeout(solta);
         troca.src = item.getAttribute('data-foto');
+        selo.textContent = item.getAttribute('data-selo');
         palco.classList.add('trocando');
       };
-      var volta = function () { solta = setTimeout(function () { palco.classList.remove('trocando'); }, 120); };
+      var volta = function () {
+        solta = setTimeout(function () { palco.classList.remove('trocando'); selo.textContent = seloPadrao; }, 120);
+      };
       item.addEventListener('pointerenter', mostra);
       item.addEventListener('focus', mostra);
       item.addEventListener('pointerleave', volta);
