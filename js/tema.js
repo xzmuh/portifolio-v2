@@ -160,6 +160,26 @@
     requestAnimationFrame(pinta);
   }
 
+  // "Fascinado pelo universo gamer...": cada palavra entra de uma vez (pequena e torta -> no lugar,
+  // rápido e sem quique) quando passa de 85% da altura da tela, e volta a sair se a rolagem voltar
+  var palavras = Array.prototype.slice.call(document.querySelectorAll('.grow-text'));
+  if (palavras.length && !calma) {
+    palavras.forEach(function (el) { el.classList.add('entra'); });
+    var pedidoPal = false;
+    var mostraPalavras = function () {
+      pedidoPal = false;
+      var linha = window.innerHeight * 0.85;
+      palavras.forEach(function (el) {
+        el.classList.toggle('on', el.getBoundingClientRect().top < linha);
+      });
+    };
+    window.addEventListener('scroll', function () {
+      if (!pedidoPal) { pedidoPal = true; requestAnimationFrame(mostraPalavras); }
+    }, { passive: true });
+    window.addEventListener('resize', mostraPalavras);
+    mostraPalavras();
+  }
+
   // header: texto escuro sobre as seções claras, claro sobre as escuras
   var header = document.querySelector('.header');
   var claras = document.querySelectorAll('.section.hero, .section.projects, .numeros, .section.about, .section.call-to-action_mid');

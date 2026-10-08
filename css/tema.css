@@ -26,6 +26,130 @@ body {
   color: #fff;
 }
 
+/* ---------- cursor e seleção: seta normal em tudo, mãozinha só no que é clicável, sem
+   selecionar nem copiar texto (campos de formulário continuam normais) ---------- */
+
+html,
+body,
+body * {
+  cursor: default;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+body a[href],
+body a[href] *,
+body button,
+body button *,
+body [role="button"],
+body [role="button"] *,
+body label,
+body summary,
+body select,
+body .rolagem,
+body .rolagem * {
+  cursor: pointer;
+}
+
+body input,
+body textarea,
+body [contenteditable="true"] {
+  cursor: text;
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* ---------- barra de rolagem: a do navegador some, fica a própria (js/rolagem.js) ---------- */
+
+html {
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+}
+
+.rolagem {
+  position: fixed;
+  z-index: 9000;
+  top: 50%;
+  right: 14px;
+  width: 4px;
+  height: 32vh;
+  background: rgba(128, 128, 128, .35);
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+/* área de clique maior que o traço */
+.rolagem:before {
+  content: "";
+  position: absolute;
+  inset: 0 -8px;
+}
+
+.rolagem_pega {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  background: var(--laranja);
+  cursor: pointer;
+}
+
+.rolagem_pega:before {
+  content: "";
+  position: absolute;
+  inset: 0 -8px;
+}
+
+.rolagem_seta {
+  position: absolute;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  transform: translateX(-50%);
+  color: var(--laranja);
+}
+
+.rolagem_seta--cima {
+  bottom: 100%;
+  margin-bottom: 6px;
+}
+
+.rolagem_seta--baixo {
+  top: 100%;
+  margin-top: 6px;
+}
+
+.rolagem_seta svg {
+  width: 12px;
+  height: 8px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: square;
+  transition: transform .2s;
+}
+
+.rolagem_seta--cima:hover svg {
+  transform: translateY(-2px);
+}
+
+.rolagem_seta--baixo:hover svg {
+  transform: translateY(2px);
+}
+
+@media (hover: none) {
+  .rolagem {
+    display: none;
+  }
+}
+
 /* ---------- peças comuns ---------- */
 
 .rotulo {
@@ -231,6 +355,17 @@ body {
 .section.hero {
   background: var(--cinza);
   color: var(--tinta);
+}
+
+/* só um toque: o fundo continua sendo a onda de pontos */
+.hero_abstrato {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: .45;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
 }
 
 .hero_onda {
@@ -871,9 +1006,10 @@ body {
   transition: transform .5s cubic-bezier(.7, 0, .2, 1), opacity .2s ease;
 }
 
-/* depois da entrada, os blocos respondem rápido */
+/* depois da entrada, os blocos andam com a mesma duração e curva da foto, fechando e abrindo,
+   para a borda laranja ficar grudada na borda da imagem */
 .palco_giro.ativo .curriculo_bloco {
-  transition: transform .34s cubic-bezier(.3, .8, .2, 1);
+  transition: transform .3s cubic-bezier(.7, 0, .3, 1);
 }
 
 /* espremida: o bloco de cima desce e o de baixo sobe até o meio, e a foto entre eles vira uma linha */
@@ -882,19 +1018,17 @@ body {
 }
 
 .palco_giro.esmaga .curriculo_moldura {
-  transform: scaleY(.03);
+  transform: scaleY(0);
 }
 
 /* (deslocamento em % da altura do próprio bloco: o de cima tem 22% do palco e anda 28%; o de baixo
    tem 16% e anda 34%, e os dois encostam no meio) */
 .curriculo_foto.on .palco_giro.esmaga .curriculo_bloco--cima {
-  transform: translateY(127%);
-  transition: transform .3s cubic-bezier(.7, 0, .3, 1);
+  transform: translateY(132%);
 }
 
 .curriculo_foto.on .palco_giro.esmaga .curriculo_bloco--baixo {
-  transform: translateY(-212%);
-  transition: transform .3s cubic-bezier(.7, 0, .3, 1);
+  transform: translateY(-219%);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1325,16 +1459,20 @@ body {
   letter-spacing: -.035em;
 }
 
-.about-thread path {
-  stroke: var(--laranja);
-}
-
-.about-thread__glow {
-  opacity: .14;
-}
-
 .about-stair-item {
   color: #2b2b2b;
+}
+
+/* entrada seca das palavras do texto grande (js/tema.js): sem fade, rápida e sem passar do ponto */
+.grow-text.entra {
+  opacity: 0;
+  transform: scale(.3) rotate(5deg);
+  transition: transform .14s cubic-bezier(.2, 0, 0, 1), opacity 0s .02s;
+}
+
+.grow-text.entra.on {
+  opacity: 1;
+  transform: none;
 }
 
 .section_body.large.about {
@@ -1425,6 +1563,20 @@ body {
 .footer-headline {
   font-weight: 700;
   letter-spacing: -.05em;
+}
+
+/* letras do headline (js/footer-bulge.js): só trocam de cor embaixo do mouse e voltam devagar */
+.footer-headline .letra {
+  transition: color .5s ease;
+}
+
+.footer-headline .letra:hover {
+  color: var(--laranja);
+  transition: none;
+}
+
+.footer-headline em .letra:hover {
+  color: var(--cinza-claro);
 }
 
 .footer-pill {

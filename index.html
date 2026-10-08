@@ -27,12 +27,12 @@
   <meta content="summary_large_image" name="twitter:card" />
   <meta content="width=device-width, initial-scale=1" name="viewport" />
   <link href="css/murilos-fantastic-site-c1d49f.webflow.shared.4f6f10648.css?v=20261008" rel="stylesheet" type="text/css" />
-  <link href="css/about-laser.css?v=20261008l" rel="stylesheet" type="text/css" />
+  <link href="css/about-laser.css?v=20261008n" rel="stylesheet" type="text/css" />
   <link href="css/experience.css?v=20261008" rel="stylesheet" type="text/css" />
   <link href="css/footer.css?v=20261008" rel="stylesheet" type="text/css" />
-  <link href="css/xreveal.css?v=20261008" rel="stylesheet" type="text/css" />
+  <link href="css/xreveal.css?v=20261008t" rel="stylesheet" type="text/css" />
   <link href="css/pixel-seam.css" rel="stylesheet" type="text/css" />
-  <link href="css/tema.css?v=20261008l" rel="stylesheet" type="text/css" />
+  <link href="css/tema.css?v=20261008t" rel="stylesheet" type="text/css" />
   <link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com" rel="preconnect" />
   <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin="anonymous" />
@@ -492,6 +492,8 @@
     </header>
     <div id="luxy" data-barba="container" data-barba-namespace="home-page" class="page-wrapper">
       <section id="home" data-w-id="04dcac28-e0ae-953e-2822-13c173886ed8" class="section hero">
+        <!-- fundo abstrato: curvas de nível e manchas em meia-tinta (js/abstrato.js) -->
+        <canvas class="hero_abstrato" data-abstrato aria-hidden="true"></canvas>
         <!-- onda de partículas (js/onda.js) -->
         <canvas class="hero_onda" data-onda aria-hidden="true"></canvas>
         <div class="container hero-container">
@@ -928,11 +930,21 @@
     </section>
     <section id="about" data-w-id="23362570-771b-0c45-251f-7b311e606ac5" class="section about">
       <svg class="about-thread" viewBox="0 0 100 3000" preserveAspectRatio="none" aria-hidden="true">
-        <path class="about-thread__glow" d="M -90 10 L 72 260 L 18 760 L 86 1260 L 28 1780 L 78 2300 L 48 2900" />
-        <path class="about-thread__line" d="M -90 10 L 72 260 L 18 760 L 86 1260 L 28 1780 L 78 2300 L 48 2900" />
+        <!-- a máscara desenha o traço com a rolagem (js/about-laser.js); por baixo dela o traço troca
+             de cor inteiro (preto/laranja) com glitch, e duas cópias deslocadas dão o prisma -->
+        <defs>
+          <mask id="about-thread-mascara" maskUnits="userSpaceOnUse" x="-300" y="-200" width="700" height="3400">
+            <path class="about-thread__revela" d="M -90 10 L 72 260 L 18 760 L 86 1260 L 28 1780 L 78 2300 L 48 2900" />
+          </mask>
+        </defs>
+        <g mask="url(#about-thread-mascara)">
+          <path class="about-thread__fantasma about-thread__fantasma--branco" d="M -90 10 L 72 260 L 18 760 L 86 1260 L 28 1780 L 78 2300 L 48 2900" />
+          <path class="about-thread__fantasma about-thread__fantasma--laranja" d="M -90 10 L 72 260 L 18 760 L 86 1260 L 28 1780 L 78 2300 L 48 2900" />
+          <path class="about-thread__line" d="M -90 10 L 72 260 L 18 760 L 86 1260 L 28 1780 L 78 2300 L 48 2900" />
+        </g>
       </svg>
+      <canvas class="about-pixels" data-about-pixels aria-hidden="true"></canvas>
       <div class="container small about">
-        <div class="rotulo surge">Sobre</div>
         <div class="section_content">
           <h2 id="w-node-_23362570-771b-0c45-251f-7b311e606ac7-4b175c0b"
             data-w-id="23362570-771b-0c45-251f-7b311e606ac7"
@@ -1045,7 +1057,6 @@
       <div class="container xp-inner">
         <aside class="xp-side">
           <div class="xp-sticky">
-            <div class="xp-eyebrow">Experiência</div>
             <h2 class="xp-title">Minha <em>trajetória</em>.</h2>
             <p class="xp-lead">Empresas onde já trabalhei e o que construí em cada uma. Toque no + para ver os detalhes.</p>
           </div>
@@ -1234,12 +1245,13 @@
   <script src="js/vendor/gsap.min.js"></script>
   <script src="js/vendor/ScrollTrigger.min.js"></script>
   <script src="js/interactions-data.js"></script>
-  <script src="js/animations.js"></script>
-  <script src="js/about-laser.js"></script>
+  <script src="js/animations.js?v=20261008q"></script>
+  <script src="js/about-laser.js?v=20261008m"></script>
+  <script src="js/about-pixels.js?v=20261008n"></script>
   <script src="js/pixel-seam.js"></script>
   <script src="js/experience.js"></script>
-  <script src="js/footer-bulge.js?v=20261008"></script>
-  <script src="js/xreveal.js?v=20261008l"></script>
+  <script src="js/footer-bulge.js?v=20261008q"></script>
+  <script src="js/xreveal.js?v=20261008v"></script>
   <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@0.2.28/bundled/lenis.js"></script>
   <!--
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.3/gsap.min.js"></script>
@@ -1304,36 +1316,39 @@
     function setCursor() {
       //custom cursor
       const cursor = document.querySelector('.cursor');
+      // o site não usa mais cursor próprio: só liga se o elemento existir
+      if (cursor) {
 
-      const navLinks = document.querySelectorAll('.nav_link, .project_item, .button');
-      navLinks.forEach(l => {
-        l.addEventListener("mouseenter", e => {
-          cursor.classList.add("grow");
-        });
-        l.addEventListener("mouseleave", e => {
-          cursor.classList.remove("grow");
+        const navLinks = document.querySelectorAll('.nav_link, .project_item, .button');
+        navLinks.forEach(l => {
+          l.addEventListener("mouseenter", e => {
+            cursor.classList.add("grow");
+          });
+          l.addEventListener("mouseleave", e => {
+            cursor.classList.remove("grow");
+          })
         })
-      })
 
-      const ctaLinks = document.querySelectorAll('.cta, .email_link');
-      ctaLinks.forEach(l => {
-        l.addEventListener("mouseenter", e => {
-          cursor.classList.add("cta-grow");
+        const ctaLinks = document.querySelectorAll('.cta, .email_link');
+        ctaLinks.forEach(l => {
+          l.addEventListener("mouseenter", e => {
+            cursor.classList.add("cta-grow");
+          });
+          l.addEventListener("mouseleave", e => {
+            cursor.classList.remove("cta-grow");
+          })
         });
-        l.addEventListener("mouseleave", e => {
-          cursor.classList.remove("cta-grow");
-        })
-      });
 
-      const blurLinks = document.querySelectorAll('.project_item');
-      blurLinks.forEach(l => {
-        l.addEventListener("mouseenter", e => {
-          cursor.classList.add("blur-grow");
+        const blurLinks = document.querySelectorAll('.project_item');
+        blurLinks.forEach(l => {
+          l.addEventListener("mouseenter", e => {
+            cursor.classList.add("blur-grow");
+          });
+          l.addEventListener("mouseleave", e => {
+            cursor.classList.remove("blur-grow");
+          })
         });
-        l.addEventListener("mouseleave", e => {
-          cursor.classList.remove("blur-grow");
-        })
-      });
+      }
 
       //project cards anim (alternating stack order as they reveal)
       const workItems = document.querySelectorAll(".works-item");
@@ -1448,8 +1463,10 @@
     */
   </script>
 
+  <script src="js/abstrato.js?v=20261008s"></script>
   <script src="js/onda.js?v=20261008"></script>
-  <script src="js/tema.js?v=20261008l"></script>
+  <script src="js/tema.js?v=20261008q"></script>
+  <script src="js/rolagem.js?v=20261008u"></script>
 </body>
 
 </html>
