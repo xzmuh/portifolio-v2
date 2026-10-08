@@ -51,6 +51,13 @@ body .rolagem * {
   cursor: pointer;
 }
 
+/* imagens e links não saem arrastando */
+img,
+a,
+svg {
+  -webkit-user-drag: none;
+}
+
 body input,
 body textarea,
 body [contenteditable="true"] {
@@ -812,11 +819,11 @@ body::-webkit-scrollbar {
   font-weight: 700;
 }
 
-.pilar--ia:hover .cena_rede .no rect {
+.oficio:hover .cena_rede .no rect {
   stroke: var(--laranja);
 }
 
-.pilar--ia:hover .cena_rede .pulso {
+.oficio:hover .cena_rede .pulso {
   animation-duration: 1.2s;
 }
 
@@ -824,6 +831,546 @@ body::-webkit-scrollbar {
   .cena_rede .pulso {
     animation: none;
     opacity: 0;
+  }
+}
+
+/* ---------- o que eu faço: abas com um exemplo de cada tipo de trabalho (js/tema.js) ---------- */
+
+.oficio {
+  grid-column: span 2;
+}
+
+.oficio_corpo {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 9.5rem minmax(0, 1fr);
+  gap: 1rem;
+  min-height: 0;
+}
+
+.oficio_abas {
+  display: flex;
+  flex-direction: column;
+  gap: .4rem;
+}
+
+.oficio_aba {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  padding: .7rem .8rem;
+  border: 1px solid transparent;
+  background: none;
+  color: #8a8a8a;
+  font: inherit;
+  font-size: .95rem;
+  text-align: left;
+  transition: color .2s, border-color .2s, background-color .2s;
+}
+
+.oficio_aba svg {
+  flex: none;
+  width: 1.15rem;
+  height: 1.15rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linejoin: round;
+}
+
+.oficio_aba:hover {
+  color: #f2f2f2;
+}
+
+.oficio_aba[aria-selected="true"] {
+  border-color: var(--laranja);
+  background: rgba(255, 106, 43, .1);
+  color: var(--laranja);
+}
+
+.oficio_palco {
+  position: relative;
+  min-height: 16rem;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, .08);
+  background: #141414;
+}
+
+/* troca seca: sem fade longo, entra de baixo bem rápido */
+.oficio_tela {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(.8rem);
+}
+
+.oficio_tela.on {
+  visibility: visible;
+  opacity: 1;
+  transform: none;
+  transition: opacity .18s, transform .22s cubic-bezier(.2, 0, 0, 1);
+}
+
+.oficio_tela--sistemas,
+.oficio_tela--apis {
+  padding: 0;
+}
+
+.oficio_tela .pilar_cena {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.oficio_rodape .pilar_texto {
+  max-width: 36rem;
+}
+
+/* mobile: dois celulares */
+.oficio_tela--mobile {
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.tel {
+  display: flex;
+  flex-direction: column;
+  gap: .45rem;
+  height: 100%;
+  aspect-ratio: 9 / 18;
+  padding: .55rem .6rem;
+  border: 5px solid #2b2b2b;
+  border-radius: 1.3rem;
+  background: #0c0c0c;
+  font-size: .62rem;
+  color: #d6d6d6;
+}
+
+.tel--2 {
+  position: relative;
+  margin-top: 1.4rem;
+}
+
+.tel_topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #8a8a8a;
+  font-size: .55rem;
+}
+
+.tel_topo i {
+  width: 1.4em;
+  height: .7em;
+  border: 1px solid #8a8a8a;
+}
+
+.tel_titulo {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin: .2rem 0 .1rem;
+  font-size: .82rem;
+  font-weight: 600;
+  color: #f2f2f2;
+}
+
+.tel_titulo em {
+  font-style: normal;
+  font-size: .55rem;
+  font-weight: 400;
+  color: var(--laranja);
+}
+
+.tel_card {
+  display: flex;
+  flex-direction: column;
+  gap: .1rem;
+  padding: .45rem .5rem;
+  border-left: 2px solid var(--laranja);
+  background: #1b1b1b;
+}
+
+.tel_card b {
+  font-weight: 500;
+  color: #f2f2f2;
+}
+
+.tel_card span {
+  color: #8a8a8a;
+}
+
+.tel_abas {
+  display: flex;
+  justify-content: space-around;
+  margin-top: auto;
+  padding-top: .45rem;
+  border-top: 1px solid #222;
+}
+
+.tel_abas i {
+  width: .8rem;
+  height: .8rem;
+  border: 1.5px solid #555;
+}
+
+.tel_abas i.on {
+  border-color: var(--laranja);
+  background: var(--laranja);
+}
+
+.tel_cal {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: .15rem;
+  text-align: center;
+  font-size: .5rem;
+  color: #8a8a8a;
+}
+
+.tel_cal i {
+  padding: .12rem 0;
+  font-style: normal;
+}
+
+.tel_cal i.on {
+  background: var(--laranja);
+  color: var(--tinta);
+  font-weight: 700;
+}
+
+.tel_hora {
+  display: flex;
+  gap: .5rem;
+  padding: .3rem 0;
+  border-bottom: 1px solid #1f1f1f;
+}
+
+.tel_hora b {
+  font-weight: 500;
+  color: #8a8a8a;
+}
+
+.tel_mais {
+  position: absolute;
+  right: .6rem;
+  bottom: .6rem;
+  display: grid;
+  place-items: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50%;
+  background: var(--laranja);
+  color: var(--tinta);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* web: navegador com uma landing page */
+.nav_janela,
+.app_janela {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  border: 1px solid #2b2b2b;
+  background: #0c0c0c;
+}
+
+.nav_barra,
+.app_barra {
+  display: flex;
+  align-items: center;
+  gap: .35rem;
+  padding: .45rem .6rem;
+  border-bottom: 1px solid #222;
+  font-size: .6rem;
+  color: #8a8a8a;
+}
+
+.nav_barra i,
+.app_barra i {
+  width: .45rem;
+  height: .45rem;
+  background: #333;
+}
+
+.nav_barra i:first-child {
+  background: var(--laranja);
+}
+
+.nav_barra span {
+  flex: 1;
+  margin-left: .6rem;
+  padding: .2rem .5rem;
+  background: #1b1b1b;
+}
+
+.nav_site {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: .8rem;
+  padding: .7rem .9rem;
+  background: #f2f2f2;
+  color: var(--tinta);
+}
+
+.nav_menu {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  font-size: .7rem;
+}
+
+.nav_menu b {
+  margin-right: auto;
+  font-weight: 800;
+  letter-spacing: -.03em;
+}
+
+.nav_menu span {
+  width: 2rem;
+  height: .3rem;
+  background: #c4c4c4;
+}
+
+.nav_menu em,
+.nav_hero em {
+  padding: .25rem .5rem;
+  background: var(--laranja);
+  font-style: normal;
+  font-size: .55rem;
+  font-weight: 600;
+}
+
+.nav_hero {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: .8rem;
+  align-items: center;
+}
+
+.nav_hero strong {
+  display: block;
+  margin-bottom: .5rem;
+  font-size: 1.05rem;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -.03em;
+}
+
+.nav_hero p {
+  height: .3rem;
+  margin: 0 0 .3rem;
+  background: #c4c4c4;
+}
+
+.nav_hero p.curto {
+  width: 60%;
+  margin-bottom: .6rem;
+}
+
+.nav_hero em {
+  display: inline-block;
+}
+
+.nav_foto {
+  height: 100%;
+  min-height: 4rem;
+  background:
+    radial-gradient(circle at 60% 40%, rgba(255, 106, 43, .9) 0 22%, transparent 23%),
+    linear-gradient(160deg, #2b2b2b, #111);
+}
+
+.nav_cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: .4rem;
+}
+
+.nav_cards span {
+  height: 1.6rem;
+  border: 1px solid #c4c4c4;
+  background: #fff;
+}
+
+/* desktop: app de janela com abas de agentes e telemetria */
+.app_barra span {
+  padding: .15rem .5rem;
+  border: 1px solid #2b2b2b;
+}
+
+.app_barra span.on {
+  border-color: var(--laranja);
+  color: var(--laranja);
+}
+
+.app_barra i:first-of-type {
+  margin-left: auto;
+}
+
+.app_corpo {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 2.6rem minmax(0, 1fr);
+}
+
+.app_lado {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .5rem;
+  padding: .6rem 0;
+  border-right: 1px solid #222;
+}
+
+.app_lado b {
+  width: 1.2rem;
+  height: 1.2rem;
+  background: var(--laranja);
+}
+
+.app_lado span {
+  width: 1rem;
+  height: 1rem;
+  border: 1.5px solid #444;
+}
+
+.app_lado span.on {
+  border-color: #f2f2f2;
+}
+
+.app_main {
+  display: flex;
+  flex-direction: column;
+  gap: .7rem;
+  padding: .7rem;
+}
+
+.app_numeros {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: .4rem;
+}
+
+.app_numeros div {
+  padding: .45rem .5rem;
+  background: #1b1b1b;
+}
+
+.app_numeros em {
+  display: block;
+  font-style: normal;
+  font-size: .5rem;
+  color: #8a8a8a;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+.app_numeros b {
+  font-size: .9rem;
+  font-weight: 600;
+  color: #f2f2f2;
+}
+
+.app_grafico {
+  flex: 1;
+  width: 100%;
+  min-height: 3rem;
+  border-bottom: 1px solid #2b2b2b;
+  background: repeating-linear-gradient(0deg, transparent 0 24%, #1b1b1b 24% 25%);
+}
+
+.app_grafico path {
+  fill: none;
+  stroke: var(--laranja);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+/* IA: o chat */
+.chat {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: .5rem;
+  width: 100%;
+  height: 100%;
+  font-size: .78rem;
+  line-height: 1.4;
+}
+
+.chat_msg {
+  max-width: 82%;
+  padding: .55rem .7rem;
+  background: #1f1f1f;
+  color: #d6d6d6;
+}
+
+.chat_msg--eu {
+  align-self: flex-end;
+  background: var(--laranja);
+  color: var(--tinta);
+}
+
+.chat_msg--digitando {
+  display: flex;
+  gap: .3rem;
+}
+
+.chat_msg--digitando i {
+  width: .4rem;
+  height: .4rem;
+  background: #8a8a8a;
+  animation: digita 1s steps(2) infinite;
+}
+
+.chat_msg--digitando i:nth-child(2) { animation-delay: .2s; }
+.chat_msg--digitando i:nth-child(3) { animation-delay: .4s; }
+
+@keyframes digita {
+  50% { opacity: .2; }
+}
+
+/* celular: as abas viram uma fileira de lado em cima do exemplo */
+@media (max-width: 991px) {
+  .oficio {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 600px) {
+  .oficio_corpo {
+    grid-template-columns: 1fr;
+  }
+
+  .oficio_abas {
+    flex-direction: row;
+    margin: 0 -1.4rem;
+    padding: 0 1.4rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .oficio_abas::-webkit-scrollbar {
+    display: none;
+  }
+
+  .oficio_aba {
+    flex: none;
+    padding: .55rem .7rem;
+    font-size: .85rem;
+  }
+
+  .oficio_palco {
+    min-height: 19rem;
   }
 }
 

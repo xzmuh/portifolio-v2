@@ -160,6 +160,29 @@
     requestAnimationFrame(pinta);
   }
 
+  // nada de arrastar imagem ou link para fora da página (o Firefox ignora o -webkit-user-drag)
+  document.addEventListener('dragstart', function (e) { e.preventDefault(); });
+
+  // O que eu faço: cada aba mostra um exemplo daquele tipo de trabalho e troca o título e o texto
+  var oficio = document.querySelector('[data-oficio]');
+  if (oficio) {
+    var abasOficio = oficio.querySelectorAll('.oficio_aba');
+    var tituloOficio = oficio.querySelector('[data-oficio-titulo]');
+    var textoOficio = oficio.querySelector('[data-oficio-texto]');
+    Array.prototype.forEach.call(abasOficio, function (aba) {
+      aba.addEventListener('click', function () {
+        Array.prototype.forEach.call(abasOficio, function (a) { a.setAttribute('aria-selected', a === aba ? 'true' : 'false'); });
+        Array.prototype.forEach.call(oficio.querySelectorAll('.oficio_tela'), function (t) {
+          t.classList.toggle('on', t.getAttribute('data-tela') === aba.getAttribute('data-aba'));
+        });
+        tituloOficio.textContent = aba.getAttribute('data-titulo');
+        textoOficio.textContent = aba.getAttribute('data-texto');
+        // no celular, a aba escolhida vem para a vista na fileira
+        if (aba.scrollIntoView && window.innerWidth <= 600) aba.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+      });
+    });
+  }
+
   // Versões do currículo no celular: a lista vira carrossel de lado; as setinhas passam um card
   var carrossel = document.querySelector('.curriculo_lista');
   if (carrossel) {
