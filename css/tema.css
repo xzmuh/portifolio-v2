@@ -842,53 +842,6 @@ body {
   object-fit: cover;
 }
 
-/* troca de versão: o palco vira um mosaico de 7x7 peças que giram como cartas, em onda diagonal,
-   com a imagem nova no verso; no meio do giro as frestas mostram o laranja do fundo. js/tema.js
-   monta as peças e põe .on (aparece) e .virou (gira). */
-.mosaico {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  grid-template-rows: repeat(7, 1fr);
-  background: var(--laranja);
-  perspective: 900px;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.mosaico.on {
-  opacity: 1;
-}
-
-.mosaico i {
-  position: relative;
-  transform-style: preserve-3d;
-  transition: transform .55s cubic-bezier(.6, 0, .2, 1);
-  transition-delay: var(--d, 0ms);
-}
-
-.mosaico.sem i {
-  transition: none;
-}
-
-.mosaico.virou i {
-  transform: rotateY(180deg);
-}
-
-.mosaico b {
-  position: absolute;
-  inset: 0;
-  background-repeat: no-repeat;
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-}
-
-.mosaico b + b {
-  transform: rotateY(180deg);
-}
-
 .curriculo_selo {
   position: absolute;
   z-index: 2;
@@ -903,17 +856,33 @@ body {
   text-transform: uppercase;
 }
 
+/* troca de versão: a nova sobe por cima com a borda em diagonal e um zoom que assenta; a de baixo
+   afasta e escurece. Uma camada só (clip-path e transform), leve. */
 .curriculo_eu {
-  transition: transform 1.4s var(--suave), opacity .5s;
+  transition: transform 1.1s var(--suave), filter .8s ease;
 }
 
 .curriculo_troca {
-  opacity: 0;
-  transition: none;
+  clip-path: polygon(0 112%, 100% 128%, 100% 128%, 0 112%);
+  transform: scale(1.18);
+  transition: clip-path .85s cubic-bezier(.77, 0, .18, 1), transform 1.2s var(--suave);
 }
 
 .curriculo_foto.trocando .curriculo_troca {
-  opacity: 1;
+  clip-path: polygon(0 -28%, 100% 0, 100% 100%, 0 100%);
+  transform: none;
+}
+
+.curriculo_foto.trocando .curriculo_eu {
+  transform: scale(1.08);
+  filter: brightness(.45);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .curriculo_troca,
+  .curriculo_eu {
+    transition: none;
+  }
 }
 
 .curriculo_script {
