@@ -32,7 +32,7 @@
   <link href="css/footer.css?v=20261008" rel="stylesheet" type="text/css" />
   <link href="css/xreveal.css?v=20261008w" rel="stylesheet" type="text/css" />
   <link href="css/pixel-seam.css" rel="stylesheet" type="text/css" />
-  <link href="css/tema.css?v=20261008w" rel="stylesheet" type="text/css" />
+  <link href="css/tema.css?v=20261008x" rel="stylesheet" type="text/css" />
   <link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com" rel="preconnect" />
   <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin="anonymous" />
@@ -564,14 +564,6 @@
           <!-- cada card tem uma cena viva do que ele diz (js/tema.js): o log de uma API, a escultura que segue o
                mouse e a rede de integrações -->
           <div class="intro_grade">
-            <article class="pilar pilar--sistemas surge">
-              <div class="pilar_cena">
-                <div class="cena_barras" data-barras aria-hidden="true"></div>
-                <ol class="cena_log" data-log aria-hidden="true"></ol>
-              </div>
-              <h3 class="pilar_titulo">Sistemas</h3>
-              <p class="pilar_texto">CRMs, ERPs, gestão de clínicas e APIs orientadas a eventos: regra de negócio de ponta a ponta, do banco de dados à tela.</p>
-            </article>
             <article class="pilar pilar--experiencias surge" data-tilt>
               <div class="pilar_cena">
                 <img class="cena_escultura" src="img/tema/particulas.webp" alt="" loading="lazy" />
@@ -582,12 +574,87 @@
                 <p class="pilar_texto">Sites, landing pages, apps e experiências em 3D com animação na medida, feitos para a pessoa querer continuar rolando.</p>
               </div>
             </article>
-            <article class="pilar pilar--ia surge">
-              <div class="pilar_cena">
-                <svg class="cena_rede" viewBox="0 0 320 220" aria-hidden="true"><path class="fio" d="M160 110L48 42" pathLength="100" /><path class="pulso" style="--d:0.00s" d="M160 110L48 42" pathLength="100" /><path class="fio" d="M160 110L48 178" pathLength="100" /><path class="pulso volta" style="--d:0.45s" d="M160 110L48 178" pathLength="100" /><path class="fio" d="M160 110L272 42" pathLength="100" /><path class="pulso" style="--d:0.90s" d="M160 110L272 42" pathLength="100" /><path class="fio" d="M160 110L272 178" pathLength="100" /><path class="pulso volta" style="--d:1.35s" d="M160 110L272 178" pathLength="100" /><path class="fio" d="M160 110L160 20" pathLength="100" /><path class="pulso" style="--d:1.80s" d="M160 110L160 20" pathLength="100" /><path class="fio" d="M160 110L160 200" pathLength="100" /><path class="pulso volta" style="--d:2.25s" d="M160 110L160 200" pathLength="100" /><g class="no" transform="translate(48 42)"><rect x="-18" y="-9" width="36" height="18" /><text y="3.5">ERP</text></g><g class="no" transform="translate(48 178)"><rect x="-15" y="-9" width="30" height="18" /><text y="3.5">IA</text></g><g class="no" transform="translate(272 42)"><rect x="-18" y="-9" width="36" height="18" /><text y="3.5">AWS</text></g><g class="no" transform="translate(272 178)"><rect x="-42" y="-9" width="84" height="18" /><text y="3.5">CLOUDFLARE</text></g><g class="no" transform="translate(160 20)"><rect x="-35" y="-9" width="70" height="18" /><text y="3.5">WHATSAPP</text></g><g class="no" transform="translate(160 200)"><rect x="-35" y="-9" width="70" height="18" /><text y="3.5">WEBHOOKS</text></g><g class="no no--centro" transform="translate(160 110)"><rect x="-30" y="-16" width="60" height="32" /><text y="4">API</text></g></svg>
+            <!-- o que eu faço: cada aba mostra um tipo de trabalho (js/tema.js) -->
+            <article class="pilar oficio surge" data-oficio>
+              <div class="oficio_corpo">
+                <div class="oficio_abas" role="tablist" aria-label="Tipos de trabalho">
+                <button class="oficio_aba" type="button" role="tab" aria-selected="true" data-aba="mobile" data-titulo="Apps mobile" data-texto="Apps em React Native e Expo para agenda, atendimento e vendas, usando a mesma API do sistema web."><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" /><path d="M11 18.5h2" /></svg>Mobile</button>
+                <button class="oficio_aba" type="button" role="tab" aria-selected="false" data-aba="web" data-titulo="Sites e landing pages" data-texto="Sites, landing pages e portfólios rápidos, com animação na medida e feitos para quem visita continuar rolando."><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18" /></svg>Web</button>
+                <button class="oficio_aba" type="button" role="tab" aria-selected="false" data-aba="desktop" data-titulo="Apps desktop" data-texto="Aplicativos de janela com Tauri: painéis, abas de agentes e telemetria rodando direto no computador."><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="4" width="19" height="13" /><path d="M8 21h8M12 17v4" /></svg>Desktop</button>
+                <button class="oficio_aba" type="button" role="tab" aria-selected="false" data-aba="sistemas" data-titulo="CRMs e ERPs" data-texto="CRMs, ERPs e gestão de clínicas: regra de negócio de ponta a ponta, do banco de dados à tela."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6c0-1.7 3.6-3 8-3s8 1.3 8 3-3.6 3-8 3-8-1.3-8-3zM4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3" /></svg>Sistemas</button>
+                <button class="oficio_aba" type="button" role="tab" aria-selected="false" data-aba="apis" data-titulo="APIs e integrações" data-texto="APIs REST e orientadas a eventos, ligadas a AWS, Cloudflare, WhatsApp e webhooks com segurança."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 7 3 12l5 5M16 7l5 5-5 5M14 4l-4 16" /></svg>APIs</button>
+                <button class="oficio_aba" type="button" role="tab" aria-selected="false" data-aba="ia" data-titulo="IA aplicada" data-texto="Chat com IA local e automações que conhecem os dados do sistema e respondem pelo atendimento."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z" /></svg>IA</button>
+                </div>
+                <div class="oficio_palco" aria-hidden="true">
+                <div class="oficio_tela oficio_tela--mobile on" data-tela="mobile">
+                  <div class="tel">
+                    <div class="tel_topo"><span>9:41</span><i></i></div>
+                    <div class="tel_titulo">Meu dia <em>8 out</em></div>
+                    <div class="tel_card"><b>Atendimentos</b><span>3 hoje</span></div>
+                    <div class="tel_card"><b>Leads</b><span>12 novos</span></div>
+                    <div class="tel_card"><b>Tarefas</b><span>5 pendentes</span></div>
+                    <div class="tel_abas"><i class="on"></i><i></i><i></i><i></i></div>
+                  </div>
+                  <div class="tel tel--2">
+                    <div class="tel_topo"><span>9:41</span><i></i></div>
+                    <div class="tel_titulo">Agenda <em>Out 2026</em></div>
+                    <div class="tel_cal"><i>1</i><i>2</i><i>3</i><i>4</i><i>5</i><i>6</i><i>7</i><i class="on">8</i><i>9</i><i>10</i><i>11</i><i>12</i><i>13</i><i>14</i><i>15</i><i>16</i><i>17</i><i>18</i><i>19</i><i>20</i><i>21</i><i>22</i><i>23</i><i>24</i><i>25</i><i>26</i><i>27</i><i>28</i></div>
+                    <div class="tel_hora"><b>09:00</b>Consulta</div>
+                    <div class="tel_hora"><b>13:30</b>Retorno</div>
+                    <div class="tel_hora"><b>16:00</b>Novo paciente</div>
+                    <span class="tel_mais">+</span>
+                  </div>
+                </div>
+                <div class="oficio_tela oficio_tela--web" data-tela="web">
+                  <div class="nav_janela">
+                    <div class="nav_barra"><i></i><i></i><i></i><span>clinica-sorriso.com.br</span></div>
+                    <div class="nav_site">
+                      <div class="nav_menu"><b>sorriso</b><span></span><span></span><span></span><em>Agendar</em></div>
+                      <div class="nav_hero">
+                        <div><strong>Seu sorriso<br />em boas mãos.</strong><p></p><p class="curto"></p><em>Marcar consulta</em></div>
+                        <div class="nav_foto"></div>
+                      </div>
+                      <div class="nav_cards"><span></span><span></span><span></span></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="oficio_tela oficio_tela--desktop" data-tela="desktop">
+                  <div class="app_janela">
+                    <div class="app_barra"><span class="on">agente · vendas</span><span>agente · suporte</span><span>+</span><i></i><i></i><i></i></div>
+                    <div class="app_corpo">
+                      <div class="app_lado"><b></b><span class="on"></span><span></span><span></span><span></span></div>
+                      <div class="app_main">
+                        <div class="app_numeros"><div><em>tokens/min</em><b>1.284</b></div><div><em>latência</em><b>212ms</b></div><div><em>tarefas</em><b>37</b></div></div>
+                        <svg class="app_grafico" viewBox="0 0 200 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 48 L20 40 L40 44 L60 30 L80 34 L100 20 L120 26 L140 14 L160 22 L180 10 L200 16" /></svg>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="oficio_tela oficio_tela--sistemas" data-tela="sistemas">
+                  <div class="pilar_cena">
+                    <div class="cena_barras" data-barras aria-hidden="true"></div>
+                <ol class="cena_log" data-log aria-hidden="true"></ol>
+                  </div>
+                </div>
+                <div class="oficio_tela oficio_tela--apis" data-tela="apis">
+                  <div class="pilar_cena">
+                    <svg class="cena_rede" viewBox="0 0 320 220" aria-hidden="true"><path class="fio" d="M160 110L48 42" pathLength="100" /><path class="pulso" style="--d:0.00s" d="M160 110L48 42" pathLength="100" /><path class="fio" d="M160 110L48 178" pathLength="100" /><path class="pulso volta" style="--d:0.45s" d="M160 110L48 178" pathLength="100" /><path class="fio" d="M160 110L272 42" pathLength="100" /><path class="pulso" style="--d:0.90s" d="M160 110L272 42" pathLength="100" /><path class="fio" d="M160 110L272 178" pathLength="100" /><path class="pulso volta" style="--d:1.35s" d="M160 110L272 178" pathLength="100" /><path class="fio" d="M160 110L160 20" pathLength="100" /><path class="pulso" style="--d:1.80s" d="M160 110L160 20" pathLength="100" /><path class="fio" d="M160 110L160 200" pathLength="100" /><path class="pulso volta" style="--d:2.25s" d="M160 110L160 200" pathLength="100" /><g class="no" transform="translate(48 42)"><rect x="-18" y="-9" width="36" height="18" /><text y="3.5">ERP</text></g><g class="no" transform="translate(48 178)"><rect x="-15" y="-9" width="30" height="18" /><text y="3.5">IA</text></g><g class="no" transform="translate(272 42)"><rect x="-18" y="-9" width="36" height="18" /><text y="3.5">AWS</text></g><g class="no" transform="translate(272 178)"><rect x="-42" y="-9" width="84" height="18" /><text y="3.5">CLOUDFLARE</text></g><g class="no" transform="translate(160 20)"><rect x="-35" y="-9" width="70" height="18" /><text y="3.5">WHATSAPP</text></g><g class="no" transform="translate(160 200)"><rect x="-35" y="-9" width="70" height="18" /><text y="3.5">WEBHOOKS</text></g><g class="no no--centro" transform="translate(160 110)"><rect x="-30" y="-16" width="60" height="32" /><text y="4">API</text></g></svg>
+                  </div>
+                </div>
+                <div class="oficio_tela oficio_tela--ia" data-tela="ia">
+                  <div class="chat">
+                    <div class="chat_msg chat_msg--eu">Quantos atendimentos a Dra. Ana tem amanhã?</div>
+                    <div class="chat_msg">São 6. O primeiro às 8h30 e um encaixe livre às 15h. Quer que eu ofereça o encaixe para a lista de espera?</div>
+                    <div class="chat_msg chat_msg--eu">Pode mandar no WhatsApp.</div>
+                    <div class="chat_msg chat_msg--digitando"><i></i><i></i><i></i></div>
+                  </div>
+                </div>
+                </div>
               </div>
-              <h3 class="pilar_titulo">IA &amp; Integrações</h3>
-              <p class="pilar_texto">Chat com IA local, automações e integrações com AWS, Cloudflare e serviços externos, conectando sistemas com segurança.</p>
+              <div class="oficio_rodape">
+                <h3 class="pilar_titulo" data-oficio-titulo>Apps mobile</h3>
+                <p class="pilar_texto" data-oficio-texto>Apps em React Native e Expo para agenda, atendimento e vendas, usando a mesma API do sistema web.</p>
+              </div>
             </article>
           </div>
         </div>
@@ -1465,7 +1532,7 @@
 
   <script src="js/abstrato.js?v=20261008s"></script>
   <script src="js/onda.js?v=20261008"></script>
-  <script src="js/tema.js?v=20261008w"></script>
+  <script src="js/tema.js?v=20261008x"></script>
   <script src="js/rolagem.js?v=20261008u"></script>
 </body>
 
