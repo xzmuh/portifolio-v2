@@ -955,8 +955,8 @@ body {
   }
 
   .intro_figura {
-    grid-column: 1 / -1;
-    aspect-ratio: 4 / 3;
+    grid-column: auto;
+    aspect-ratio: auto;
   }
 
   .numeros_grade {
@@ -999,6 +999,10 @@ body {
 
   .pilar {
     min-height: 15rem;
+  }
+
+  .intro_figura {
+    aspect-ratio: 4 / 5;
   }
 
   .numero--foto {
