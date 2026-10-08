@@ -39,8 +39,9 @@
 .about-thread path {
   fill: none;
   stroke: #2e2e2e;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+  stroke-linecap: butt;
+  stroke-linejoin: miter;
+  stroke-miterlimit: 8;
   vector-effect: non-scaling-stroke;
   stroke-dasharray: 99999;
   stroke-dashoffset: 99999;

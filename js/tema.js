@@ -63,40 +63,20 @@
     enquantoVisivel(log, 1300, poe);
   }
 
-  // IA: o chat, com a resposta sendo digitada
-  var chat = document.querySelector('[data-chat]');
-  if (chat) {
-    var CONVERSA = [
-      ['Qual CFOP uso numa devolução de venda?', 'Dentro do estado, 1.202; para fora, 2.202. Quer que eu já monte a nota?'],
-      ['Resume os leads parados há 7 dias', '12 leads, 5 com proposta enviada. Sugiro retomar pelos 3 de maior valor.'],
-      ['O deploy de hoje passou?', 'Passou: build ok, testes verdes e a versão nova já está no ar.']
-    ];
-    var c = 0, ocupado = false;
-    var balao = function (classe, texto) {
-      var p = document.createElement('p');
-      p.className = classe; p.textContent = texto;
-      chat.appendChild(p);
-      while (chat.children.length > 4) chat.removeChild(chat.firstChild);
-      return p;
+  // Sistemas: as barras de requisições por segundo andando junto com o log
+  var barras = document.querySelector('[data-barras]');
+  if (barras) {
+    for (var b = 0; b < 32; b++) barras.appendChild(document.createElement('i'));
+    var alturas = [];
+    for (var b2 = 0; b2 < 32; b2++) alturas.push(30 + Math.random() * 50);
+    var mexe = function () {
+      alturas.shift();
+      var ult = alturas[alturas.length - 1];
+      alturas.push(Math.max(12, Math.min(100, ult + (Math.random() - 0.45) * 30)));
+      Array.prototype.forEach.call(barras.children, function (el, i) { el.style.setProperty('--h', alturas[i] + '%'); });
     };
-    if (calma) {
-      balao('eu', CONVERSA[0][0]); balao('ia', CONVERSA[0][1]);
-    } else {
-      enquantoVisivel(chat, 7000, function () {
-        if (ocupado) return;
-        ocupado = true;
-        var par = CONVERSA[c++ % CONVERSA.length];
-        balao('eu', par[0]);
-        setTimeout(function () {
-          var p = balao('ia digitando', ''), i = 0;
-          var t = setInterval(function () {
-            i += 2;
-            p.textContent = par[1].slice(0, i);
-            if (i >= par[1].length) { clearInterval(t); p.classList.remove('digitando'); ocupado = false; }
-          }, 35);
-        }, 700);
-      });
-    }
+    mexe();
+    enquantoVisivel(barras, 650, mexe);
   }
 
   // Experiências: a escultura gira e desliza seguindo o mouse

@@ -43,7 +43,6 @@ body {
   content: "";
   width: 6px;
   height: 6px;
-  border-radius: 50%;
   background: var(--laranja);
 }
 
@@ -499,7 +498,6 @@ body {
 .cena_barra i {
   width: 7px;
   height: 7px;
-  border-radius: 50%;
   background: #333;
 }
 
@@ -593,48 +591,105 @@ body {
   align-items: end;
 }
 
-/* IA: o chat */
-.cena_chat {
-  flex: 1;
+/* Sistemas: requisições por segundo */
+.cena_barras {
   display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  gap: .55rem;
-  padding: .8rem .7rem;
-  font-family: var(--fonte);
-  font-size: clamp(.78rem, .82vw, .9rem);
-  line-height: 1.4;
+  align-items: flex-end;
+  gap: 2px;
+  height: 2.6rem;
+  padding: .6rem .7rem 0;
 }
 
-.cena_chat p {
-  max-width: 88%;
-  margin: 0;
-  padding: .55em .75em;
-  animation: logEntra .5s var(--suave);
+.cena_barras i {
+  flex: 1;
+  height: var(--h, 20%);
+  background: #3a3a3a;
+  transition: height .6s var(--suave);
 }
 
-.cena_chat .eu {
-  align-self: flex-end;
-  background: #2a2a2a;
-  color: #e9e9e9;
+.cena_barras i:last-child {
+  background: var(--laranja);
 }
 
-.cena_chat .ia {
-  align-self: flex-start;
-  border-left: 2px solid var(--laranja);
-  background: rgba(255, 106, 43, .08);
-  color: #f0f0f0;
+/* IA & Integrações: a rede de serviços com pulsos passando nos fios */
+.cena_rede {
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  padding: .4rem;
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
 }
 
-.cena_chat .ia.digitando:after {
-  content: "▍";
-  margin-left: .1em;
-  color: var(--laranja);
-  animation: pisca .8s steps(2) infinite;
+.cena_rede .fio {
+  fill: none;
+  stroke: #333;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
 }
 
-@keyframes pisca {
-  50% { opacity: 0; }
+.cena_rede .pulso {
+  fill: none;
+  stroke: var(--laranja);
+  stroke-width: 2;
+  stroke-dasharray: 10 90;
+  stroke-dashoffset: 100;
+  vector-effect: non-scaling-stroke;
+  animation: pulso 2.7s linear infinite;
+  animation-delay: var(--d, 0s);
+}
+
+.cena_rede .pulso.volta {
+  animation-name: pulsoVolta;
+}
+
+@keyframes pulso {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes pulsoVolta {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: 100; }
+}
+
+.cena_rede .no rect {
+  fill: #141414;
+  stroke: #4a4a4a;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  transition: stroke .3s;
+}
+
+.cena_rede .no text {
+  fill: #bdbdbd;
+  font-size: 9px;
+  letter-spacing: .06em;
+  text-anchor: middle;
+}
+
+.cena_rede .no--centro rect {
+  fill: var(--laranja);
+  stroke: var(--laranja);
+}
+
+.cena_rede .no--centro text {
+  fill: var(--tinta);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.pilar--ia:hover .cena_rede .no rect {
+  stroke: var(--laranja);
+}
+
+.pilar--ia:hover .cena_rede .pulso {
+  animation-duration: 1.2s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cena_rede .pulso {
+    animation: none;
+    opacity: 0;
+  }
 }
 
 /* ---------- escolha (escuro, emenda com a intro) ---------- */
@@ -655,14 +710,14 @@ body {
 }
 
 .vitrine {
-  border-radius: 6px;
+  border-radius: 0;
   border-color: rgba(255, 255, 255, .08);
   background: var(--carvao);
   box-shadow: none;
 }
 
 .vitrine_rolar {
-  border-radius: 4px;
+  border-radius: 0;
 }
 
 /* ---------- projetos (cinza) ---------- */
@@ -957,7 +1012,6 @@ body {
   content: "";
   width: 6px;
   height: 6px;
-  border-radius: 50%;
   background: var(--laranja);
 }
 
@@ -971,7 +1025,7 @@ body {
 }
 
 .xp-card {
-  border-radius: 6px;
+  border-radius: 0;
 }
 
 .xp-badge {
@@ -979,7 +1033,7 @@ body {
   background: var(--laranja);
   color: var(--tinta);
   opacity: 1;
-  border-radius: 3px;
+  border-radius: 0;
 }
 
 .xp-card-period {
@@ -991,7 +1045,7 @@ body {
 }
 
 .xp-card-stack span {
-  border-radius: 3px;
+  border-radius: 0;
 }
 
 /* ---------- transição e footer (escuro) ---------- */
@@ -1032,6 +1086,32 @@ body {
   background: var(--cinza-claro);
   border-color: var(--cinza-claro);
   color: var(--tinta);
+}
+
+/* ---------- cantos retos: o site perdeu o redondo, as peças acompanham ---------- */
+
+.mundos,
+.mundo,
+.mundo.tomando,
+.rolar_mouse,
+.xp-card-toggle,
+.footer-pill {
+  border-radius: 0;
+}
+
+.xp-card-detail li:before {
+  border-radius: 0;
+  transform: rotate(45deg);
+}
+
+.xp-card-toggle {
+  border: 1px solid currentColor;
+}
+
+@media (max-width: 760px) {
+  .vitrine {
+    border-radius: 0;
+  }
 }
 
 /* ---------- responsivo ---------- */
