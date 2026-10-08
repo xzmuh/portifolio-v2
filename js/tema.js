@@ -98,30 +98,38 @@
     });
   }
 
-  // Outras versões do currículo: passando num item da lista, o palco do meio mostra aquela versão
+  // Outras versões do currículo: passando num item da lista, o palco do meio mostra aquela versão.
+  // A troca: fecha as partes laranja, gira 90° (acumulando), troca a imagem escondida e abre.
   var palco = document.querySelector('[data-foto-palco]');
   if (palco) {
-    var troca = palco.querySelector('.curriculo_troca');
-    var selo = palco.querySelector('[data-selo]'), seloPadrao = selo.textContent;
-    var solta;
+    var giro = palco.querySelector('[data-giro]'), img = palco.querySelector('.curriculo_eu');
+    var selo = palco.querySelector('[data-selo]');
+    var padrao = { src: img.getAttribute('src'), selo: selo.textContent };
+    var graus = 0, atual = padrao.src, t1, t2, solta;
+    var vai = function (src, nome) {
+      if (src === atual) return;
+      atual = src;
+      clearTimeout(t1); clearTimeout(t2);
+      if (calma) { img.src = src; selo.textContent = nome; return; }
+      giro.classList.add('fechado');
+      t1 = setTimeout(function () {
+        img.src = src;
+        selo.textContent = nome;
+        graus += 90;
+        giro.style.setProperty('--giro', graus + 'deg');
+        t2 = setTimeout(function () { giro.classList.remove('fechado'); }, 480);
+      }, 300);
+    };
     Array.prototype.forEach.call(document.querySelectorAll('[data-foto]'), function (item) {
-      var mostra = function () {
-        clearTimeout(solta);
-        troca.src = item.getAttribute('data-foto');
-        selo.textContent = item.getAttribute('data-selo');
-        palco.classList.add('trocando');
-      };
-      var volta = function () {
-        solta = setTimeout(function () {
-          palco.classList.remove('trocando');
-          selo.textContent = seloPadrao;
-        }, 120);
-      };
+      var mostra = function () { clearTimeout(solta); vai(item.getAttribute('data-foto'), item.getAttribute('data-selo')); };
+      var volta = function () { solta = setTimeout(function () { vai(padrao.src, padrao.selo); }, 160); };
       item.addEventListener('pointerenter', mostra);
       item.addEventListener('focus', mostra);
       item.addEventListener('pointerleave', volta);
       item.addEventListener('blur', volta);
     });
+    // (pré-carrega as versões para a troca não piscar em branco)
+    Array.prototype.forEach.call(document.querySelectorAll('[data-foto]'), function (item) { new Image().src = item.getAttribute('data-foto'); });
   }
 
   // Projetos em destaque: cada card sobe e aparece junto com o scroll (vai e volta com a rolagem),
