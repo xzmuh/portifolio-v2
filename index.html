@@ -591,15 +591,12 @@
                     <div class="iphone_tela">
                       <div class="iphone_status"><span>9:41</span><span class="iphone_sinal"><i></i><i></i><i></i><i></i><b><u></u></b></span></div>
                       <div class="iphone_ilha"></div>
-                      <div class="app app--claro">
-                        <span class="app_rotulo entra" style="--i:0">Minha agenda</span>
-                        <strong class="app_titulo entra" style="--i:1">Terça, 8 out</strong>
-                        <div class="app_chips entra" style="--i:1"><span class="on">Hoje</span><span>Semana</span><span>Mês</span></div>
-                        <div class="ag entra" style="--i:2"><b>08:00</b><span class="ag_av">CD</span><span class="ag_nome">Camila Duarte<small>Limpeza de pele</small></span><em class="ok" title="Confirmado"></em></div>
-                        <div class="ag entra" style="--i:3"><b>09:00</b><span class="ag_av">ML</span><span class="ag_nome">Mariana Lopes<small>Peeling</small></span><em class="ok" title="Confirmado"></em></div>
-                        <div class="ag entra" style="--i:4"><b>10:00</b><span class="ag_av">BS</span><span class="ag_nome">Beatriz Souza<small>Microagulhamento</small></span><em class="esp" title="Pendente"></em></div>
-                        <div class="ag entra" style="--i:5"><b>11:00</b><span class="ag_av">RA</span><span class="ag_nome">Renata Alves<small>Drenagem</small></span><em class="ok" title="Confirmado"></em></div>
-                        <div class="ag entra" style="--i:6"><b>14:00</b><span class="ag_av">LM</span><span class="ag_nome">Larissa Melo<small>Toxina</small></span><em class="ok" title="Confirmado"></em></div>
+                      <div class="app app--claro" data-agenda>
+                        <span class="app_rotulo entra" style="--i:0">Agenda</span>
+                        <strong class="app_titulo entra" style="--i:1" data-agenda-titulo>Hoje</strong>
+                        <div class="app_chips entra" style="--i:1"><button class="on" type="button" data-dia="0">Hoje</button><button type="button" data-dia="1">Amanhã</button><button type="button" data-dia="2">Sexta</button></div>
+                        <div class="ag_lista" data-agenda-lista></div>
+                        <span class="app_dica">toque para confirmar</span>
                       </div>
                       <div class="iphone_home"></div>
                     </div>
@@ -608,54 +605,64 @@
                     <div class="iphone_tela">
                       <div class="iphone_status"><span>9:41</span><span class="iphone_sinal"><i></i><i></i><i></i><i></i><b><u></u></b></span></div>
                       <div class="iphone_ilha"></div>
-                      <div class="app">
-                        <span class="app_rotulo entra" style="--i:0">Olá, Murilo</span>
-                        <strong class="app_titulo entra" style="--i:1">Resumo do dia</strong>
-                        <div class="app_fat entra" style="--i:2"><em>Faturamento hoje</em><b>R$ 2.540</b><div class="app_barras"><i style="--h:35%"></i><i style="--h:52%"></i><i style="--h:40%"></i><i style="--h:68%"></i><i style="--h:58%"></i><i style="--h:80%"></i><i style="--h:62%"></i><i style="--h:92%"></i></div></div>
-                        <div class="app_tiles entra" style="--i:3"><span><b>5</b>confirmados</span><span><b>2</b>pendentes</span><span><b>0</b>faltas</span></div>
-                        <div class="app_prox entra" style="--i:4"><span><em>Próximo horário livre</em><b>11:00 · encaixe</b></span><i>+</i></div>
+                      <div class="app" data-painel>
+                        <span class="app_rotulo entra" style="--i:0">Olá!</span>
+                        <strong class="app_titulo entra" style="--i:1">Resumo</strong>
+                        <div class="app_fat entra" style="--i:2"><em data-painel-rotulo>Vendas hoje</em><b>R$ <span data-painel-valor>3.180</span></b><div class="app_barras"><button type="button" style="--h:35%" data-valor="1.240"></button><button type="button" style="--h:52%" data-valor="1.810"></button><button type="button" style="--h:40%" data-valor="1.390"></button><button type="button" style="--h:68%" data-valor="2.360"></button><button type="button" style="--h:58%" data-valor="2.020"></button><button type="button" style="--h:80%" data-valor="2.790"></button><button type="button" style="--h:62%" data-valor="2.150"></button><button type="button" style="--h:92%" data-valor="3.180"></button></div></div>
+                        <div class="app_tiles entra" style="--i:3"><span><b data-painel-pedidos>18</b>pedidos</span><span><b>4</b>novos</span><span><b>0</b>atrasos</span></div>
+                        <button class="app_prox entra" style="--i:4" type="button" data-painel-mais><span><em>Registrar</em><b>novo pedido</b></span><i>+</i></button>
                       </div>
                       <div class="iphone_home"></div>
                     </div>
                   </div>
                 </div>
-                <div class="oficio_tela oficio_tela--web" data-tela="web" data-sites>
-                  <div class="janela janela--claro">
-                    <div class="janela_barra"><span class="janela_luzes"><i></i><i></i><i></i></span><span class="janela_url" data-url>freplan.com.br</span></div>
-                    <div class="janela_site"><img src="images/projects/freplan.webp" alt="" loading="lazy" data-url="freplan.com.br" class="on" /><img src="images/projects/tecnoglass.webp" alt="" loading="lazy" data-url="tecnoglassbrasil.com.br" /><img src="images/projects/dialogi.webp" alt="" loading="lazy" data-url="dialogi.ai" /><img src="images/projects/sigmacx.webp" alt="" loading="lazy" data-url="sigmacx.ai" /></div>
+                <div class="oficio_tela oficio_tela--web" data-tela="web">
+                  <div class="janela">
+                    <div class="janela_barra"><span class="janela_luzes"><i></i><i></i><i></i></span><span class="janela_url" data-site-url>seusite.com</span></div>
+                    <div class="site" data-site>
+                      <div class="site_menu"><b>marca<i>.</i></b><button class="on" type="button" data-pagina="0">Início</button><button type="button" data-pagina="1">Planos</button><button type="button" data-pagina="2">Contato</button></div>
+                      <div class="site_pagina on" data-pagina-corpo="0">
+                        <div class="site_hero"><div><span class="site_selo">novo</span><strong>Seu produto,<br />do jeito certo.</strong><p>Uma página rápida, clara e feita para quem chega continuar rolando.</p><button class="site_botao" type="button" data-site-acao>Começar agora</button></div><div class="site_arte"><i></i><i></i><i></i></div></div>
+                      </div>
+                      <div class="site_pagina" data-pagina-corpo="1">
+                        <div class="site_planos"><div><em>Básico</em><b>R$ 49</b><span></span><span></span></div><div class="on"><em>Pro</em><b>R$ 99</b><span></span><span></span><span></span></div><div><em>Time</em><b>R$ 199</b><span></span><span></span></div></div>
+                      </div>
+                      <div class="site_pagina" data-pagina-corpo="2">
+                        <div class="site_contato"><strong>Fale com a gente</strong><span class="site_campo">seu nome</span><span class="site_campo">seu e-mail</span><button class="site_botao" type="button" data-site-acao>Enviar</button></div>
+                      </div>
+                      <div class="site_toast" data-site-toast>Pronto! Recebemos ✓</div>
+                    </div>
                   </div>
                 </div>
                 <div class="oficio_tela oficio_tela--desktop" data-tela="desktop">
                   <div class="janela">
-                    <div class="janela_barra"><span class="janela_luzes"><i></i><i></i><i></i></span><span class="janela_aba on">agente · vendas</span><span class="janela_aba">agente · suporte</span><span class="janela_aba">+</span></div>
+                    <div class="janela_barra"><span class="janela_luzes"><i></i><i></i><i></i></span><button class="janela_aba on" type="button" data-agente="0">agente · vendas</button><button class="janela_aba" type="button" data-agente="1">agente · suporte</button><button class="janela_aba" type="button" data-agente="2">agente · financeiro</button></div>
                     <div class="dk">
                       <div class="dk_lado"><b></b><span class="on"></span><span></span><span></span><span></span></div>
-                      <ol class="dk_log">
-                        <li class="entra" style="--i:1"><b>›</b>buscando leads sem resposta há 3 dias</li>
-                        <li class="entra" style="--i:2"><b class="ok">✓</b>12 encontrados no CRM</li>
-                        <li class="entra" style="--i:3"><b>›</b>escrevendo follow-up para cada um</li>
-                        <li class="entra" style="--i:4"><b class="ok">✓</b>9 enviados pelo WhatsApp</li>
-                        <li class="entra" style="--i:5"><b>›</b>agendando retorno<span class="dk_cursor"></span></li>
-                      </ol>
+                      <ol class="dk_log" data-dk-log></ol>
                       <div class="dk_tele">
-                        <div class="dk_num entra" style="--i:1"><em>tokens/min</em><b>1.284</b></div>
-                        <div class="dk_num entra" style="--i:2"><em>latência</em><b>212ms</b></div>
-                        <svg class="dk_grafico" viewBox="0 0 200 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 50 L20 42 L40 46 L60 30 L80 35 L100 22 L120 27 L140 14 L160 21 L180 9 L200 15" pathLength="100" /></svg>
+                        <div class="dk_num"><em>tarefas</em><b data-dk-tarefas>12</b></div>
+                        <div class="dk_num"><em>latência</em><b data-dk-lat>212ms</b></div>
+                        <svg class="dk_grafico" viewBox="0 0 200 60" preserveAspectRatio="none" aria-hidden="true"><path data-dk-linha d="M0 50 L20 42 L40 46 L60 30 L80 35 L100 22 L120 27 L140 14 L160 21 L180 9 L200 15" pathLength="100" /></svg>
                       </div>
                     </div>
                   </div>
                 </div>
                 <div class="oficio_tela oficio_tela--sistemas" data-tela="sistemas">
-                  <div class="janela janela--claro">
-                    <div class="janela_barra"><span class="janela_luzes"><i></i><i></i><i></i></span><span class="janela_url">velox.app/crm/funil</span></div>
-                    <div class="janela_site"><img class="on" src="images/projects/velox-crm.webp" alt="" loading="lazy" /></div>
+                  <div class="janela">
+                    <div class="janela_barra"><span class="janela_luzes"><i></i><i></i><i></i></span><span class="janela_url">crm · funil de vendas</span></div>
+                    <div class="kb" data-kanban>
+                      <div class="kb_col" data-col="0"><span class="kb_topo">Novos <b>0</b></span></div>
+                      <div class="kb_col" data-col="1"><span class="kb_topo">Proposta <b>0</b></span></div>
+                      <div class="kb_col" data-col="2"><span class="kb_topo">Fechado <b>0</b></span></div>
+                    </div>
                   </div>
-                  <div class="aviso entra" style="--i:3"><b>Novo lead</b>Ana Martins entrou pelo site<em>agora</em></div>
-                  <div class="aviso aviso--2 entra" style="--i:6"><b>NF-e emitida</b>Pedido 412 · R$ 2.540<em>2s</em></div>
+                  <span class="oficio_dica">clique num card para avançar</span>
                 </div>
                 <div class="oficio_tela oficio_tela--apis" data-tela="apis">
                   <div class="pilar_cena">
-                    <svg class="cena_rede" viewBox="0 0 320 220" aria-hidden="true"><path class="fio" d="M160 110L48 42" pathLength="100" /><path class="pulso" style="--d:0.00s" d="M160 110L48 42" pathLength="100" /><path class="fio" d="M160 110L48 178" pathLength="100" /><path class="pulso volta" style="--d:0.45s" d="M160 110L48 178" pathLength="100" /><path class="fio" d="M160 110L272 42" pathLength="100" /><path class="pulso" style="--d:0.90s" d="M160 110L272 42" pathLength="100" /><path class="fio" d="M160 110L272 178" pathLength="100" /><path class="pulso volta" style="--d:1.35s" d="M160 110L272 178" pathLength="100" /><path class="fio" d="M160 110L160 20" pathLength="100" /><path class="pulso" style="--d:1.80s" d="M160 110L160 20" pathLength="100" /><path class="fio" d="M160 110L160 200" pathLength="100" /><path class="pulso volta" style="--d:2.25s" d="M160 110L160 200" pathLength="100" /><g class="no" transform="translate(48 42)"><rect x="-18" y="-9" width="36" height="18" /><text y="3.5">ERP</text></g><g class="no" transform="translate(48 178)"><rect x="-15" y="-9" width="30" height="18" /><text y="3.5">IA</text></g><g class="no" transform="translate(272 42)"><rect x="-18" y="-9" width="36" height="18" /><text y="3.5">AWS</text></g><g class="no" transform="translate(272 178)"><rect x="-42" y="-9" width="84" height="18" /><text y="3.5">CLOUDFLARE</text></g><g class="no" transform="translate(160 20)"><rect x="-35" y="-9" width="70" height="18" /><text y="3.5">WHATSAPP</text></g><g class="no" transform="translate(160 200)"><rect x="-35" y="-9" width="70" height="18" /><text y="3.5">WEBHOOKS</text></g><g class="no no--centro" transform="translate(160 110)"><rect x="-30" y="-16" width="60" height="32" /><text y="4">API</text></g></svg>
+                    <svg class="cena_rede" viewBox="0 0 320 220" aria-hidden="true"><path class="fio" d="M160 110L48 42" pathLength="100" /><path class="pulso" style="--d:0.00s" d="M160 110L48 42" pathLength="100" /><path class="fio" d="M160 110L48 178" pathLength="100" /><path class="pulso volta" style="--d:0.45s" d="M160 110L48 178" pathLength="100" /><path class="fio" d="M160 110L272 42" pathLength="100" /><path class="pulso" style="--d:0.90s" d="M160 110L272 42" pathLength="100" /><path class="fio" d="M160 110L272 178" pathLength="100" /><path class="pulso volta" style="--d:1.35s" d="M160 110L272 178" pathLength="100" /><path class="fio" d="M160 110L160 20" pathLength="100" /><path class="pulso" style="--d:1.80s" d="M160 110L160 20" pathLength="100" /><path class="fio" d="M160 110L160 200" pathLength="100" /><path class="pulso volta" style="--d:2.25s" d="M160 110L160 200" pathLength="100" /><g class="no" data-no="ERP" transform="translate(48 42)"><rect x="-18" y="-9" width="36" height="18" /><text y="3.5">ERP</text></g><g class="no" data-no="IA" transform="translate(48 178)"><rect x="-15" y="-9" width="30" height="18" /><text y="3.5">IA</text></g><g class="no" data-no="AWS" transform="translate(272 42)"><rect x="-18" y="-9" width="36" height="18" /><text y="3.5">AWS</text></g><g class="no" data-no="CLOUDFLARE" transform="translate(272 178)"><rect x="-42" y="-9" width="84" height="18" /><text y="3.5">CLOUDFLARE</text></g><g class="no" data-no="WHATSAPP" transform="translate(160 20)"><rect x="-35" y="-9" width="70" height="18" /><text y="3.5">WHATSAPP</text></g><g class="no" data-no="WEBHOOKS" transform="translate(160 200)"><rect x="-35" y="-9" width="70" height="18" /><text y="3.5">WEBHOOKS</text></g><g class="no no--centro" transform="translate(160 110)"><rect x="-30" y="-16" width="60" height="32" /><text y="4">API</text></g></svg>
+                    <span class="oficio_dica">clique num serviço</span>
                   </div>
                   <div class="pilar_cena api_log">
                     <div class="cena_barras" data-barras aria-hidden="true"></div>
@@ -667,23 +674,19 @@
                     <div class="iphone_tela">
                       <div class="iphone_status"><span>9:41</span><span class="iphone_sinal"><i></i><i></i><i></i><i></i><b><u></u></b></span></div>
                       <div class="iphone_ilha"></div>
-                      <div class="zap_topo"><span class="zap_av">IA</span><span><b>Clínica Sorriso</b><small>assistente · online</small></span></div>
-                      <div class="zap">
-                        <div class="zap_msg zap_msg--in entra" style="--i:1">Oi! Tem horário amanhã com a Dra. Ana?</div>
-                        <p class="zap_nota entra" style="--i:2">IA consultou a agenda</p>
-                        <div class="zap_msg entra" style="--i:3">Tem sim! Às 15h ficou um encaixe livre. Posso reservar para você?</div>
-                        <div class="zap_msg zap_msg--in entra" style="--i:4">Pode, obrigada 🙌</div>
-                        <div class="zap_msg entra" style="--i:5">Reservado ✅ Te mando um lembrete amanhã às 9h.</div>
+                      <div class="zap_topo"><span class="zap_av">IA</span><span><b>Assistente</b><small>online</small></span></div>
+                      <div class="zap" data-zap>
+                        <div class="zap_msg zap_msg--in entra" style="--i:1">Oi! Posso consultar pedidos, agenda e relatórios. Pergunte ao lado 👉</div>
                       </div>
                       <div class="iphone_home"></div>
                     </div>
                   </div>
                   <div class="ia_painel">
-                    <span class="ia_rotulo entra" style="--i:1">O que a IA consultou</span>
-                    <div class="ia_item entra" style="--i:2"><i>✓</i>Agenda da Dra. Ana<em>8 horários</em></div>
-                    <div class="ia_item entra" style="--i:3"><i>✓</i>Lista de espera<em>3 pessoas</em></div>
-                    <div class="ia_item entra" style="--i:4"><i>✓</i>Ficha da paciente<em>retorno</em></div>
-                    <div class="ia_tempo entra" style="--i:5"><b>1,2s</b>para responder, sem ninguém da recepção</div>
+                    <span class="ia_rotulo entra" style="--i:1">Pergunte</span>
+                    <button class="ia_pergunta entra" style="--i:2" type="button" data-pergunta="0">Tem horário livre amanhã?</button>
+                    <button class="ia_pergunta entra" style="--i:3" type="button" data-pergunta="1">Onde está o pedido 412?</button>
+                    <button class="ia_pergunta entra" style="--i:4" type="button" data-pergunta="2">Resume as vendas da semana</button>
+                    <div class="ia_fontes" data-ia-fontes></div>
                   </div>
                 </div>
                 </div>
@@ -1570,6 +1573,7 @@
   <script src="js/abstrato.js?v=20261008s"></script>
   <script src="js/onda.js?v=20261008"></script>
   <script src="js/tema.js?v=20261008y"></script>
+  <script src="js/oficio.js?v=20261008z"></script>
   <script src="js/rolagem.js?v=20261008u"></script>
 </body>
 
