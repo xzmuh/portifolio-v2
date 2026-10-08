@@ -125,12 +125,23 @@
     };
     Array.prototype.forEach.call(document.querySelectorAll('[data-foto]'), function (item) {
       var mostra = function () { clearTimeout(solta); vai(item.getAttribute('data-foto'), item.getAttribute('data-selo')); };
-      var volta = function () { solta = setTimeout(function () { vai(padrao.src, padrao.selo); }, 160); };
+      var volta = function () { solta = setTimeout(function () { vai(padrao.src, padrao.selo); }, 700); };
       item.addEventListener('pointerenter', mostra);
       item.addEventListener('focus', mostra);
       item.addEventListener('pointerleave', volta);
       item.addEventListener('blur', volta);
     });
+    // clicar na foto abre a versão que ela está mostrando
+    var linkDaFoto = function () {
+      var item = document.querySelector('.curriculo_lista [data-foto="' + atual + '"]');
+      return item && item.getAttribute('href');
+    };
+    palco.addEventListener('click', function () {
+      var href = linkDaFoto();
+      if (href) window.location.href = href;
+    });
+    palco.addEventListener('pointerenter', function () { clearTimeout(solta); });
+    palco.addEventListener('pointerleave', function () { solta = setTimeout(function () { vai(padrao.src, padrao.selo); }, 160); });
     // (pré-carrega as versões para a troca não piscar em branco)
     Array.prototype.forEach.call(document.querySelectorAll('[data-foto]'), function (item) { new Image().src = item.getAttribute('data-foto'); });
   }
