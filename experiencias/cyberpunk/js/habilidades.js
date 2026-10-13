@@ -1,7 +1,8 @@
 /*
  * Tela Habilidades: árvore de competências no molde da árvore Relic do
- * Cyberpunk 2077: nós octogonais acesos, trilhos duplos com dobras de 45°
- * abrindo do nó central para as pontas. Abas de categoria (Q/E), card ao passar o mouse
+ * Cyberpunk 2077: nós octogonais, trilhos duplos com dobras de 45° abrindo
+ * do nó central para as pontas. Segurando o clique num nó disponível ele é
+ * liberado e acende, como os perks do jogo. Abas de categoria (Q/E), card ao passar o mouse
  * dizendo o que é cada tecnologia.
  */
 import { CATEGORIAS } from './dados-habilidades.js';
@@ -86,13 +87,81 @@ function trilho(a, b) {
   return `M${a.x} ${a.y}L${a.x + sx * Math.abs(dy)} ${b.y}H${b.x}`;
 }
 // trilho duplo: uma faixa larga com o miolo escuro por cima vira duas linhas
-function linha(d, estado) {
-  for (const camada of ['brilho', 'faixa', 'miolo']) {
+function linha(d) {
+  const g = document.createElementNS(SVG, 'g');
+  g.setAttribute('class', 'hab_galho');
+  // brilho, faixa e miolo fazem o trilho duplo; a carga é a energia que corre
+  // pelo trilho quando o nó é liberado
+  for (const camada of ['brilho', 'faixa', 'miolo', 'carga']) {
     const p = document.createElementNS(SVG, 'path');
     p.setAttribute('d', d);
-    p.setAttribute('class', `hab_trilho hab_trilho--${camada} hab_trilho--${estado}`);
-    trilhasEl.append(p);
+    p.setAttribute('class', `hab_trilho hab_trilho--${camada}`);
+    g.append(p);
   }
+  trilhasEl.append(g);
+  return g;
+}
+
+/* ---------- liberar nós (segurar o clique, como no jogo) ----------
+ * Cada aba começa só com o nó central aceso. Um nó fica disponível quando o
+ * pai está liberado; segurando o clique nele a moldura enche e, cheia, ele
+ * acende e a energia corre pelo trilho desde o pai. As vagas trancadas
+ * ("Sua API"...) não liberam: levam para o Contato. O que foi liberado fica
+ * guardado no navegador de quem está vendo. */
+const SEGURAR = 550; // ms
+const CHAVE = 'cyber-hab-liberados';
+const liberados = (() => {
+  let salvo = {};
+  try { salvo = JSON.parse(localStorage.getItem(CHAVE)) || {}; } catch { /* sem armazenamento */ }
+  return Object.fromEntries(CATEGORIAS.map((c) => {
+    const raizes = c.nos.filter((n) => !n.pai).map((n) => n.id);
+    return [c.id, new Set([...raizes, ...(salvo[c.id] || [])])];
+  }));
+})();
+function guardar() {
+  try { localStorage.setItem(CHAVE, JSON.stringify(Object.fromEntries(Object.entries(liberados).map(([k, v]) => [k, [...v]])))); } catch { /* sem armazenamento */ }
+}
+const pontosEl = $('[data-hab-pontos]');
+const cat = () => CATEGORIAS[atual];
+const livre = (n) => liberados[cat().id].has(n.id);
+const estado = (n) => (livre(n) ? 'liberado' : !n.pai || livre({ id: n.pai }) ? 'disponivel' : 'travado');
+const liberaveis = (c) => c.nos.filter((n) => !n.bloqueado);
+function contarPontos() {
+  const c = cat();
+  const falta = liberaveis(c).filter((n) => !liberados[c.id].has(n.id)).length;
+  pontosEl.textContent = falta;
+  raiz.classList.toggle('habilidades--completa', falta === 0);
+}
+
+let nosEl = {}, galhos = {};
+function pintar() {
+  for (const n of cat().nos) {
+    const e = estado(n);
+    const el = nosEl[n.id];
+    el.classList.toggle('hab_no--liberado', e === 'liberado');
+    el.classList.toggle('hab_no--disponivel', e === 'disponivel');
+    el.classList.toggle('hab_no--travado', e === 'travado');
+    const g = galhos[n.id];
+    if (g) g.setAttribute('class', `hab_galho hab_galho--${n.bloqueado ? (e === 'travado' ? 'travado' : 'meta') : e}`);
+  }
+  contarPontos();
+}
+
+function liberar(n) {
+  liberados[cat().id].add(n.id);
+  guardar();
+  tocar('instalar');
+  // a energia corre do pai até o nó
+  const carga = galhos[n.id]?.querySelector('.hab_trilho--carga');
+  if (carga) {
+    const L = carga.getTotalLength();
+    carga.style.strokeDasharray = `${L}`;
+    carga.animate([{ strokeDashoffset: L, opacity: 1 }, { strokeDashoffset: 0, opacity: 1 }, { strokeDashoffset: 0, opacity: 0 }], { duration: 650, easing: 'ease-out' });
+  }
+  const el = nosEl[n.id];
+  el.classList.remove('hab_no--acendeu'); void el.offsetWidth;
+  setTimeout(() => el.classList.add('hab_no--acendeu'), 300);
+  pintar();
 }
 
 function criarNo({ classe, x, y, tam, icone, rotulo, ver, arte }) {
@@ -103,7 +172,7 @@ function criarNo({ classe, x, y, tam, icone, rotulo, ver, arte }) {
   b.style.top = y - tam / 2 + 'px';
   b.style.width = b.style.height = tam + 'px';
   b.setAttribute('aria-label', rotulo);
-  b.innerHTML = `<svg class="hab_icone" viewBox="0 0 24 24" aria-hidden="true"><path d="${ICONES[icone] || ICONES.chip}"/></svg>`;
+  b.innerHTML = `<i class="hab_enche" aria-hidden="true"></i><svg class="hab_icone" viewBox="0 0 24 24" aria-hidden="true"><path d="${ICONES[icone] || ICONES.chip}"/></svg>`;
   // ilustração gravada (img/perks), pintada na cor do estado; sem ela, fica o ícone
   if (arte) {
     const teste = new Image();
@@ -127,51 +196,114 @@ function criarNo({ classe, x, y, tam, icone, rotulo, ver, arte }) {
   return b;
 }
 
+// segurar: a moldura enche em SEGURAR ms; soltar antes esvazia
+function segurar(el, n, ver) {
+  let ini = 0, quadro = 0;
+  const parar = () => {
+    if (!ini) return;
+    ini = 0; cancelAnimationFrame(quadro);
+    el.style.setProperty('--enche', '0');
+    el.classList.remove('hab_no--enchendo');
+  };
+  const passo = (agora) => {
+    const k = Math.min(1, (agora - ini) / SEGURAR);
+    el.style.setProperty('--enche', k.toFixed(3));
+    if (k < 1) { quadro = requestAnimationFrame(passo); return; }
+    parar();
+    liberar(n);
+    ver();
+  };
+  el.addEventListener('pointerdown', (e) => {
+    if (e.button !== 0 || estado(n) !== 'disponivel') return;
+    e.preventDefault();
+    ini = performance.now();
+    el.classList.add('hab_no--enchendo');
+    tocar('hover');
+    quadro = requestAnimationFrame(passo);
+  });
+  for (const ev of ['pointerup', 'pointerleave', 'pointercancel']) el.addEventListener(ev, parar);
+  el.addEventListener('contextmenu', (e) => e.preventDefault());
+  // teclado: Enter ou espaço libera direto
+  el.addEventListener('click', (e) => {
+    if (e.detail === 0 && estado(n) === 'disponivel') { liberar(n); ver(); }
+  });
+}
+
 function mostrarCategoria(i) {
   atual = i;
-  const cat = CATEGORIAS[i];
+  const c = cat();
   [...abasEl.children].forEach((b, k) => b.classList.toggle('hab_aba--ativa', k === i));
   esconderCard();
   trilhasEl.innerHTML = '';
-  const porId = Object.fromEntries(cat.nos.map((n) => [n.id, n]));
-
-  for (const n of cat.nos) {
+  const porId = Object.fromEntries(c.nos.map((n) => [n.id, n]));
+  galhos = {};
+  for (const n of c.nos) {
     const pai = porId[n.pai];
-    if (pai) linha(trilho(posNo(pai), posNo(n)), n.bloqueado ? 'meta' : 'aceso');
+    if (pai) galhos[n.id] = linha(trilho(posNo(pai), posNo(n)));
   }
 
-  const nos = cat.nos.map((n) => {
+  nosEl = {};
+  const nos = c.nos.map((n) => {
     const { x, y } = posNo(n);
     const tam = n.pai ? TAM.no : TAM.raiz;
+    const ver = () => mostrarCard(x, y, tam, n);
     const no = criarNo({
       classe: 'hab_no' + (n.pai ? '' : ' hab_no--raiz') + (n.bloqueado ? ' hab_no--meta' : ''),
       x, y, tam, icone: n.bloqueado ? 'cadeado' : n.icone, arte: !n.bloqueado && n.arte && `img/perks/${n.arte}.webp`,
       rotulo: n.bloqueado ? `${n.nome}, bloqueado` : n.nome,
-      ver: () => mostrarCard(x, y, tam, { nome: n.nome, texto: n.texto, bloqueado: n.bloqueado }),
+      ver,
     });
-    if (n.bloqueado) no.addEventListener('click', () => { tocar('abrir'); mostrar('contato'); });
+    if (n.bloqueado) no.addEventListener('click', () => { if (estado(n) !== 'travado') { tocar('abrir'); mostrar('contato'); } });
+    else segurar(no, n, ver);
     const nome = document.createElement('span');
     nome.className = 'hab_nome';
     nome.textContent = n.nome;
     no.append(nome);
     // acende do centro para as pontas
     no.style.animationDelay = Math.round(Math.hypot(n.x, n.y) / 2) + 'ms';
+    nosEl[n.id] = no;
     return no;
   });
   arvoreEl.replaceChildren(...nos);
+  pintar();
 }
 
-function mostrarCard(x, y, tam, d) {
-  card.className = d.bloqueado ? 'hab_card hab_card--meta' : 'hab_card';
-  $('[data-hab-cnome]').textContent = d.nome;
-  $('[data-hab-cestado]').hidden = !d.bloqueado;
-  $('[data-hab-ctexto]').textContent = d.texto;
+function mostrarCard(x, y, tam, n) {
+  const e = estado(n);
+  card.className = n.bloqueado ? 'hab_card hab_card--meta' : 'hab_card';
+  $('[data-hab-cnome]').textContent = n.nome;
+  $('[data-hab-cestado]').hidden = !n.bloqueado;
+  $('[data-hab-ctexto]').textContent = n.texto;
+  const dica = $('[data-hab-cdica]');
+  const pai = cat().nos.find((o) => o.id === n.pai);
+  dica.textContent = n.bloqueado ? (e === 'travado' ? `Libere ${pai.nome} antes` : 'Clique para falar comigo')
+    : e === 'liberado' ? 'Liberado' : e === 'disponivel' ? 'Segure para liberar' : `Libere ${pai.nome} antes`;
+  dica.dataset.estado = n.bloqueado && e !== 'travado' ? 'disponivel' : e;
   card.hidden = false;
   const direita = x + tam / 2 + 18 + card.offsetWidth < 1570;
   card.style.left = (direita ? x + tam / 2 + 18 : x - tam / 2 - 18 - card.offsetWidth) + 'px';
   card.style.top = Math.min(900 - card.offsetHeight - 60, Math.max(110, y - tam / 2)) + 'px';
 }
 function esconderCard() { card.hidden = true; }
+
+$('[data-hab-tudo]').addEventListener('click', () => {
+  const c = cat();
+  const faltam = liberaveis(c).filter((n) => !liberados[c.id].has(n.id));
+  if (!faltam.length) return;
+  // libera em cascata, do centro para as pontas
+  faltam.sort((a, b) => Math.hypot(a.x, a.y) - Math.hypot(b.x, b.y)).forEach((n, k) => {
+    setTimeout(() => { if (cat() === c && estado(n) === 'disponivel') liberar(n); }, k * 140);
+  });
+  // quem só fica disponível depois do pai: segunda passada
+  setTimeout(() => { if (cat() === c) liberaveis(c).forEach((n) => { if (!livre(n)) liberados[c.id].add(n.id); }); guardar(); pintar(); }, faltam.length * 140 + 50);
+});
+$('[data-hab-zerar]').addEventListener('click', () => {
+  const c = cat();
+  liberados[c.id] = new Set(c.nos.filter((n) => !n.pai).map((n) => n.id));
+  guardar();
+  tocar('abrir');
+  pintar();
+});
 
 addEventListener('keydown', (e) => {
   if (telaAtual() !== 'habilidades') return;

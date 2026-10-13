@@ -194,6 +194,12 @@
     <section class="habilidades" aria-label="Habilidades">
       
       <nav class="hab_abas" data-hab-abas aria-label="Categorias"></nav>
+      <div class="hab_pontos_livres"><b data-hab-pontos>0</b><span>pontos para<br />liberar</span></div>
+      <div class="hab_acoes">
+        <span class="hab_acoes_dica">Segure num nó aceso pelo trilho</span>
+        <button class="hab_acao" type="button" data-hab-tudo>Liberar tudo</button>
+        <button class="hab_acao hab_acao--zerar" type="button" data-hab-zerar>Resetar</button>
+      </div>
       <span class="hab_teclas"><span class="tecla">Q</span><span class="tecla">E</span></span>
       <div class="palco_centro" id="centro-hab">
         <svg class="hab_trilhas" data-hab-trilhas viewBox="0 0 1600 900" aria-hidden="true"></svg>
@@ -202,6 +208,7 @@
           <strong data-hab-cnome></strong>
           <span class="hab_card_estado" data-hab-cestado hidden>Bloqueado · abre no contato</span>
           <p data-hab-ctexto></p>
+          <span class="hab_card_dica" data-hab-cdica></span>
         </div>
       </div>
     </section>
