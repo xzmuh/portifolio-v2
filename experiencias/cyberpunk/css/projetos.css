@@ -1,0 +1,141 @@
+/*
+ * Tela Projetos, no molde do Journal do Cyberpunk 2077 (lista de trabalhos à
+ * esquerda, detalhes à direita, miniatura no canto) com a paleta Edgerunners.
+ * Coordenadas no container do centro (1600x900).
+ */
+.projetos { position: absolute; inset: 0; display: none; }
+body[data-tela='projetos'] .projetos { display: block; }
+
+/* rabiscos de interface no canto, como no jogo */
+.proj_marcas { position: absolute; left: 240px; top: 92px; display: flex; flex-direction: column; gap: 4px; }
+.proj_marcas i { display: block; width: 70px; height: 4px; background: repeating-linear-gradient(90deg, rgba(255, 42, 140, 0.5) 0 3px, transparent 3px 6px); }
+.proj_marcas i:nth-child(2) { width: 46px; }
+
+/* lista de trabalhos */
+.proj_lista { position: absolute; left: 230px; top: 130px; width: 430px; display: flex; flex-direction: column; gap: 6px; }
+.proj_grupo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 40px;
+  margin-top: 10px;
+  padding: 0 14px;
+  font-size: 18px;
+  color: var(--vermelho);
+  background: linear-gradient(90deg, rgba(255, 42, 140, 0.16), rgba(255, 42, 140, 0.04));
+  border: 1px solid var(--vermelho-borda);
+  border-left-width: 4px;
+  cursor: pointer;
+}
+.proj_grupo svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.6; transition: transform 0.2s; }
+.proj_grupo--fechado svg { transform: rotate(-90deg); }
+/* dropdown: a altura anima de 0 até o conteúdo (grid 0fr -> 1fr) */
+.proj_itens { display: grid; grid-template-rows: 1fr; transition: grid-template-rows 0.35s cubic-bezier(0.65, 0, 0.25, 1), opacity 0.25s; }
+.proj_itens > div { overflow: hidden; display: flex; flex-direction: column; gap: 6px; padding-left: 26px; }
+.proj_grupo--fechado + .proj_itens { grid-template-rows: 0fr; opacity: 0.3; }
+.proj_item--entra { animation: item-entra 0.3s steps(4) backwards; animation-delay: calc(var(--ordem) * 50ms); }
+@keyframes item-entra { from { opacity: 0; transform: translateX(-12px); filter: brightness(1.8); } }
+
+.proj_item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 46px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  height: 58px;
+  padding: 0 12px 0 8px;
+  text-align: left;
+  color: var(--vermelho);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+}
+.proj_item:hover:not(.proj_item--sel) { background: rgba(255, 42, 140, 0.1); border-color: var(--vermelho-borda); }
+.proj_item:focus-visible { outline: none; border-color: var(--ciano); }
+/* selecionado: faixa cheia, como o trabalho ativo do Journal */
+.proj_item--sel { background: linear-gradient(90deg, rgba(255, 42, 109, 0.85), rgba(200, 20, 90, 0.7)); color: #fff; border-color: #ff7aa8; box-shadow: 0 0 18px rgba(255, 42, 109, 0.35); }
+.proj_item--sel::before { /* aba amarela do lado, marcando o rastreado */
+  content: '';
+  position: absolute;
+  left: -14px;
+  top: 6px;
+  width: 8px;
+  height: 46px;
+  background: var(--amarelo);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 80%);
+}
+.proj_icone {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border: 1.5px solid currentColor;
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+  background: rgba(0, 0, 0, 0.35);
+}
+.proj_icone svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; }
+.proj_item_texto { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.proj_item_nome { font-size: 17px; line-height: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.proj_item_perigo { font-size: 12px; letter-spacing: 0.06em; opacity: 0.85; }
+.proj_item_perigo b { font-weight: 600; }
+.proj_tipo { font-size: 11px; padding: 1px 6px; border: 1px solid currentColor; opacity: 0.85; }
+
+/* detalhe */
+.proj_detalhe { position: absolute; left: 720px; top: 120px; width: 580px; bottom: 90px; display: flex; flex-direction: column; }
+.proj_titulo { font-size: 30px; font-weight: 600; color: var(--vermelho); padding-bottom: 12px; border-bottom: 1px solid var(--linha); }
+.proj_objetivos { margin-top: 14px; display: flex; flex-direction: column; gap: 10px; padding-bottom: 14px; border-bottom: 1px solid var(--linha-fraca); }
+.proj_objetivos li { display: flex; gap: 12px; align-items: flex-start; font-size: 17px; color: var(--ciano); text-transform: none; line-height: 1.25; }
+.proj_objetivos li::before {
+  content: '';
+  flex: none;
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  border: 1.5px solid currentColor;
+}
+.proj_objetivos li.feito { color: rgba(0, 240, 255, 0.55); }
+.proj_objetivos li.feito::before { background: linear-gradient(45deg, transparent 42%, currentColor 42% 58%, transparent 58%), rgba(0, 240, 255, 0.15); }
+.proj_objetivos li:not(.feito) { color: var(--amarelo); }
+.proj_texto {
+  flex: 1;
+  margin-top: 16px;
+  padding-right: 22px;
+  overflow-y: auto;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--vermelho);
+  text-transform: none;
+  scrollbar-width: thin;
+  scrollbar-color: var(--vermelho-forte) rgba(255, 42, 140, 0.12);
+}
+.proj_texto p + p { margin-top: 12px; }
+.proj_sub { margin: 20px 0 8px; font-size: 14px; font-weight: 600; letter-spacing: 0.14em; color: var(--amarelo); text-transform: uppercase; }
+.proj_fiz { display: flex; flex-direction: column; gap: 6px; }
+.proj_fiz li { position: relative; padding-left: 18px; font-size: 17px; line-height: 1.35; }
+.proj_fiz li::before { content: ''; position: absolute; left: 2px; top: 8px; width: 7px; height: 7px; background: var(--vermelho-forte); transform: rotate(45deg); }
+.proj_stack { display: flex; flex-wrap: wrap; gap: 6px; }
+.proj_stack span { padding: 2px 10px; font-size: 14px; color: var(--ciano); border: 1px solid rgba(0, 240, 255, 0.5); background: rgba(0, 240, 255, 0.06); text-transform: none; }
+.proj_texto::-webkit-scrollbar { width: 4px; }
+.proj_texto::-webkit-scrollbar-thumb { background: var(--vermelho-forte); }
+.proj_texto::-webkit-scrollbar-track { background: rgba(255, 42, 140, 0.12); }
+
+/* miniatura no canto, com o link do site */
+.proj_mini { position: absolute; left: 1310px; top: 120px; width: 300px; }
+.proj_mini img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border: 1.5px solid var(--vermelho-forte);
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%);
+  filter: saturate(1.1) contrast(1.05);
+}
+.proj_link { display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; font-size: 15px; color: var(--ciano); }
+.proj_link svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; }
+.proj_link:hover { color: var(--amarelo); }
+.proj_link[hidden] { display: none; }
+/* troca de projeto: o detalhe entra com um tranco */
+.proj_detalhe--troca, .proj_mini--troca { animation: proj-troca 0.3s steps(4) both; }
+@keyframes proj-troca { from { opacity: 0; transform: translateX(10px); filter: brightness(1.8); } to { opacity: 1; transform: none; filter: none; } }
+@media (prefers-reduced-motion: reduce) { .proj_detalhe--troca, .proj_mini--troca, .proj_item--entra { animation: none; } .proj_itens { transition: none; } }

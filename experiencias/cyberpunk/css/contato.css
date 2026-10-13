@@ -1,0 +1,91 @@
+/*
+ * Tela Contato: a mensagem chegando no celular, no molde do jogo (caixa com o
+ * nome em ciano, balão amarelo, "..." digitando) e as respostas como opções
+ * de diálogo. Paleta Edgerunners.
+ */
+.contato { position: absolute; inset: 0; display: none; }
+body[data-tela='contato'] .contato { display: block; }
+
+.msg { position: absolute; left: 470px; top: 140px; width: 660px; }
+.msg_topo {
+  position: relative;
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 14px;
+  align-items: center;
+  padding: 10px 14px 10px 10px;
+  background: linear-gradient(90deg, rgba(255, 42, 109, 0.28), rgba(255, 42, 109, 0.06));
+  border: 1px solid var(--vermelho-borda);
+  clip-path: polygon(0 0, 100% 0, 100% 70%, calc(100% - 14px) 100%, 0 100%);
+}
+.msg_avatar {
+  grid-row: 1 / 3;
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  background: var(--vermelho-forte);
+  clip-path: polygon(18% 0, 100% 0, 100% 82%, 82% 100%, 0 100%, 0 18%);
+  box-shadow: 0 0 16px rgba(255, 42, 109, 0.5);
+}
+.msg_avatar svg { width: 38px; height: 38px; fill: none; stroke: #1a0412; stroke-width: 1.6; }
+.msg_rot { font-size: 12px; letter-spacing: 0.14em; color: rgba(255, 95, 162, 0.75); }
+.msg_nome { font-size: 26px; font-weight: 600; color: var(--ciano); text-shadow: 0 0 10px rgba(0, 240, 255, 0.5); }
+
+.msg_corpo {
+  position: relative;
+  display: grid;
+  grid-template-columns: 30px 1fr;
+  gap: 16px;
+  min-height: 280px;
+  margin-top: 8px;
+  padding: 22px 26px 26px 14px;
+  background: rgba(10, 6, 24, 0.82);
+  border: 1px solid var(--linha-fraca);
+}
+.msg_ico { width: 22px; height: 26px; margin-top: 4px; background: var(--vermelho-forte); clip-path: polygon(0 0, 100% 0, 100% 70%, 50% 100%, 0 70%); opacity: 0.85; }
+.msg_conversa { display: flex; flex-direction: column; gap: 14px; }
+.msg_balao {
+  max-width: 520px;
+  padding: 12px 16px;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--amarelo);
+  text-transform: none;
+  border: 1px solid rgba(252, 238, 10, 0.55);
+  background: rgba(252, 238, 10, 0.05);
+  box-shadow: inset 0 0 18px rgba(252, 238, 10, 0.06);
+}
+.msg_balao::after { content: '▌'; margin-left: 2px; animation: cursor 0.8s steps(2) infinite; }
+.msg_balao--fim::after { content: ''; }
+@keyframes cursor { 50% { opacity: 0; } }
+.msg_digitando { display: flex; gap: 6px; padding: 6px 4px; }
+.msg_digitando i { width: 6px; height: 6px; background: var(--amarelo); animation: pulo 1s infinite; }
+.msg_digitando i:nth-child(2) { animation-delay: 0.15s; }
+.msg_digitando i:nth-child(3) { animation-delay: 0.3s; }
+@keyframes pulo { 0%, 60%, 100% { opacity: 0.25; transform: none; } 30% { opacity: 1; transform: translateY(-4px); } }
+
+/* respostas = opções de diálogo do jogo */
+.msg_respostas { display: flex; flex-direction: column; gap: 6px; margin-top: 16px; }
+.msg_respostas[hidden] { display: none; }
+.msg_opcao {
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  height: 46px;
+  padding: 0 14px;
+  font-size: 18px;
+  color: var(--vermelho);
+  text-transform: none;
+  border: 1px solid transparent;
+  animation: opcao-entra 0.3s steps(4) backwards;
+}
+.msg_opcao img { width: 22px; height: 22px; filter: invert(52%) sepia(90%) saturate(3000%) hue-rotate(300deg); }
+.msg_opcao small { font-size: 13px; opacity: 0.7; }
+.msg_opcao:hover, .msg_opcao:focus-visible { outline: none; color: var(--amarelo); border-color: var(--amarelo); background: rgba(252, 238, 10, 0.08); }
+.msg_opcao:hover img, .msg_opcao:focus-visible img { filter: invert(88%) sepia(60%) saturate(800%) hue-rotate(5deg); }
+@keyframes opcao-entra { from { opacity: 0; transform: translateX(-10px); } }
+@media (prefers-reduced-motion: reduce) { .msg_opcao, .msg_digitando i, .msg_balao::after { animation: none; } }

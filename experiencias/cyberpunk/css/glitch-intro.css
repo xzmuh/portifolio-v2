@@ -1,0 +1,51 @@
+/*
+ * Cartão do glitch de entrada (veio do portfólio). Ele pousa no logo do
+ * menu: as medidas finais saem de .menu_nome e .menu_sub (css/menu.css).
+ *
+ * O canvas do cartão termina desenhando exatamente em cima deste hero, e as
+ * posições finais não são duplicadas aqui: o JS lê font-size, line-height e
+ * getBoundingClientRect destes elementos e mira neles. Então mexer nos
+ * tamanhos abaixo move a animação junto, sem tocar no JS.
+ *
+ * O único número que precisa casar dos dois lados é a inclinação: o skewX
+ * daqui equivale ao INCLINACAO do glitch-intro.js (tan(-11.31deg) = -0.2).
+ */
+
+/* ------------------------------------------------------------------
+   O cartão
+   ------------------------------------------------------------------ */
+#glitch-intro {
+  display: none;
+}
+
+html.glitch-intro-ativo #glitch-intro {
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #05080b;
+  opacity: 1;
+  transition: opacity 0.35s linear;
+}
+
+.glitch-intro_canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Vinheta de tubo: escurece os cantos e arredonda a leitura da tela. */
+#glitch-intro::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center,
+      rgba(0, 0, 0, 0) 45%,
+      rgba(0, 0, 0, 0.55) 100%);
+}
+
+/* Enquanto o cartão está no ar o menu fica esperando por baixo. */
+html.glitch-intro-ativo .menu {
+  opacity: 0;
+}

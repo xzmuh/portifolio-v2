@@ -1,0 +1,307 @@
+/*
+ * Menu principal, no molde do menu inicial do Cyberpunk 2077: painel
+ * avermelhado à esquerda com o logo e a lista, e uma cena desfocada atrás.
+ * Medidas em --u (sem o palco escalado) porque o glitch de entrada mede o
+ * logo com getBoundingClientRect e font-size reais para pousar em cima dele.
+ */
+body[data-tela='menu'] .palco,
+body[data-tela='menu'] .scan { display: none; }
+body:not([data-tela='menu']) .menu { display: none; }
+
+.menu {
+  --amarelo-logo: #fcee0a;
+  --menu-vermelho: #ff5fae;
+  --menu-ciano: #00f0ff;
+  --menu-amarelo: #f3f53b;
+  /* 1 unidade = 1cqh numa tela 16:9; em tela mais estreita encolhe junto
+     com a largura, então nada sai da tela nem se sobrepõe */
+  --u: min(1cqh, 0.5625cqw);
+  --oy: calc((100cqh - 100 * var(--u)) / 2); /* sobra vertical em tela mais alta que 16:9 */
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: #07061a;
+  color: var(--menu-vermelho);
+  font-family: var(--fonte);
+  text-transform: uppercase;
+  transition: opacity 0.3s linear;
+}
+
+.menu_fundo {
+  position: absolute;
+  inset: -2%;
+  background: #07061a url('../img/menu-fundo.webp') center / cover no-repeat;
+  animation: respiro 14s ease-in-out infinite alternate;
+}
+/* a câmera "respira" devagar, como o fundo vivo do jogo */
+@keyframes respiro { to { transform: scale(1.04) translate(-0.6%, 0.4%); } }
+.menu::after { /* scanlines e vinheta */
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.22) 0 1px, transparent 1px 3px),
+    radial-gradient(ellipse at 60% 50%, transparent 55%, rgba(0, 0, 0, 0.6));
+}
+
+/* glitch do fundo: cópias do wallpaper recortadas em faixas, deslocadas e
+   tingidas. Ficam invisíveis e o JS liga por instantes. */
+.menu_glitch {
+  position: absolute;
+  inset: -2%;
+  background: url('../img/menu-fundo.webp') center / cover no-repeat;
+  opacity: 0;
+  pointer-events: none;
+}
+.menu_glitch--a { mix-blend-mode: screen; filter: saturate(2.2) hue-rotate(-40deg) brightness(1.3); }
+.menu_glitch--b { mix-blend-mode: screen; filter: saturate(2) hue-rotate(150deg) brightness(1.2); }
+.menu--falha .menu_fundo { filter: brightness(1.25) contrast(1.15); }
+
+/* barra de varredura descendo devagar, como tela de tubo */
+.menu_varredura {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 18cqh;
+  top: -20cqh;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent, rgba(94, 246, 255, 0.05) 45%, rgba(255, 90, 160, 0.06) 55%, transparent);
+  animation: varrer 7s linear infinite;
+}
+@keyframes varrer { to { transform: translateY(140cqh); } }
+
+/* faixa estreita na borda esquerda, com rabiscos de interface */
+.menu_faixa {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: calc(9.6 * var(--u));
+  background: linear-gradient(90deg, rgba(8, 4, 24, 0.92), rgba(30, 6, 40, 0.75));
+  display: flex;
+  flex-direction: column;
+  gap: calc(3 * var(--u));
+  padding: calc(var(--oy) + 12 * var(--u)) calc(1.42 * var(--u)) 0;
+}
+.menu_faixa i {
+  display: block;
+  height: calc(5 * var(--u));
+  background:
+    repeating-linear-gradient(0deg, rgba(0, 240, 255, 0.55) 0 2px, transparent 2px 6px) 0 0 / 40% 100% no-repeat,
+    repeating-linear-gradient(0deg, rgba(255, 42, 140, 0.5) 0 2px, transparent 2px 5px) 60% 0 / 30% 100% no-repeat;
+}
+
+/* painel vermelho */
+.menu_painel {
+  position: absolute;
+  left: calc(9.6 * var(--u));
+  top: 0;
+  bottom: 0;
+  width: calc(44.45 * var(--u));
+  background:
+    repeating-linear-gradient(0deg, rgba(255, 42, 140, 0.07) 0 1px, transparent 1px 4px),
+    linear-gradient(90deg, rgba(60, 6, 52, 0.88), rgba(46, 6, 52, 0.8));
+  backdrop-filter: blur(3px);
+  border-left: 1px solid rgba(255, 42, 140, 0.7);
+  border-right: 1px solid rgba(255, 42, 140, 0.7);
+  box-shadow: inset -1px 0 0 rgba(255, 42, 140, 0.25), 0 0 18px rgba(255, 42, 140, 0.25), 20px 0 60px rgba(0, 0, 0, 0.35);
+}
+.menu_marcas { position: absolute; left: calc(0.89 * var(--u)); top: calc(var(--oy) + 2.5 * var(--u)); display: flex; gap: calc(1.07 * var(--u)); font-size: calc(1.1 * var(--u)); letter-spacing: 0.1em; color: rgba(255, 79, 154, 0.75); }
+.menu_marcas span { border: 1px solid rgba(255, 42, 140, 0.6); padding: calc(0.3 * var(--u)) calc(0.89 * var(--u)); }
+.menu_marcas span:empty { width: calc(3.91 * var(--u)); }
+
+/* logo: medidas que o glitch-intro.js lê para pousar o nome em cima */
+.menu_logo {
+  position: absolute;
+  left: calc(-6.04 * var(--u));
+  top: calc(var(--oy) + 17 * var(--u));
+  width: calc(53.33 * var(--u));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.menu_nome {
+  /* a caixa tem as proporções do nome no canvas do glitch: 8 letras de 100
+     unidades com 1em = 135 unidades, duas linhas de 0.86em. O glitch lê
+     font-size, line-height e o retângulo daqui para pousar em cima. */
+  position: relative;
+  margin: 0;
+  font-family: Roboto, Arial, sans-serif;
+  font-size: calc(6.6 * var(--u));
+  line-height: 0.86;
+  width: calc(800em / 135);
+  height: 1.72em;
+}
+.menu_glifos {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  fill: none;
+  stroke: var(--amarelo-logo);
+  stroke-width: 13;
+  stroke-linejoin: bevel;
+  filter: drop-shadow(3px 0 0 rgba(0, 229, 255, 0.55)) drop-shadow(0 0 10px rgba(252, 238, 10, 0.25));
+}
+.menu_lamina { fill: var(--amarelo-logo); stroke: none; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.menu_sub {
+  margin: 1.4em 0 0;
+  color: var(--menu-ciano);
+  font-family: Roboto, Arial, sans-serif;
+  font-weight: 500;
+  font-size: calc(1.45 * var(--u));
+  line-height: 1;
+  letter-spacing: 0.42em;
+  white-space: nowrap;
+}
+
+/* lista */
+.menu_lista {
+  position: absolute;
+  left: calc(2.84 * var(--u));
+  top: calc(var(--oy) + 40 * var(--u));
+  width: calc(34.67 * var(--u));
+  display: flex;
+  flex-direction: column;
+  gap: calc(0.6 * var(--u));
+}
+.menu_item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: calc(4.8 * var(--u));
+  padding: 0 calc(1.24 * var(--u));
+  font-family: var(--fonte);
+  font-size: calc(2.5 * var(--u));
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  color: var(--menu-vermelho);
+  text-shadow: 0 0 6px rgba(255, 42, 140, 0.45);
+  text-align: left;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+.menu_item:focus-visible { outline: none; }
+.menu_item { transition: color 0.12s, text-shadow 0.12s; }
+.menu_item:hover:not(.menu_item--sel) { color: var(--menu-ciano); text-shadow: 0 0 8px rgba(0, 240, 255, 0.6); }
+/* ao ganhar a seleção: a moldura abre da esquerda e o texto dá um tranco */
+.menu_item--entrando .menu_texto { animation: tranco 0.3s steps(2) backwards; }
+/* a moldura não anima o recorte do botão: recorte animado travava a área
+   de clique. Quem pisca é um brilho por cima, que não pega o mouse. */
+.menu_item--entrando::after { animation: piscar 0.25s steps(3) backwards; }
+@keyframes piscar { from { opacity: 0; } to { opacity: 0.8; } }
+@keyframes tranco {
+  0% { transform: translateX(-3px); text-shadow: 3px 0 #ff2a6d, -3px 0 #5ef6ff; }
+  35% { transform: translateX(2px); text-shadow: -2px 0 #ff2a6d, 2px 0 #5ef6ff; }
+  70% { transform: translateX(-1px); text-shadow: 1px 0 #ff2a6d; }
+  100% { transform: none; text-shadow: none; }
+}
+.menu_texto { display: inline-block; }
+/* selecionado: moldura ciano, quadradinho no meio e marca à direita */
+.menu_item--sel {
+  color: var(--menu-amarelo);
+  border-color: var(--menu-amarelo);
+  background: linear-gradient(90deg, rgba(243, 245, 59, 0.12), rgba(243, 245, 59, 0.02));
+  box-shadow: inset 0 0 12px rgba(243, 245, 59, 0.15);
+  text-shadow: 0 0 8px rgba(243, 245, 59, 0.5);
+  clip-path: polygon(0 0, 100% 0, 100% 70%, calc(100% - 1.07 * var(--u)) 100%, 0 100%);
+}
+.menu_item--sel::before {
+  content: '';
+  position: absolute;
+  left: 58%;
+  top: calc(0.4 * var(--u));
+  bottom: calc(0.4 * var(--u));
+  width: calc(3.6 * var(--u));
+  border: 1.5px solid var(--menu-amarelo);
+  background:
+    linear-gradient(var(--menu-amarelo), var(--menu-amarelo)) center / 45% 45% no-repeat,
+    rgba(243, 245, 59, 0.12);
+}
+.menu_item--sel::after {
+  content: '';
+  position: absolute;
+  right: calc(1.24 * var(--u));
+  width: calc(2.49 * var(--u));
+  height: calc(1.6 * var(--u));
+  background: repeating-linear-gradient(0deg, var(--menu-amarelo) 0 1px, transparent 1px 3px);
+  opacity: 0.8;
+}
+.menu_item[data-em-breve] { color: rgba(255, 95, 174, 0.6); }
+.menu_item--sel[data-em-breve] { color: rgba(243, 245, 59, 0.6); }
+.menu_item--sel[data-em-breve]::after {
+  content: 'Em breve';
+  width: auto;
+  height: auto;
+  background: none;
+  font-size: calc(1.4 * var(--u));
+  letter-spacing: 0.1em;
+}
+
+.menu_versao {
+  position: absolute;
+  left: calc(0.89 * var(--u));
+  right: 0;
+  bottom: calc(var(--oy) + 9 * var(--u));
+  padding-top: calc(1.2 * var(--u));
+  border-top: 1px solid rgba(255, 42, 140, 0.6);
+  font-size: calc(1.8 * var(--u));
+  color: rgba(255, 120, 180, 0.9);
+  display: flex;
+  flex-direction: column;
+  gap: calc(0.4 * var(--u));
+}
+.menu_versao span { font-size: calc(1 * var(--u)); letter-spacing: 0.12em; color: rgba(255, 79, 154, 0.6); }
+
+/* canto de baixo à direita */
+.menu_disponivel {
+  position: absolute;
+  right: calc(3.91 * var(--u));
+  bottom: calc(var(--oy) + 9 * var(--u));
+  width: calc(49.78 * var(--u));
+  height: calc(4.4 * var(--u));
+  display: flex;
+  align-items: center;
+  gap: calc(1.42 * var(--u));
+  padding: 0 calc(0.89 * var(--u));
+  border: 1px solid rgba(255, 42, 140, 0.75);
+  background: rgba(30, 6, 40, 0.55);
+  box-shadow: 0 0 14px rgba(255, 42, 140, 0.25);
+  font-size: calc(2 * var(--u));
+  text-transform: none;
+  white-space: nowrap;
+}
+.menu_disponivel b {
+  display: grid;
+  place-items: center;
+  width: calc(3 * var(--u));
+  height: calc(3 * var(--u));
+  border: 1.5px solid var(--menu-ciano);
+  color: var(--menu-ciano);
+  font-weight: 600;
+}
+.menu_disponivel i {
+  margin-left: auto;
+  width: calc(8.89 * var(--u));
+  height: calc(2.2 * var(--u));
+  background: repeating-linear-gradient(90deg, rgba(255, 42, 140, 0.85) 0 3px, transparent 3px 6px) right / 30% 100% no-repeat;
+}
+.menu_dica {
+  position: absolute;
+  right: calc(4.62 * var(--u));
+  bottom: calc(var(--oy) + 3.6 * var(--u));
+  display: flex;
+  align-items: center;
+  gap: calc(1.07 * var(--u));
+  font-size: calc(2.2 * var(--u));
+  color: var(--menu-ciano);
+  text-transform: none;
+}
+.menu_dica svg { width: calc(1.4 * var(--u)); height: calc(2.2 * var(--u)); fill: none; stroke: var(--menu-ciano); stroke-width: 1.5; }
+
+@media (prefers-reduced-motion: reduce) {
+  .menu_fundo, .menu_varredura, .menu_item--entrando, .menu_item--entrando .menu_texto { animation: none; }
+}
