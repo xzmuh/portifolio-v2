@@ -56,6 +56,13 @@ const cam = { alvo: new THREE.Vector3(), alvoDe: new THREE.Vector3(), t: 1, dur:
 const marcadores = [];
 let setas, trafego, agua, fade, cenaFade, cameraFade;
 const sandy = { ativo: false, ini: 0, dur: 3.0 };
+// Sandy como no anime: o mundo perde a cor (verde-acinzentado) e só o
+// corredor e os ecos dele continuam coloridos. O corredor fica na camada 1
+// e é desenhado numa segunda passada, sem o material cinza.
+const coloridas = []; // malhas com cor por instância (a cor sai durante o Sandy)
+let materialSemCor;
+let semCor = 0; // 0 = mundo colorido, 1 = sem cor (sobe e desce suave)
+const CAMADA_CORREDOR = 1;
 // o corredor: o Xbot correndo pela rota com o Sandevistan, deixando cópias
 const corredor = { modelo: null, mixer: null, acoes: {}, de: 0, para: 0, caminho: null, fantasmas: [], ultimoFantasma: 0 };
 const ESCALA_CORREDOR = 0.62;
@@ -178,6 +185,8 @@ function montar() {
   const luz = new THREE.DirectionalLight(0xffb3d9, 2.2);
   luz.position.set(-3, 14, 4);
   cena.add(luz);
+  // as luzes valem para o mundo e para a camada do corredor
+  cena.children.forEach((o) => { if (o.isLight) o.layers.enableAll(); });
 
   const chao = new THREE.Mesh(new THREE.PlaneGeometry(220, 220), new THREE.MeshBasicMaterial({ color: 0x0b0824 }));
   chao.rotation.x = -Math.PI / 2; chao.position.y = -0.01;
@@ -272,6 +281,7 @@ function montar() {
   }
   caixas.count = nc; cilindros.count = nl; arvores.count = na; pracas.count = np; paineis.count = nh;
   cena.add(caixas, cilindros, arvores, pracas, paineis);
+  coloridas.push(caixas, cilindros, paineis);
 
   // ruas: linhas ciano; avenidas mais fortes
   const matRua = new THREE.MeshBasicMaterial({ color: COR.rua, transparent: true, opacity: 0.3 });
@@ -385,6 +395,7 @@ function carregarCorredor() {
         ? new THREE.MeshBasicMaterial({ color: 0x00f0ff })
         : new THREE.MeshLambertMaterial({ color: 0x2a1640, emissive: 0x3a0f3a });
     });
+    m.traverse((o) => o.layers.set(CAMADA_CORREDOR));
     corredor.modelo = m;
     corredor.mixer = new THREE.AnimationMixer(m);
     for (const clip of gltf.animations) corredor.acoes[clip.name] = corredor.mixer.clipAction(clip);
@@ -550,8 +561,12 @@ function quadro(agora) {
   const perto = sandy.ativo ? 1 : 0;
   cam.zoom = (cam.zoom ?? 0) + (perto - (cam.zoom ?? 0)) * Math.min(1, dt * 3);
   const dist = cam.dist * (1 - 0.45 * cam.zoom), alt = cam.alt * (1 - 0.5 * cam.zoom);
+  // inclinação na curva (some devagar na reta e fora do Sandy)
+  if (!sandy.ativo) corredor.curva = (corredor.curva ?? 0) * 0.9;
+  const inclina = corredor.curva ?? 0;
   const posicionarCamera = () => {
     camera.position.set(cam.alvo.x + Math.sin(cam.ang) * dist, alt, cam.alvo.z + Math.cos(cam.ang) * dist);
+    camera.up.set(Math.sin(inclina), Math.cos(inclina), 0);
     camera.lookAt(cam.alvo);
   };
   posicionarCamera();
@@ -572,7 +587,13 @@ function quadro(agora) {
       const p = corredor.caminho.getPointAt(k);
       const dir = corredor.caminho.getTangentAt(Math.min(0.999, k));
       corredor.modelo.position.copy(p);
-      corredor.modelo.rotation.y = Math.atan2(dir.x, dir.z);
+      const rumo = Math.atan2(dir.x, dir.z);
+      // quanto a direção girou neste quadro = força da curva
+      let giro = rumo - (corredor.rumo ?? rumo);
+      giro = Math.atan2(Math.sin(giro), Math.cos(giro));
+      corredor.rumo = rumo;
+      corredor.curva = (corredor.curva ?? 0) * 0.85 + Math.max(-0.35, Math.min(0.35, giro * 6)) * 0.15;
+      corredor.modelo.rotation.y = rumo;
       cam.alvo.copy(p); // a câmera acompanha o corredor
       posicionarCamera();
       if (agora - corredor.ultimoFantasma > 90) {
@@ -631,13 +652,33 @@ function quadro(agora) {
   if (sandy.ativo) {
     const p = (agora - sandy.ini) / (sandy.dur * 1000);
     fade.material.color.setHSL((0.33 + p * 0.7) % 1, 1, 0.12);
-    fade.material.opacity = 0.07 + p * 0.12;
+    // rastro longo no meio da corrida (borrão de velocidade), mais curto no fim
+    fade.material.opacity = 0.05 + Math.max(0, p - 0.7) * 0.5;
     renderer.render(cenaFade, cameraFade);
     renderer.clearDepth();
   } else {
     renderer.clear();
   }
+  // mundo colorido normal; no Sandy, a versão sem cor (verde-acinzentada) é
+  // desenhada por cima com transparência que sobe na entrada e desce na saída
+  camera.layers.set(0);
   renderer.render(cena, camera);
+  semCor += ((sandy.ativo ? 1 : 0) - semCor) * Math.min(1, dt * (sandy.ativo ? 5 : 2.5));
+  if (semCor > 0.01) {
+    materialSemCor ??= new THREE.MeshLambertMaterial({ color: 0x5c7564, emissive: 0x05120b, transparent: true, depthWrite: false, depthFunc: THREE.LessEqualDepth });
+    materialSemCor.opacity = semCor;
+    cena.overrideMaterial = materialSemCor;
+    for (const m of coloridas) { m.userData.cor ??= m.instanceColor; m.instanceColor = null; }
+    // luz branca nessa passada (a rosa deixaria o cinza rosado)
+    cena.children.forEach((o) => { if (o.isLight) { o.userData.cor ??= o.color.getHex(); o.color.setHex(0xffffff); } });
+    renderer.render(cena, camera);
+    cena.overrideMaterial = null;
+    for (const m of coloridas) m.instanceColor = m.userData.cor;
+    cena.children.forEach((o) => { if (o.isLight && o.userData.cor !== undefined) o.color.setHex(o.userData.cor); });
+  }
+  camera.layers.set(CAMADA_CORREDOR);
+  renderer.render(cena, camera); // corredor e ecos, coloridos (sem limpar a cena)
+  camera.layers.set(0);
 }
 
 function ligar() {

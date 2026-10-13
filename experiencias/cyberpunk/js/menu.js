@@ -50,12 +50,15 @@ function aplicar(tela) {
 /* Troca de tela com corte digital: a tela visível sai em fatias (.sai) e a
    nova entra abrindo do meio (.entra). O menu e o palco são camadas
    diferentes, então anima quem estiver no ar. */
-const camada = (tela) => document.querySelector(tela === 'menu' ? '.menu' : '.palco');
+// anima o #app inteiro (menu, palco e o mapa 3D), com faixas de glitch por cima
+const camada = () => document.getElementById('app');
+const faixas = document.querySelector('.troca_fx');
 export function mostrar(tela) {
   if (tela === telaAtual() || trocando) return;
   if (calmoNav) { aplicar(tela); return; }
   const antes = camada(telaAtual());
   antes.classList.add('sai');
+  if (faixas) { faixas.classList.remove('troca_fx--on'); void faixas.offsetWidth; faixas.classList.add('troca_fx--on'); }
   trocando = setTimeout(() => {
     antes.classList.remove('sai');
     aplicar(tela);
@@ -63,8 +66,8 @@ export function mostrar(tela) {
     depois.classList.remove('entra');
     void depois.offsetWidth;
     depois.classList.add('entra');
-    setTimeout(() => { depois.classList.remove('entra'); trocando = null; }, 340);
-  }, 160);
+    setTimeout(() => { depois.classList.remove('entra'); trocando = null; }, 420);
+  }, 200);
 }
 
 function selecionar(i, som = true) {
