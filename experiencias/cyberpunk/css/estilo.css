@@ -712,32 +712,9 @@ html.glitch-intro-ativo .som { display: none; }
   0%, 100% { scale: 1; }
   45% { scale: 1.015; }
 }
-/* no zoom o mundo está ampliado umas 3x: filtro ou scale nele faz o Chrome
-   redesenhar a foto em baixa e sem o degradê da borda, e o close achata.
-   Lá o brilho vai só na foto do close, sem o pulinho de escala. */
-.palco--zoom .mundo--instala { animation: none; }
-.palco--zoom .mundo--instala .mundo_close--on { animation: close-instala 1s ease-out; }
-@keyframes close-instala {
-  0%, 100% { filter: brightness(1) drop-shadow(0 0 0 transparent) drop-shadow(0 0 0 transparent); }
-  25% { filter: brightness(1.12) saturate(1.1); }
-}
-/* o azul em volta vem de um anel por cima, que é só um degradê: não força
-   o Chrome a redesenhar a foto ampliada */
-.halo-instala {
-  position: absolute;
-  z-index: 2;
-  border-radius: 50%;
-  pointer-events: none;
-  opacity: 0;
-  mix-blend-mode: screen;
-  background: radial-gradient(closest-side, transparent 58%, rgba(0, 200, 255, 0.55) 74%, rgba(40, 110, 255, 0.3) 86%, transparent 100%);
-}
-.halo-instala--on { animation: halo-instala 1s ease-out; }
-@keyframes halo-instala {
-  0% { opacity: 0; transform: scale(0.94); }
-  25% { opacity: 1; transform: scale(1); }
-  100% { opacity: 0; transform: scale(1.04); }
-}
+/* no zoom, só o pulinho de escala sai do close: era ele que achatava a
+   foto ampliada. O brilho do mundo continua igual. */
+.palco--zoom .mundo--instala .mundo_close--on { animation: none; }
 @media (prefers-reduced-motion: reduce) { .mundo--instala, .mundo--instala .mundo_corpo, .mundo--instala .mundo_close--on { animation: none; } }
 
 /* linha de explicação embaixo da barra de cima */
