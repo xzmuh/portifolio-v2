@@ -172,7 +172,7 @@ body:not([data-tela='menu']) .menu { display: none; }
   position: relative;
   display: flex;
   align-items: center;
-  height: calc(4.8 * var(--u));
+  height: calc(5.8 * var(--u));
   padding: 0 calc(1.24 * var(--u));
   font-family: var(--fonte);
   font-size: calc(2.5 * var(--u));
@@ -199,7 +199,8 @@ body:not([data-tela='menu']) .menu { display: none; }
   70% { transform: translateX(-1px); text-shadow: 1px 0 #ff2a6d; }
   100% { transform: none; text-shadow: none; }
 }
-.menu_texto { display: inline-block; }
+.menu_texto { display: inline-flex; flex-direction: column; line-height: 1; gap: calc(0.35 * var(--u)); }
+.menu_texto small { font-size: calc(1.35 * var(--u)); font-weight: 500; letter-spacing: 0.04em; text-transform: none; opacity: 0.75; }
 /* selecionado: moldura ciano, quadradinho no meio e marca à direita */
 .menu_item--sel {
   color: var(--menu-amarelo);
