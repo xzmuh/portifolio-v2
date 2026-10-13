@@ -147,10 +147,16 @@ function pintar() {
   contarPontos();
 }
 
+const SONS_TESTE = ['instalar', 'instalar-2', 'instalar-3', 'mensagem', 'abrir', 'sandy-sai', 'hover'];
+let testeSom = 0;
 function liberar(n) {
   liberados[cat().id].add(n.id);
   guardar();
-  tocar('instalar');
+  // TEMPORÁRIO: cada liberação toca um som da lista, com o nome embaixo dos
+  // botões, para escolher o som de liberar
+  const somTeste = SONS_TESTE[testeSom++ % SONS_TESTE.length];
+  tocar(somTeste, true);
+  $('[data-hab-som]').textContent = 'som: ' + somTeste;
   // a energia corre do pai até o nó
   const carga = galhos[n.id]?.querySelector('.hab_trilho--carga');
   if (carga) {

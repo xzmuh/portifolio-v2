@@ -99,9 +99,10 @@ function variar(nome) {
   return escolhido;
 }
 
-// devolve quanto o som dura (em segundos), ou 0 se não tocou
-export function tocar(nome) {
-  nome = variar(nome);
+// devolve quanto o som dura (em segundos), ou 0 se não tocou; exato = sem
+// sortear variação
+export function tocar(nome, exato = false) {
+  if (!exato) nome = variar(nome);
   if (mudo || !ctx || ctx.state !== 'running' || !buffers[nome]) return 0;
   const src = ctx.createBufferSource();
   const gain = ctx.createGain();
