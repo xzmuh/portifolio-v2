@@ -201,6 +201,12 @@ function brilhar() {
   void mundoEl.offsetWidth;
   mundoEl.classList.add('mundo--instala');
 }
+// sem tirar a classe, a animação voltava toda vez que a tela reaparecia
+mundoEl.addEventListener('animationend', (e) => { if (e.animationName === 'mundo-instala') mundoEl.classList.remove('mundo--instala'); });
+palco.addEventListener('animationend', (e) => {
+  if (e.animationName === 'borda-instala') e.target.classList.remove('slot--instalando');
+  if (e.animationName === 'regiao-pisca') e.target.classList.remove('regiao--pisca');
+});
 function piscar(r) {
   const el = regiao[r];
   if (!el) return;
