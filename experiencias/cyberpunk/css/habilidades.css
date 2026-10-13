@@ -251,7 +251,7 @@ body[data-tela='habilidades'] .habilidades { display: block; }
 
 /* liberado fica amarelo: nó, trilho e a energia que corre nele */
 .habilidades { --liberado: #fcee0a; }
-.hab_no--liberado:not(.hab_no--meta):not(:hover):not(:focus-visible) { --cor: var(--liberado); --fundo-no: #1f1a04; }
+.hab_no--liberado:not(.hab_no--meta) { --cor: var(--liberado); --fundo-no: #1f1a04; }
 .hab_galho--liberado .hab_trilho--faixa, .hab_galho--liberado .hab_trilho--brilho { stroke: var(--liberado); }
 .hab_trilho--carga { stroke: #fff9c4; filter: drop-shadow(0 0 6px var(--liberado)); }
 .hab_enche { background: linear-gradient(to top, color-mix(in srgb, var(--liberado) 55%, transparent) calc(var(--enche, 0) * 100%), transparent calc(var(--enche, 0) * 100%)); }
@@ -259,3 +259,5 @@ body[data-tela='habilidades'] .habilidades { display: block; }
   0% { filter: brightness(2.4) drop-shadow(0 0 22px var(--liberado)); transform: scale(1.12); }
   100% { transform: none; }
 }
+/* TEMPORÁRIO: nome do som de teste ao liberar */
+.hab_som_teste { position: absolute; top: calc(100% + 8px); left: 50%; transform: translateX(-50%); white-space: nowrap; font-size: 16px; letter-spacing: 0.1em; color: var(--amarelo); }
