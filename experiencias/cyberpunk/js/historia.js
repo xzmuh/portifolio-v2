@@ -3,7 +3,7 @@
  *
  * A cidade tem bairros com tons diferentes, prédios de vários formatos, rio,
  * praças de formas diferentes (rotatória, parque com lago, quadrada,
- * hexagonal), um elevado com tráfego e painéis holográficos. Cada empresa é um
+ * hexagonal), uma rodovia elevada por onde a rota passa, um elevado com tráfego e painéis holográficos. Cada empresa é um
  * prédio-marco com a identidade dela (cores, forma do logo e o logo num
  * painel). A rota amarela liga as empresas na ordem da carreira.
  *
@@ -46,8 +46,8 @@ for (let tentativa = 0; tentativa < 20; tentativa++) {
 // bairros: tom dos prédios conforme a região
 const BAIRROS = [
   { centro: [0, 0], cor: 0xff2a6d, raio: 14 },       // centro: rosa quente
-  { centro: [-18, 15], cor: 0xff6a2b, raio: 15 },    // zona industrial (perto da I-SINC): laranja
-  { centro: [20, -14], cor: 0x9b3cff, raio: 17 },    // lado das empresas remotas: violeta
+  { centro: [-20, 15], cor: 0xff6a2b, raio: 15 },    // zona industrial (perto da I-SINC): laranja
+  { centro: [12, -18], cor: 0x9b3cff, raio: 17 },    // lado das empresas remotas: violeta
   { centro: [-20, -20], cor: 0xd01870, raio: 15 },   // norte: magenta escuro
   { centro: [22, 18], cor: 0x2b6bff, raio: 13 },     // sul: azul
 ];
@@ -175,62 +175,81 @@ function marco(e) {
 }
 
 /* ---------- rota e praças ----------
- * Cada trecho da rota tem um traçado próprio, para a corrida não repetir:
- *   rotatoria  contorna uma rotatória grande (a única do mapa)
- *   s          curva em S, passando ao lado de um parque oval com lago
- *   arco       arco largo abraçando uma praça quadrada com chafariz
- * As praças soltas também variam de forma e ficam longe umas das outras.
- * Formas: rotatoria (r), parque (rx, rz, com lago), quadrada (meia),
+ * A rota anda pelas ruas de verdade (os cruzamentos da grade são os pontos
+ * inteiros de `ponto`), e cada trecho é de um jeito:
+ *   I-SINC → Next SI    ruas: sai reto, vira à direita, corta os quarteirões
+ *                       e cai na rotatória, que contorna até a Next SI
+ *   Next SI → Dialogi   rodovia elevada: rampa, reta longa em diagonal com
+ *                       pilares, desce na Dialogi
+ *   Dialogi → SigmaCX   volta para as ruas, para outra área: reta longa,
+ *                       vira à esquerda e desce até a SigmaCX
+ * As esquinas são arredondadas de leve; a rotatória é um arco de verdade.
+ * Praças: rotatoria (r), parque (rx, rz, com lago), quadrada (meia),
  * hex (r, com torre holográfica). */
 const PRACAS = [];
-const TRECHOS = ['rotatoria', 's', 'arco'];
+const ALTURA_RODOVIA = 0.62;
 function dentroPraca(pr, x, z, folga) {
   const dx = x - pr.x, dz = z - pr.z;
   if (pr.forma === 'parque') return (dx / (pr.rx + folga)) ** 2 + (dz / (pr.rz + folga)) ** 2 < 1;
   if (pr.forma === 'quadrada') return Math.abs(dx) < pr.meia + folga && Math.abs(dz) < pr.meia + folga;
   return Math.hypot(dx, dz) < pr.r + folga;
 }
+// cruzamento da grade, com altura opcional (a rodovia)
+const P = (x, z, y = 0) => { const v = ponto([x, z]); v.y = y; return v; };
+// esquinas arredondadas: troca cada canto por uma curvinha de raio r
+function arredondar(pts, r) {
+  const out = [pts[0].clone()];
+  for (let i = 1; i < pts.length - 1; i++) {
+    const a = pts[i - 1], b = pts[i], c = pts[i + 1];
+    const d1 = a.distanceTo(b), d2 = b.distanceTo(c);
+    const rr = Math.min(r, d1 / 2, d2 / 2);
+    const p1 = b.clone().addScaledVector(a.clone().sub(b).normalize(), rr);
+    const p2 = b.clone().addScaledVector(c.clone().sub(b).normalize(), rr);
+    for (let k = 0; k <= 6; k++) {
+      const t = k / 6;
+      out.push(p1.clone().multiplyScalar((1 - t) ** 2).addScaledVector(b, 2 * t * (1 - t)).addScaledVector(p2, t * t));
+    }
+  }
+  out.push(pts[pts.length - 1].clone());
+  return out;
+}
+// reamostra a polilinha em passos iguais
+function reamostrar(pts, passo) {
+  const out = [pts[0].clone()];
+  let sobra = 0;
+  for (let i = 1; i < pts.length; i++) {
+    const a = pts[i - 1], b = pts[i], d = a.distanceTo(b);
+    let t = passo - sobra;
+    while (t <= d) { out.push(a.clone().lerp(b, t / d)); t += passo; }
+    sobra = d - (t - passo);
+  }
+  if (out[out.length - 1].distanceTo(pts[pts.length - 1]) > 0.01) out.push(pts[pts.length - 1].clone());
+  return out;
+}
 function montarRota() {
   const lotes = EMPRESAS.map((e) => ponto(e.lote));
-  const ctrl = [lotes[0].clone()];
-  for (let i = 1; i < lotes.length; i++) {
-    const a = lotes[i - 1], b = lotes[i];
-    const d = b.clone().sub(a);
-    const dir = d.clone().normalize();
-    const perp = new THREE.Vector3(-dir.z, 0, dir.x);
-    const em = (t, lado) => a.clone().addScaledVector(d, t).addScaledVector(perp, lado);
-    const tipo = TRECHOS[(i - 1) % TRECHOS.length];
-    if (tipo === 'rotatoria') {
-      const R = 2.6;
-      const centro = em(0.5, 1.6);
-      PRACAS.push({ forma: 'rotatoria', x: centro.x, z: centro.z, r: R });
-      const ang0 = Math.atan2(a.z - centro.z, a.x - centro.x), ang1 = Math.atan2(b.z - centro.z, b.x - centro.x);
-      let dAng = ang1 - ang0;
-      while (dAng > Math.PI) dAng -= Math.PI * 2;
-      while (dAng < -Math.PI) dAng += Math.PI * 2;
-      for (let k = 0; k <= 12; k++) {
-        const ang = ang0 + (dAng * k) / 12;
-        ctrl.push(new THREE.Vector3(centro.x + Math.cos(ang) * (R + 0.2), 0, centro.z + Math.sin(ang) * (R + 0.2)));
-      }
-    } else if (tipo === 's') {
-      ctrl.push(em(0.3, 2.6), em(0.7, -2.6));
-      const lago = em(0.68, 4.2);
-      PRACAS.push({ forma: 'parque', x: lago.x, z: lago.z, rx: 2.6, rz: 1.7 });
-    } else {
-      ctrl.push(em(0.25, 3.0), em(0.5, 4.0), em(0.75, 3.0));
-      const praca = em(0.5, 1.5);
-      PRACAS.push({ forma: 'quadrada', x: praca.x, z: praca.z, meia: 1.2 });
-    }
-    ctrl.push(b.clone());
+  const [isinc, next, dialogi, sigma] = lotes;
+  const bruto = [];
+
+  // 1) ruas até a rotatória
+  const rot = { centro: P(-5, 6), r: 2.6 };
+  PRACAS.push({ forma: 'rotatoria', x: rot.centro.x, z: rot.centro.z, r: rot.r });
+  bruto.push(isinc, P(-20, 11), P(-9, 11), P(-9, 6));
+  const raioAnel = rot.r + 0.2;
+  // entra pelo oeste e contorna pelo sul até sair a leste
+  for (let k = 0; k <= 24; k++) {
+    const ang = Math.PI - (Math.PI * k) / 24;
+    bruto.push(new THREE.Vector3(rot.centro.x + Math.cos(ang) * raioAnel, 0, rot.centro.z + Math.sin(ang) * raioAnel));
   }
-  // soltas, cada uma de um jeito, longe da rota e uma da outra
-  const hex = ponto([-22, -16]), comprido = ponto([20, 15]);
-  PRACAS.push({ forma: 'hex', x: hex.x, z: hex.z, r: 1.5 });
-  PRACAS.push({ forma: 'parque', x: comprido.x, z: comprido.z, rx: 1.1, rz: 2.4 });
-  // curva suave por todos os pontos, amostrada a cada ~0.12; cada empresa
-  // vira um índice exato dentro da lista
-  const curva = new THREE.CatmullRomCurve3(ctrl, false, 'centripetal');
-  const pts = curva.getSpacedPoints(Math.ceil(curva.getLength() / 0.12));
+  bruto.push(next);
+
+  // 2) rodovia elevada em diagonal
+  bruto.push(P(3, 6), P(5, 4, ALTURA_RODOVIA), P(14, -5, ALTURA_RODOVIA), P(16, -7), dialogi);
+
+  // 3) outra área: reta longa, esquerda, desce
+  bruto.push(P(16, -20), P(4, -20), sigma);
+
+  const pts = reamostrar(arredondar(bruto, 0.55), 0.12);
   rota.indice = lotes.map((l) => {
     let melhor = 0, d = Infinity;
     pts.forEach((p, k) => { const dd = p.distanceToSquared(l); if (dd < d) { d = dd; melhor = k; } });
@@ -239,15 +258,24 @@ function montarRota() {
   });
   rota.pts.length = 0;
   rota.pts.push(...pts);
+
+  // praças ao longo do caminho e soltas, cada uma de um jeito
+  const parque = P(12, 2), quadrada = P(10, -23), hex = P(-22, -16), comprido = P(24, 14);
+  PRACAS.push({ forma: 'parque', x: parque.x, z: parque.z, rx: 2.6, rz: 1.7 });
+  PRACAS.push({ forma: 'quadrada', x: quadrada.x, z: quadrada.z, meia: 1.2 });
+  PRACAS.push({ forma: 'hex', x: hex.x, z: hex.z, r: 1.5 });
+  PRACAS.push({ forma: 'parque', x: comprido.x, z: comprido.z, rx: 1.1, rz: 2.4 });
 }
-// fita plana no chão seguindo uma lista de pontos
-function fita(pts, largura, y, material) {
+// fita plana seguindo uma lista de pontos (na altura deles + y), com
+// deslocamento lateral opcional (as bordas da rodovia)
+function fita(pts, largura, y, material, lado = 0) {
   const pos = [], idx = [];
   for (let k = 0; k < pts.length; k++) {
     const a = pts[Math.max(0, k - 1)], b = pts[Math.min(pts.length - 1, k + 1)];
     const dx = b.x - a.x, dz = b.z - a.z, l = Math.hypot(dx, dz) || 1;
-    const nx = (-dz / l) * largura / 2, nz = (dx / l) * largura / 2;
-    pos.push(pts[k].x + nx, y, pts[k].z + nz, pts[k].x - nx, y, pts[k].z - nz);
+    const ux = -dz / l, uz = dx / l;
+    const cx = pts[k].x + ux * lado, cz = pts[k].z + uz * lado, cy = pts[k].y + y;
+    pos.push(cx + ux * largura / 2, cy, cz + uz * largura / 2, cx - ux * largura / 2, cy, cz - uz * largura / 2);
     if (k) { const i = k * 2; idx.push(i - 2, i - 1, i, i - 1, i + 1, i); }
   }
   const g = new THREE.BufferGeometry();
@@ -486,6 +514,24 @@ function montar() {
   trafego = { malha: new THREE.InstancedMesh(new THREE.BoxGeometry(0.22, 0.04, 0.06), new THREE.MeshBasicMaterial({ color: 0xffffff }), 40), z: zElev, tam };
   for (let i = 0; i < 40; i++) trafego.malha.setColorAt(i, c.setHex(i % 2 ? 0xfcee0a : 0x00f0ff));
   cena.add(trafego.malha);
+
+  // rodovia elevada: tabuleiro escuro, bordas rosa e pilares onde a rota sobe
+  const elevado = rota.pts.filter((p) => p.y > 0.01);
+  if (elevado.length > 1) {
+    const matTab = new THREE.MeshLambertMaterial({ color: 0x24123f, side: THREE.DoubleSide });
+    const matBorda = new THREE.MeshBasicMaterial({ color: 0xff2a6d, side: THREE.DoubleSide });
+    cena.add(fita(elevado, 0.9, -0.01, matTab));
+    cena.add(fita(elevado, 0.05, 0.005, matBorda, 0.44), fita(elevado, 0.05, 0.005, matBorda, -0.44));
+    cena.add(fita(elevado, 0.02, 0.006, new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.35, side: THREE.DoubleSide }), 0.22));
+    const geoPilarRod = new THREE.BoxGeometry(0.14, 1, 0.14); geoPilarRod.translate(0, 0.5, 0);
+    for (let k = 0; k < elevado.length; k += 14) {
+      const p = elevado[k];
+      if (p.y < 0.25) continue;
+      const pilar = new THREE.Mesh(geoPilarRod, matTab);
+      pilar.scale.y = p.y - 0.01; pilar.position.set(p.x, 0, p.z);
+      cena.add(pilar);
+    }
+  }
 
   // rota amarela: fita contínua seguindo a curva (brilho largo + miolo)
   const pts = rota.pts;
