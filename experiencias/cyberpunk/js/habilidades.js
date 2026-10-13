@@ -39,10 +39,11 @@ const ICONES = {
   engrenagem: 'M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6zM12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1',
   celular: 'M7 2h10v20H7zM11 18h2',
   robo: 'M6 8h12v10H6zM12 4v4M9 12h.5M14.5 12h.5M9 15h6M3 12v3M21 12v3',
+  cadeado: 'M6 11h12v9H6zM9 11V8a3 3 0 0 1 6 0v3M12 15v2',
 };
 
-// grade da árvore no palco (1600x900): col -3..3 a partir do centro, lin 1..3
-const ARVORE = { cx: 800, passoX: 175, y0: 150, passoY: 165 };
+// grade da árvore no palco (1600x900): col -3..3 a partir do centro, lin 0..3
+const ARVORE = { cx: 800, passoX: 175, y0: 245, passoY: 140 };
 const TAM = { principal: 72, lenda: 88, sat: 42 };
 const posNo = (n) => ({ x: ARVORE.cx + n.col * ARVORE.passoX, y: ARVORE.y0 + n.lin * ARVORE.passoY });
 
@@ -144,7 +145,7 @@ function mostrarCategoria(i) {
     if (!pai) continue;
     const d = trilho(posNo(pai), posNo(n));
     linha(d, 'hab_trilho hab_trilho--fundo');
-    linha(d, 'hab_trilho hab_trilho--aceso');
+    linha(d, `hab_trilho hab_trilho--${n.bloqueado ? 'meta' : 'aceso'}`);
   }
 
   for (const n of cat.nos) {
@@ -163,12 +164,12 @@ function mostrarCategoria(i) {
         ver: () => mostrarCard(s.x, s.y, TAM.sat, { nome: s.nome, texto: `Ferramenta de ${n.nome}.` }),
       }));
     }
-    const tam = TAM.principal;
+    const tam = n.bloqueado ? TAM.lenda : TAM.principal;
     const no = criarNo({
-      classe: 'hab_no hab_no--principal hab_no--dominado',
-      x, y, tam, icone: n.icone, arte: n.arte && `img/perks/${n.arte}.webp`,
-      rotulo: n.nome,
-      ver: () => mostrarCard(x, y, tam, { nome: n.nome, texto: n.texto }),
+      classe: n.bloqueado ? 'hab_no hab_no--lenda hab_no--meta' : 'hab_no hab_no--principal hab_no--dominado',
+      x, y, tam, icone: n.bloqueado ? 'cadeado' : n.icone, arte: n.arte && `img/perks/${n.arte}.webp`,
+      rotulo: n.bloqueado ? `${n.nome}, bloqueado` : n.nome,
+      ver: () => mostrarCard(x, y, tam, { nome: n.nome, texto: n.texto, bloqueado: n.bloqueado }),
     });
     const nome = document.createElement('span');
     nome.className = 'hab_nome';
@@ -182,8 +183,9 @@ function mostrarCategoria(i) {
 }
 
 function mostrarCard(x, y, tam, d) {
-  card.className = 'hab_card';
+  card.className = d.bloqueado ? 'hab_card hab_card--meta' : 'hab_card';
   $('[data-hab-cnome]').textContent = d.nome;
+  $('[data-hab-cestado]').hidden = !d.bloqueado;
   $('[data-hab-ctexto]').textContent = d.texto;
   card.hidden = false;
   const direita = x + tam / 2 + 18 + card.offsetWidth < 1570;

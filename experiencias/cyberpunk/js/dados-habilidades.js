@@ -4,10 +4,11 @@
  * que já estão na História (stack das empresas) ou nos Projetos; sem nível
  * e sem dizer onde, para não inventar nada.
  *
- *   col,lin  posição: col -3..3 (0 = centro), lin 1 (topo) .. 3 (base)
+ *   col,lin  posição: col -3..3 (0 = centro), lin 0 (topo) .. 3 (base)
  *   pai      nó de onde sai o trilho
  *   arte     ilustração em img/perks/<arte>.webp (sem ela, fica o ícone)
  *   texto    o que é a tecnologia, em uma frase
+ *   bloqueado  nó trancado no topo (lin 0), como os perks ainda não liberados
  */
 export const CATEGORIAS = [
   {
@@ -25,6 +26,10 @@ export const CATEGORIAS = [
         texto: 'Banco de dados relacional.' },
       { id: 'mysql', nome: 'MySQL', icone: 'tabela', arte: 'dados-modelo', col: 2, lin: 1, pai: 'postgres',
         texto: 'Banco de dados relacional.' },
+      { id: 'micro', nome: 'Microsserviços', bloqueado: true, col: -2, lin: 0, pai: 'php',
+        texto: 'Sistemas quebrados em serviços pequenos que sobem e escalam separados.' },
+      { id: 'mensageria', nome: 'Mensageria', bloqueado: true, col: 0, lin: 0, pai: 'api',
+        texto: 'Filas de mensagens para os sistemas conversarem sem esperar um pelo outro.' },
     ],
   },
   {
@@ -44,6 +49,10 @@ export const CATEGORIAS = [
         texto: '3D no navegador, como o mapa da História.' },
       { id: 'expo', nome: 'React Native', icone: 'celular', arte: 'produto-mobile', col: 2, lin: 1, pai: 'react',
         texto: 'React para apps de iOS e Android, com Expo.' },
+      { id: 'microfront', nome: 'Micro-frontends', bloqueado: true, col: -2, lin: 0, pai: 'angular',
+        texto: 'Uma interface grande dividida em partes que times diferentes publicam sozinhos.' },
+      { id: 'webgpu', nome: 'WebGPU', bloqueado: true, col: 0, lin: 0, pai: 'react',
+        texto: 'Gráficos e cálculos pesados direto na placa de vídeo, pelo navegador.' },
     ],
   },
   {
@@ -59,6 +68,10 @@ export const CATEGORIAS = [
         texto: 'Modelos de linguagem dentro de produtos.' },
       { id: 'ollama', nome: 'Ollama', icone: 'robo', arte: 'produto-agentes', col: 0, lin: 1, pai: 'ia',
         texto: 'IA rodando local, sem mandar dados para fora.' },
+      { id: 'k8s', nome: 'Kubernetes', bloqueado: true, col: -2, lin: 0, pai: 'aws',
+        texto: 'Orquestra containers: sobe, escala e reinicia serviços sozinho.' },
+      { id: 'agentes', nome: 'Agentes autônomos', bloqueado: true, col: 0, lin: 0, pai: 'ollama',
+        texto: 'IA que executa uma tarefa inteira usando ferramentas, não só responde.' },
     ],
   },
 ];
