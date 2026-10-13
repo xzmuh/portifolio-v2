@@ -63,9 +63,11 @@ const coloridas = []; // malhas com cor por instância (a cor sai durante o Sand
 let materialSemCor;
 let semCor = 0; // 0 = mundo colorido, 1 = sem cor (sobe e desce suave)
 const CAMADA_CORREDOR = 1;
-// o corredor: o Xbot correndo pela rota com o Sandevistan, deixando cópias
+// o corredor: personagem anime (Sakurada Fumiriya, modelo de exemplo do
+// VRoid, uso livre) correndo pela rota com o Sandevistan, deixando cópias.
+// A corrida vem do Xbot (three.js) e é passada para o esqueleto dele
 const corredor = { modelo: null, mixer: null, acoes: {}, de: 0, para: 0, caminho: null, fantasmas: [], ultimoFantasma: 0 };
-const ESCALA_CORREDOR = 0.62;
+let ESCALA_CORREDOR = 0.62; // recalculada para o personagem ter a altura que o Xbot tinha
 // quanto o corredor anda por segundo com a animação de corrida em velocidade normal
 const PASSADA = 2.9;
 // a rota amarela: pontos em ordem e o índice de cada empresa nela
@@ -382,22 +384,99 @@ function montar() {
 }
 
 /* ---------- corredor ---------- */
+// osso do VRM (humanoide) -> osso do Mixamo (Xbot)
+const OSSOS = {
+  hips: 'Hips', spine: 'Spine', chest: 'Spine1', upperChest: 'Spine2', neck: 'Neck', head: 'Head',
+  leftShoulder: 'LeftShoulder', leftUpperArm: 'LeftArm', leftLowerArm: 'LeftForeArm', leftHand: 'LeftHand',
+  rightShoulder: 'RightShoulder', rightUpperArm: 'RightArm', rightLowerArm: 'RightForeArm', rightHand: 'RightHand',
+  leftUpperLeg: 'LeftUpLeg', leftLowerLeg: 'LeftLeg', leftFoot: 'LeftFoot', leftToes: 'LeftToeBase',
+  rightUpperLeg: 'RightUpLeg', rightLowerLeg: 'RightLeg', rightFoot: 'RightFoot', rightToes: 'RightToeBase',
+};
+// passa uma animação de um esqueleto para outro: os dois de frente para +Z e
+// em pose de descanso; cada osso do alvo gira no mundo o mesmo tanto que o
+// osso da fonte girou a partir do descanso
+function reposicionar(fonte, clip, alvo, pares, fps = 30) {
+  fonte.updateMatrixWorld(true);
+  alvo.updateMatrixWorld(true);
+  const q = new THREE.Quaternion(), qp = new THREE.Quaternion(), v = new THREE.Vector3();
+  const lista = pares.map(([a, f]) => ({
+    a, f,
+    f0: f.getWorldQuaternion(new THREE.Quaternion()).invert(),
+    a0: a.getWorldQuaternion(new THREE.Quaternion()),
+    descanso: a.quaternion.clone(),
+  }));
+  const quadril = lista[0];
+  const fPos0 = quadril.f.getWorldPosition(new THREE.Vector3());
+  const aPos0 = quadril.a.getWorldPosition(new THREE.Vector3());
+  const posDescanso = quadril.a.position.clone();
+  const proporcao = aPos0.y / fPos0.y;
+  const n = Math.ceil(clip.duration * fps) + 1;
+  const tempos = new Float32Array(n);
+  const valores = lista.map(() => new Float32Array(n * 4));
+  const posicoes = new Float32Array(n * 3);
+  const mixer = new THREE.AnimationMixer(fonte);
+  mixer.clipAction(clip).play();
+  for (let i = 0; i < n; i++) {
+    const t = Math.min(i / fps, clip.duration);
+    tempos[i] = t;
+    mixer.setTime(t);
+    fonte.updateMatrixWorld(true);
+    lista.forEach((o, k) => {
+      o.f.getWorldQuaternion(q).multiply(o.f0).multiply(o.a0); // rotação no mundo que o alvo deve ter
+      o.a.parent.getWorldQuaternion(qp).invert();
+      o.a.quaternion.copy(qp.multiply(q));
+      o.a.updateMatrixWorld(true);
+      o.a.quaternion.toArray(valores[k], i * 4);
+    });
+    v.copy(quadril.f.getWorldPosition(new THREE.Vector3())).sub(fPos0).multiplyScalar(proporcao).add(aPos0);
+    quadril.a.parent.worldToLocal(v).toArray(posicoes, i * 3);
+  }
+  mixer.stopAllAction();
+  lista.forEach((o) => o.a.quaternion.copy(o.descanso));
+  quadril.a.position.copy(posDescanso);
+  const trilhas = lista.map((o, k) => new THREE.QuaternionKeyframeTrack(`${o.a.name}.quaternion`, tempos, valores[k]));
+  trilhas.push(new THREE.VectorKeyframeTrack(`${quadril.a.name}.position`, tempos, posicoes));
+  return new THREE.AnimationClip(clip.name, clip.duration, trilhas);
+}
+
 function carregarCorredor() {
-  new GLTFLoader().load('modelos/xbot.glb', (gltf) => {
-    const m = gltf.scene;
-    m.scale.setScalar(ESCALA_CORREDOR);
-    // corpo escuro com borda ciano, para destacar no mapa
+  const loader = new GLTFLoader();
+  const carregar = (url) => new Promise((ok, erro) => loader.load(url, ok, undefined, erro));
+  Promise.all([carregar('modelos/xbot.glb'), carregar('modelos/runner.vrm')]).then(([xbot, vrm]) => {
+    // VRM 0.x olha para -Z: gira para olhar para +Z, como o Xbot
+    const personagem = vrm.scene;
+    personagem.rotation.y = Math.PI;
+    const m = new THREE.Group();
+    m.add(personagem);
     m.traverse((o) => {
       if (!o.isMesh) return;
       o.frustumCulled = false;
-      o.material = o.name.includes('Joints')
-        ? new THREE.MeshBasicMaterial({ color: 0x00f0ff })
-        : new THREE.MeshLambertMaterial({ color: 0x2a1640, emissive: 0x3a0f3a });
+      // material sem luz (anime): só a textura, igual ao VRoid
+      for (const mat of [].concat(o.material)) { mat.fog = false; }
     });
+    // pares de ossos para passar a corrida
+    const humanos = vrm.parser.json.extensions.VRM.humanoid.humanBones;
+    const porNome = {};
+    xbot.scene.traverse((o) => { if (o.isBone) porNome[o.name.replace(/^mixamorig:?/, '')] = o; });
+    const pares = [];
+    for (const [osso, mixamo] of Object.entries(OSSOS)) {
+      const h = humanos.find((x) => x.bone === osso);
+      if (!h || !porNome[mixamo]) continue;
+      const nome = THREE.PropertyBinding.sanitizeNodeName(vrm.parser.json.nodes[h.node].name);
+      const a = personagem.getObjectByName(nome);
+      if (a) pares.push([a, porNome[mixamo]]);
+    }
+    // mesma altura que o Xbot tinha no mapa
+    const altura = (o) => new THREE.Box3().setFromObject(o).getSize(new THREE.Vector3()).y;
+    ESCALA_CORREDOR = (0.62 * 1.15 * altura(xbot.scene)) / altura(m); // um pouco maior, para o cabelo aparecer
+    m.scale.setScalar(ESCALA_CORREDOR);
     m.traverse((o) => o.layers.set(CAMADA_CORREDOR));
     corredor.modelo = m;
     corredor.mixer = new THREE.AnimationMixer(m);
-    for (const clip of gltf.animations) corredor.acoes[clip.name] = corredor.mixer.clipAction(clip);
+    for (const clip of xbot.animations) {
+      if (clip.name !== 'run' && clip.name !== 'idle') continue;
+      corredor.acoes[clip.name] = corredor.mixer.clipAction(reposicionar(xbot.scene, clip, personagem, pares));
+    }
     corredor.acoes.idle?.play();
     m.position.copy(ponto(EMPRESAS[sel].lote));
     m.visible = false; // está dentro do prédio da empresa atual
@@ -538,7 +617,7 @@ function quadro(agora) {
 
   // câmera: desliza até a empresa (com o Sandy, dispara e desacelera)
   if (cam.t < 1) cam.t = Math.min(1, cam.t + dt / cam.dur);
-  const k = sandy.ativo ? curvaSandy(cam.t) : suave(cam.t);
+  const k = Math.min(1, Math.max(0, sandy.ativo ? curvaSandy(cam.t) : suave(cam.t)));
   cam.alvo.lerpVectors(cam.alvoDe, ponto(EMPRESAS[sel].lote), k);
   cam.ang += dt * (sandy.ativo ? 0.015 : 0.06);
   // no Sandy a câmera chega perto do corredor; depois volta para a vista do mapa
@@ -564,11 +643,11 @@ function quadro(agora) {
     let ritmo = 1;
     if (sandy.ativo && corredor.caminho) {
       const velocidade = corredor.caminho.getLength() / sandy.dur / (1 - 0.06); // unidades por segundo
-      ritmo = Math.min(3.2, Math.max(1, velocidade / PASSADA));
+      ritmo = Math.min(3.2, Math.max(2.2, velocidade / PASSADA)); // nunca abaixo de corrida forte, mesmo em trecho curto
     }
     corredor.mixer.update(dt * ritmo);
     if (sandy.ativo && corredor.caminho) {
-      const p = corredor.caminho.getPointAt(k);
+      const p = corredor.caminho.getPointAt(Math.min(k, 0.9999)); // em 1 exato a CurvePath às vezes devolve null
       const dir = corredor.caminho.getTangentAt(Math.min(0.999, k));
       corredor.modelo.position.copy(p);
       const rumo = Math.atan2(dir.x, dir.z);

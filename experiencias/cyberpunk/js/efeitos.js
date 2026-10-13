@@ -55,6 +55,17 @@ const RECEITAS = {
     { tipo: 'pulso', caminho: [[50, 92], [50, 60], [50, 30], [50, 4]], cor: CIANO, vel: 0.7, n: 4 },
     { tipo: 'raio', de: [52, 30], para: [[34, 22], [66, 22], [32, 38], [68, 38], [40, 50], [60, 50]], cor: ROSA, freq: 2.5 },
   ],
+  // ossos: brilho dourado subindo pela coluna
+  esqueleto: [
+    { tipo: 'plasma', c: [50, 34], r: 5, cor: OURO },
+    { tipo: 'pulso', caminho: [[50, 92], [50, 60], [50, 30], [50, 4]], cor: OURO, vel: 0.6, n: 3 },
+  ],
+  // nervos: pulsos ciano e rosa saindo da coluna para os lados
+  nervoso: [
+    { tipo: 'pulso', caminho: [[50, 92], [50, 60], [50, 30], [50, 4]], cor: CIANO, vel: 0.8, n: 4 },
+    { tipo: 'pulso', caminho: [[50, 30], [38, 34], [26, 44]], cor: ROSA, vel: 0.7, n: 2 },
+    { tipo: 'pulso', caminho: [[50, 30], [62, 34], [74, 44]], cor: ROSA, vel: 0.7, n: 2 },
+  ],
   braco: [
     { tipo: 'plasma', c: [57, 56], r: 5, cor: CIANO },
     { tipo: 'pulso', caminho: [[80, 6], [69, 30], [57, 56], [42, 74], [27, 91]], cor: ROSA, vel: 0.55, n: 3 },

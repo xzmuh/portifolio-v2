@@ -39,7 +39,7 @@ export const EMPRESAS = [
     id: 'sigmacx', nome: 'SigmaCX', cargo: 'Front-end Engineer', local: 'Remoto',
     periodo: 'Ago 2026 — hoje', duracao: 'atual', bairro: 'Torre SigmaCX',
     marca: { cor: 0x3fd6b4, cor2: 0x5aa8e6, logo: 'sigmacx.png', forma: 'sigma' },
-    lote: [13, -3],
+    lote: [17, -12],
     resumo: 'Interfaces web e aplicações front-end da SigmaCX, com soluções digitais para campanhas e projetos.',
     feitos: ['Interfaces web e aplicações front-end', 'Experiências interativas para campanhas', 'Integração com APIs e serviços externos', 'IA em desenvolvimento e automações'],
     stack: ['React', 'TypeScript', 'JavaScript', 'APIs', 'IA'],
