@@ -489,8 +489,17 @@ function carregarCorredor() {
     }
     corredor.acoes.idle?.play();
     m.position.copy(ponto(EMPRESAS[sel].lote));
-    m.visible = false; // está dentro do prédio da empresa atual
     cena.add(m);
+    // aquece a GPU: sem isso o primeiro Sandy travava compilando o personagem e os ecos
+    soltarFantasma(0x00f0ff);
+    camera.layers.enableAll();
+    renderer.compile(cena, camera);
+    camera.layers.set(0);
+    m.traverse((o) => { if (o.isMesh) for (const mat of [].concat(o.material)) if (mat.map) renderer.initTexture(mat.map); });
+    // o eco de aquecimento fica guardado e invisível: descartar o material jogaria fora o shader compilado
+    for (const g of corredor.fantasmas) g.f.visible = false;
+    corredor.fantasmas = [];
+    m.visible = false; // está dentro do prédio da empresa atual
   });
 }
 // caminho do corredor: os pontos da rota amarela entre as duas empresas
@@ -589,6 +598,7 @@ function ligarSandy(de, para) {
   }
   sandy.ativo = true;
   sandy.ini = performance.now();
+  cam.t = 0;
   cam.dur = sandy.dur;
   document.body.classList.remove('sandy'); void document.body.offsetWidth;
   document.body.classList.add('sandy');
@@ -604,15 +614,11 @@ function ligarSandy(de, para) {
     if (corredor.modelo) corredor.entrando = performance.now(); // entra no prédio
   }, sandy.dur * 1000);
 }
-// curva do Sandy: velocidade constante, só acelera na saída e freia na
-// chegada (a câmera lenta vem da animação da corrida e das cópias)
-const curvaSandy = (t) => {
-  const r = 0.12; // fração do tempo acelerando e freando
-  const vmax = 1 / (1 - r);
-  if (t < r) return (vmax * t * t) / (2 * r);
-  if (t > 1 - r) return 1 - (vmax * (1 - t) * (1 - t)) / (2 * r);
-  return vmax * (t - r / 2);
-};
+// curva do Sandy: sai já correndo mas devagar, acelera cada vez mais e
+// chega no prédio no pico da velocidade, como se fosse teleportado.
+// Posição = 0.3t + 0.7t^4; velocidade vai de 0.3x a 3.1x a média
+const curvaSandy = (t) => 0.3 * t + 0.7 * t ** 4;
+const velocidadeSandy = (t) => 0.3 + 2.8 * t ** 3;
 const suave = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
 /* ---------- quadro ---------- */
@@ -626,7 +632,10 @@ function quadro(agora) {
   const t = agora / 1000;
 
   // câmera: desliza até a empresa (com o Sandy, dispara e desacelera)
-  if (cam.t < 1) cam.t = Math.min(1, cam.t + dt / cam.dur);
+  // no Sandy o progresso segue o relógio (junto com o som), não os quadros:
+  // se um quadro atrasar, ele não fica para trás
+  if (sandy.ativo) cam.t = Math.min(1, Math.max(0, (agora - sandy.ini) / (sandy.dur * 1000)));
+  else if (cam.t < 1) cam.t = Math.min(1, cam.t + dt / cam.dur);
   const k = Math.min(1, Math.max(0, sandy.ativo ? curvaSandy(cam.t) : suave(cam.t)));
   cam.alvo.lerpVectors(cam.alvoDe, ponto(EMPRESAS[sel].lote), k);
   cam.ang += dt * (sandy.ativo ? 0.015 : 0.06);
@@ -652,8 +661,9 @@ function quadro(agora) {
     // quem está rápido é ele; o mundo é que fica lento
     let ritmo = 1;
     if (sandy.ativo && corredor.caminho) {
-      const velocidade = corredor.caminho.getLength() / sandy.dur / (1 - 0.06); // unidades por segundo
-      ritmo = Math.min(4, Math.max(3.2, velocidade / PASSADA)); // sempre em sprint, mesmo em trecho curto
+      // as pernas acompanham a aceleração: começa em corrida e termina em disparada
+      const velocidade = (corredor.caminho.getLength() / sandy.dur) * velocidadeSandy(cam.t); // unidades por segundo
+      ritmo = Math.min(5, Math.max(2.6, velocidade / PASSADA));
     }
     corredor.mixer.update(dt * ritmo);
     if (sandy.ativo && corredor.caminho) {
