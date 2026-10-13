@@ -176,7 +176,7 @@
 
     <!-- Habilidades: árvore de competências (js/habilidades.js, dados em js/dados-habilidades.js) -->
     <section class="habilidades" aria-label="Habilidades">
-      <div class="hab_pontos"><b data-hab-pontos></b><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4zM8 8h3v3H8zM13 8h3v3h-3zM8 13h3v3H8zM13 13h3v3h-3z" /></svg><span>Metas em<br />estudo</span></div>
+      <div class="hab_pontos"><b data-hab-pontos></b><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4zM8 8h3v3H8zM13 8h3v3h-3zM8 13h3v3H8zM13 13h3v3h-3z" /></svg><span>Habilidades<br />nesta aba</span></div>
       <nav class="hab_abas" data-hab-abas aria-label="Categorias"></nav>
       <span class="hab_teclas"><span class="tecla">Q</span><span class="tecla">E</span></span>
       <div class="palco_centro" id="centro-hab">
@@ -184,22 +184,15 @@
         <div class="hab_arvore" data-hab-arvore></div>
         <div class="hab_card" data-hab-card role="tooltip" hidden>
           <strong data-hab-cnome></strong>
-          <span class="hab_card_estado" data-hab-cestado></span>
-          <span class="hab_card_nivel">Nível <b data-hab-cnivel></b></span>
           <p data-hab-ctexto></p>
+          <span class="hab_card_onde">Onde usei</span>
           <ul data-hab-conde></ul>
         </div>
       </div>
       <div class="hab_prog">
-        <span class="hab_prog_rot">Progressão</span>
-        <div class="hab_prog_linha"><b data-hab-prog-num></b><span data-hab-prog-nome></span><em data-hab-prog-txt></em></div>
-        <div class="hab_prog_trilho"><i data-hab-prog-barra></i></div>
-        <div class="hab_prog_rodape"><span>Competências dominadas</span><span data-hab-prog-pct></span></div>
-        <div class="hab_legenda">
-          <span class="hab_leg hab_leg--dominado">Dominado</span>
-          <span class="hab_leg hab_leg--evolucao">Em evolução</span>
-          <span class="hab_leg hab_leg--meta">Meta</span>
-        </div>
+        <span class="hab_prog_rot">Onde usei</span>
+        <div class="hab_prog_linha"><b data-hab-prog-num></b><span data-hab-prog-nome></span></div>
+        <ul class="hab_prog_lista" data-hab-prog-lista></ul>
       </div>
     </section>
 

@@ -1,8 +1,8 @@
 /*
  * Tela Habilidades: árvore de competências no molde da árvore de perks do
- * Cyberpunk 2077 2.0: principais grandes com contador, satélites presos dos
- * lados, lendas octogonais no topo, trilhos grossos. Abas de categoria (Q/E),
- * card ao passar o mouse e a barra de progressão.
+ * Cyberpunk 2077 2.0: principais grandes, satélites presos dos
+ * lados, trilhos grossos. Abas de categoria (Q/E), card ao passar o mouse
+ * mostrando onde cada coisa foi usada, e o resumo de lugares da categoria.
  */
 import { CATEGORIAS } from './dados-habilidades.js';
 import { tocar } from './som.js';
@@ -41,8 +41,8 @@ const ICONES = {
   robo: 'M6 8h12v10H6zM12 4v4M9 12h.5M14.5 12h.5M9 15h6M3 12v3M21 12v3',
 };
 
-// grade da árvore no palco (1600x900): col -3..3 a partir do centro, lin 0..3
-const ARVORE = { cx: 800, passoX: 175, y0: 245, passoY: 140 };
+// grade da árvore no palco (1600x900): col -3..3 a partir do centro, lin 1..3
+const ARVORE = { cx: 800, passoX: 175, y0: 150, passoY: 165 };
 const TAM = { principal: 72, lenda: 88, sat: 42 };
 const posNo = (n) => ({ x: ARVORE.cx + n.col * ARVORE.passoX, y: ARVORE.y0 + n.lin * ARVORE.passoY });
 
@@ -54,9 +54,6 @@ const trilhasEl = $('[data-hab-trilhas]');
 const card = $('[data-hab-card]');
 const SVG = 'http://www.w3.org/2000/svg';
 let atual = 0;
-
-const ESTADO = (n) => (n.nivel >= 3 ? 'dominado' : n.nivel > 0 ? 'evolucao' : 'meta');
-const NOME_ESTADO = { dominado: 'Dominado', evolucao: 'Em evolução', meta: 'Meta · estudando' };
 
 
 CATEGORIAS.forEach((c, i) => {
@@ -145,41 +142,34 @@ function mostrarCategoria(i) {
   for (const n of cat.nos) {
     const pai = porId[n.pai];
     if (!pai) continue;
-    const est = n.nivel > 0 && pai.nivel > 0 ? 'aceso' : n.nivel === 0 ? 'meta' : 'frio';
     const d = trilho(posNo(pai), posNo(n));
     linha(d, 'hab_trilho hab_trilho--fundo');
-    linha(d, `hab_trilho hab_trilho--${est}`);
+    linha(d, 'hab_trilho hab_trilho--aceso');
   }
 
   for (const n of cat.nos) {
     const { x, y } = posNo(n);
-    const est = ESTADO(n);
     // satélites e as ligações curtas até eles
     for (const s of posSatelites(n)) {
       // ligação reta na altura do satélite, da borda do principal até a borda dele
       const borda = x + s.lado * (TAM.principal / 2);
       const bordaSat = s.x - s.lado * (TAM.sat / 2);
       const d = `M${borda} ${s.y}H${bordaSat}`;
-      linha(d, `hab_ramal hab_ramal--${s.ok ? 'aceso' : 'meta'}`);
+      linha(d, 'hab_ramal hab_ramal--aceso');
       nos.push(criarNo({
-        classe: `hab_no hab_no--sat hab_no--${s.ok ? 'dominado' : 'meta'}`,
+        classe: 'hab_no hab_no--sat hab_no--dominado',
         x: s.x, y: s.y, tam: TAM.sat, icone: s.icone,
-        rotulo: `${s.nome}, ${s.ok ? 'tenho' : 'ainda não'}`,
-        ver: () => mostrarCard(s.x, s.y, TAM.sat, {
-          nome: s.nome, estado: s.ok ? 'dominado' : 'meta', nivel: null,
-          texto: `Parte de ${n.nome}.`, onde: [s.ok ? 'Já uso' : 'Próximo passo'],
-        }),
+        rotulo: s.nome,
+        ver: () => mostrarCard(s.x, s.y, TAM.sat, { nome: s.nome, texto: `Ferramenta de ${n.nome}.`, onde: n.onde }),
       }));
     }
-    const tam = n.lenda ? TAM.lenda : TAM.principal;
+    const tam = TAM.principal;
     const no = criarNo({
-      classe: `hab_no hab_no--${n.lenda ? 'lenda' : 'principal'} hab_no--${est}`,
+      classe: 'hab_no hab_no--principal hab_no--dominado',
       x, y, tam, icone: n.icone, arte: `img/perks/${cat.id}-${n.id}.webp`,
-      conta: n.lenda ? null : `${n.nivel}/3`,
-      rotulo: `${n.nome}, ${NOME_ESTADO[est]}`,
-      ver: () => mostrarCard(x, y, tam, { nome: n.nome, estado: est, nivel: n.lenda ? null : n.nivel, texto: n.texto, onde: n.onde, lenda: n.lenda }),
+      rotulo: `${n.nome}, usado em ${n.onde.join(', ')}`,
+      ver: () => mostrarCard(x, y, tam, { nome: n.nome, texto: n.texto, onde: n.onde }),
     });
-    no.style.setProperty('--enche', (n.nivel / 3) * 100 + '%');
     const nome = document.createElement('span');
     nome.className = 'hab_nome';
     nome.textContent = n.nome;
@@ -189,24 +179,17 @@ function mostrarCategoria(i) {
   }
   arvoreEl.replaceChildren(...nos);
 
-  // progressão: níveis conquistados nos principais
-  const principais = cat.nos.filter((n) => !n.lenda);
-  const feitos = principais.reduce((s, n) => s + n.nivel, 0), total = principais.length * 3;
-  $('[data-hab-prog-nome]').textContent = cat.nome;
-  $('[data-hab-prog-num]').textContent = principais.filter((n) => n.nivel >= 3).length;
-  $('[data-hab-prog-txt]').textContent = `${feitos}/${total}`;
-  $('[data-hab-prog-pct]').textContent = Math.round((feitos / total) * 100) + '%';
-  $('[data-hab-prog-barra]').style.width = (feitos / total) * 100 + '%';
-  $('[data-hab-pontos]').textContent = cat.nos.filter((n) => n.nivel === 0).length;
+  // resumo: todos os lugares (empresas e projetos) onde a categoria foi usada
+  const lugares = [...new Set(cat.nos.flatMap((n) => n.onde))];
+  $('[data-hab-prog-nome]').textContent = lugares.length === 1 ? 'lugar' : 'lugares';
+  $('[data-hab-prog-num]').textContent = lugares.length;
+  $('[data-hab-prog-lista]').replaceChildren(...lugares.map((l) => Object.assign(document.createElement('li'), { textContent: l })));
+  $('[data-hab-pontos]').textContent = cat.nos.length;
 }
 
 function mostrarCard(x, y, tam, d) {
-  card.className = `hab_card hab_card--${d.estado}`;
+  card.className = 'hab_card';
   $('[data-hab-cnome]').textContent = d.nome;
-  $('[data-hab-cestado]').textContent = d.lenda ? 'Lenda · meta' : NOME_ESTADO[d.estado];
-  const nivel = $('[data-hab-cnivel]');
-  nivel.parentElement.hidden = d.nivel === null;
-  nivel.textContent = `${d.nivel}/3`;
   $('[data-hab-ctexto]').textContent = d.texto;
   $('[data-hab-conde]').replaceChildren(...d.onde.map((o) => { const li = document.createElement('li'); li.textContent = o; return li; }));
   card.hidden = false;
