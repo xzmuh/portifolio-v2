@@ -28,7 +28,7 @@ const listaEl = document.querySelector('[data-hist-lista]');
 const cartao = document.querySelector('[data-hist-cartao]');
 
 // grade da cidade: lote de 1, rua de 0.42, avenida a cada 5 ruas
-const N = 44, LOTE = 1, RUA = 0.42, PASSO = LOTE + RUA;
+const N = 76, LOTE = 1, RUA = 0.42, PASSO = LOTE + RUA;
 const canto = (i) => (i - N / 2) * PASSO;
 const ponto = ([x, z]) => new THREE.Vector3(x * PASSO - RUA / 2, 0, z * PASSO - RUA / 2);
 const COR = { fundo: 0x07061a, rua: 0x00f0ff, rota: 0xfcee0a };
@@ -45,10 +45,11 @@ for (let tentativa = 0; tentativa < 20; tentativa++) {
 
 // bairros: tom dos prédios conforme a região
 const BAIRROS = [
-  { centro: [0, 0], cor: 0xff2a6d, raio: 9 },        // centro: rosa quente
-  { centro: [-12, 12], cor: 0xff6a2b, raio: 10 },    // zona industrial (perto da I-SINC): laranja
-  { centro: [14, -8], cor: 0x9b3cff, raio: 11 },     // lado das empresas remotas: violeta
-  { centro: [-12, -12], cor: 0xd01870, raio: 10 },   // norte: magenta escuro
+  { centro: [0, 0], cor: 0xff2a6d, raio: 14 },       // centro: rosa quente
+  { centro: [-18, 15], cor: 0xff6a2b, raio: 15 },    // zona industrial (perto da I-SINC): laranja
+  { centro: [20, -14], cor: 0x9b3cff, raio: 17 },    // lado das empresas remotas: violeta
+  { centro: [-20, -20], cor: 0xd01870, raio: 15 },   // norte: magenta escuro
+  { centro: [22, 18], cor: 0x2b6bff, raio: 13 },     // sul: azul
 ];
 
 let renderer, cena, camera, rodando = false, montado = false;
@@ -200,8 +201,8 @@ function montarRota() {
     const em = (t, lado) => a.clone().addScaledVector(d, t).addScaledVector(perp, lado);
     const tipo = TRECHOS[(i - 1) % TRECHOS.length];
     if (tipo === 'rotatoria') {
-      const R = 2.1;
-      const centro = em(0.5, 1.3);
+      const R = 2.6;
+      const centro = em(0.5, 1.6);
       PRACAS.push({ forma: 'rotatoria', x: centro.x, z: centro.z, r: R });
       const ang0 = Math.atan2(a.z - centro.z, a.x - centro.x), ang1 = Math.atan2(b.z - centro.z, b.x - centro.x);
       let dAng = ang1 - ang0;
@@ -212,18 +213,18 @@ function montarRota() {
         ctrl.push(new THREE.Vector3(centro.x + Math.cos(ang) * (R + 0.2), 0, centro.z + Math.sin(ang) * (R + 0.2)));
       }
     } else if (tipo === 's') {
-      ctrl.push(em(0.3, 1.7), em(0.7, -1.7));
-      const lago = em(0.7, 2.3);
-      PRACAS.push({ forma: 'parque', x: lago.x, z: lago.z, rx: 2.0, rz: 1.3 });
+      ctrl.push(em(0.3, 2.6), em(0.7, -2.6));
+      const lago = em(0.68, 4.2);
+      PRACAS.push({ forma: 'parque', x: lago.x, z: lago.z, rx: 2.6, rz: 1.7 });
     } else {
-      ctrl.push(em(0.25, 2.0), em(0.5, 2.7), em(0.75, 2.0));
-      const praca = em(0.5, 0.9);
-      PRACAS.push({ forma: 'quadrada', x: praca.x, z: praca.z, meia: 0.95 });
+      ctrl.push(em(0.25, 3.0), em(0.5, 4.0), em(0.75, 3.0));
+      const praca = em(0.5, 1.5);
+      PRACAS.push({ forma: 'quadrada', x: praca.x, z: praca.z, meia: 1.2 });
     }
     ctrl.push(b.clone());
   }
   // soltas, cada uma de um jeito, longe da rota e uma da outra
-  const hex = ponto([-14, -9]), comprido = ponto([12, 9]);
+  const hex = ponto([-22, -16]), comprido = ponto([20, 15]);
   PRACAS.push({ forma: 'hex', x: hex.x, z: hex.z, r: 1.5 });
   PRACAS.push({ forma: 'parque', x: comprido.x, z: comprido.z, rx: 1.1, rz: 2.4 });
   // curva suave por todos os pontos, amostrada a cada ~0.12; cada empresa
@@ -321,7 +322,7 @@ function montar() {
   const arvores = new THREE.InstancedMesh(geoArv, new THREE.MeshBasicMaterial({ color: 0x1fd6a0 }), N * N);
   const geoPraca = new THREE.PlaneGeometry(1, 1); geoPraca.rotateX(-Math.PI / 2);
   const pracas = new THREE.InstancedMesh(geoPraca, new THREE.MeshBasicMaterial({ color: 0x0d3b3a }), N * N);
-  const paineis = new THREE.InstancedMesh(new THREE.PlaneGeometry(0.5, 0.28), new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide }), 140);
+  const paineis = new THREE.InstancedMesh(new THREE.PlaneGeometry(0.5, 0.28), new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide }), 400);
   const m = new THREE.Matrix4(), q = new THREE.Quaternion(), c = new THREE.Color(), eu = new THREE.Euler();
   let nc = 0, nl = 0, na = 0, np = 0, nh = 0;
   const POR = (x, y, z, sx, sy, sz, ry = 0) => m.compose(new THREE.Vector3(x, y, z), q.setFromEuler(eu.set(0, ry, 0)), new THREE.Vector3(sx, sy, sz));
@@ -344,13 +345,14 @@ function montar() {
         for (let a = 0; a < 4; a++) { POR(x - 0.3 + sorte() * 0.6, 0, z - 0.3 + sorte() * 0.6, 1, 0.7 + sorte() * 0.6, 1); arvores.setMatrixAt(na++, m); }
         continue;
       }
-      // centro mais alto, borda mais baixa
-      const alturaBase = 0.1 + Math.max(0, 1 - centro / 22) * 0.9;
-      if (tipo < 0.14 && centro < 18) {
+      // cada empresa (e o centro) puxa um miolo de prédios altos em volta
+      const miolo = Math.min(centro, perto(x, z));
+      const alturaBase = 0.12 + Math.max(0, 1 - miolo / 17) * 0.88;
+      if (tipo < 0.14 && miolo < 15) {
         // torre cilíndrica
         const h = alturaBase * (1.5 + sorte() * 2.2);
         POR(x, 0, z, 0.7, h, 0.7); cilindros.setMatrixAt(nl, m); cilindros.setColorAt(nl++, tom(0.9));
-        if (nh < 140 && sorte() < 0.5) { POR(x + 0.36, h * 0.7, z, 1, 1, 1, Math.PI / 2); paineis.setMatrixAt(nh, m); paineis.setColorAt(nh++, c.setHex(NEON[Math.floor(sorte() * 4)])); }
+        if (nh < 400 && sorte() < 0.5) { POR(x + 0.36, h * 0.7, z, 1, 1, 1, Math.PI / 2); paineis.setMatrixAt(nh, m); paineis.setColorAt(nh++, c.setHex(NEON[Math.floor(sorte() * 4)])); }
         continue;
       }
       if (tipo < 0.34) {
@@ -358,7 +360,7 @@ function montar() {
         const h1 = alturaBase * (0.4 + sorte() * 0.6), h2 = alturaBase * (0.5 + sorte() * 1.4);
         POR(x, 0, z, 0.9, h1, 0.9); caixas.setMatrixAt(nc, m); caixas.setColorAt(nc++, tom(0.75));
         POR(x + (sorte() - 0.5) * 0.2, h1, z + (sorte() - 0.5) * 0.2, 0.55, h2, 0.55); caixas.setMatrixAt(nc, m); caixas.setColorAt(nc++, tom(1));
-        if (nh < 140 && sorte() < 0.25) { POR(x, h1 + h2 * 0.6, z + 0.28, 1, 1, 1); paineis.setMatrixAt(nh, m); paineis.setColorAt(nh++, c.setHex(NEON[Math.floor(sorte() * 4)])); }
+        if (nh < 400 && sorte() < 0.25) { POR(x, h1 + h2 * 0.6, z + 0.28, 1, 1, 1); paineis.setMatrixAt(nh, m); paineis.setColorAt(nh++, c.setHex(NEON[Math.floor(sorte() * 4)])); }
         continue;
       }
       if (tipo < 0.46) {
@@ -806,11 +808,11 @@ function escolher(i, som = true) {
 /* ---------- Sandevistan ---------- */
 // velocidade no chão do Sandy (unidades por segundo): sempre a mesma, então
 // trecho curto termina mais cedo em vez de ser percorrido devagar
-const VELOCIDADE_SANDY = 13;
+const VELOCIDADE_SANDY = 9;
 function ligarSandy(de, para) {
   tocar('sandy-entra');
   const caminho = caminhoEntre(de, para);
-  sandy.dur = Math.min(2.4, Math.max(1, caminho.getLength() / VELOCIDADE_SANDY));
+  sandy.dur = Math.min(4.5, Math.max(1.5, caminho.getLength() / VELOCIDADE_SANDY));
   if (corredor.modelo) {
     corredor.caminho = caminho;
     // sai de dentro do prédio: aparece no centro e já corre
