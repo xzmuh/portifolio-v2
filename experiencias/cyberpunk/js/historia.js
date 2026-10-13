@@ -2,7 +2,8 @@
  * História: mapa de cidade em 3D no molde do mapa do Cyberpunk 2077.
  *
  * A cidade tem bairros com tons diferentes, prédios de vários formatos, rio,
- * praças e rotatórias redondas, um elevado com tráfego e painéis holográficos. Cada empresa é um
+ * praças de formas diferentes (rotatória, parque com lago, quadrada,
+ * hexagonal), um elevado com tráfego e painéis holográficos. Cada empresa é um
  * prédio-marco com a identidade dela (cores, forma do logo e o logo num
  * painel). A rota amarela liga as empresas na ordem da carreira.
  *
@@ -172,41 +173,59 @@ function marco(e) {
   return { g, anima, anelChao, painel };
 }
 
-/* ---------- rota curva e rotatórias ----------
- * Entre uma empresa e a próxima a rota passa por uma rotatória e contorna
- * parte dela, então o corredor faz curva em vez de só andar reto e descer.
- * A rotatória fica no meio do trecho, puxada para um lado (BOJO, alternando)
- * para a volta aparecer. Mais algumas praças redondas soltas pela cidade. */
+/* ---------- rota e praças ----------
+ * Cada trecho da rota tem um traçado próprio, para a corrida não repetir:
+ *   rotatoria  contorna uma rotatória grande (a única do mapa)
+ *   s          curva em S, passando ao lado de um parque oval com lago
+ *   arco       arco largo abraçando uma praça quadrada com chafariz
+ * As praças soltas também variam de forma e ficam longe umas das outras.
+ * Formas: rotatoria (r), parque (rx, rz, com lago), quadrada (meia),
+ * hex (r, com torre holográfica). */
 const PRACAS = [];
-const R_PRACA = 1.7, BOJO = 1.1;
+const TRECHOS = ['rotatoria', 's', 'arco'];
+function dentroPraca(pr, x, z, folga) {
+  const dx = x - pr.x, dz = z - pr.z;
+  if (pr.forma === 'parque') return (dx / (pr.rx + folga)) ** 2 + (dz / (pr.rz + folga)) ** 2 < 1;
+  if (pr.forma === 'quadrada') return Math.abs(dx) < pr.meia + folga && Math.abs(dz) < pr.meia + folga;
+  return Math.hypot(dx, dz) < pr.r + folga;
+}
 function montarRota() {
   const lotes = EMPRESAS.map((e) => ponto(e.lote));
   const ctrl = [lotes[0].clone()];
   for (let i = 1; i < lotes.length; i++) {
     const a = lotes[i - 1], b = lotes[i];
-    const meio = a.clone().add(b).multiplyScalar(0.5);
-    const dir = b.clone().sub(a).normalize();
-    const lado = i % 2 ? 1 : -1;
-    const centro = meio.clone().add(new THREE.Vector3(-dir.z, 0, dir.x).multiplyScalar(BOJO * lado));
-    PRACAS.push({ x: centro.x, z: centro.z, r: R_PRACA, monumento: 0.9 + i * 0.25, cor: [0xfcee0a, 0x00f0ff, 0xff2a6d][i % 3] });
-    // entra pelo lado de a e sai pelo lado de b, rodando pelo anel (o lado
-    // de fora do bojo, já que o centro foi puxado para longe da reta)
-    const ang0 = Math.atan2(a.z - centro.z, a.x - centro.x), ang1 = Math.atan2(b.z - centro.z, b.x - centro.x);
-    let dAng = ang1 - ang0;
-    while (dAng > Math.PI) dAng -= Math.PI * 2;
-    while (dAng < -Math.PI) dAng += Math.PI * 2;
-    const passos = 10, raio = R_PRACA + 0.2;
-    for (let k = 0; k <= passos; k++) {
-      const ang = ang0 + (dAng * k) / passos;
-      ctrl.push(new THREE.Vector3(centro.x + Math.cos(ang) * raio, 0, centro.z + Math.sin(ang) * raio));
+    const d = b.clone().sub(a);
+    const dir = d.clone().normalize();
+    const perp = new THREE.Vector3(-dir.z, 0, dir.x);
+    const em = (t, lado) => a.clone().addScaledVector(d, t).addScaledVector(perp, lado);
+    const tipo = TRECHOS[(i - 1) % TRECHOS.length];
+    if (tipo === 'rotatoria') {
+      const R = 2.1;
+      const centro = em(0.5, 1.3);
+      PRACAS.push({ forma: 'rotatoria', x: centro.x, z: centro.z, r: R });
+      const ang0 = Math.atan2(a.z - centro.z, a.x - centro.x), ang1 = Math.atan2(b.z - centro.z, b.x - centro.x);
+      let dAng = ang1 - ang0;
+      while (dAng > Math.PI) dAng -= Math.PI * 2;
+      while (dAng < -Math.PI) dAng += Math.PI * 2;
+      for (let k = 0; k <= 12; k++) {
+        const ang = ang0 + (dAng * k) / 12;
+        ctrl.push(new THREE.Vector3(centro.x + Math.cos(ang) * (R + 0.2), 0, centro.z + Math.sin(ang) * (R + 0.2)));
+      }
+    } else if (tipo === 's') {
+      ctrl.push(em(0.3, 1.7), em(0.7, -1.7));
+      const lago = em(0.7, 2.3);
+      PRACAS.push({ forma: 'parque', x: lago.x, z: lago.z, rx: 2.0, rz: 1.3 });
+    } else {
+      ctrl.push(em(0.25, 2.0), em(0.5, 2.7), em(0.75, 2.0));
+      const praca = em(0.5, 0.9);
+      PRACAS.push({ forma: 'quadrada', x: praca.x, z: praca.z, meia: 0.95 });
     }
     ctrl.push(b.clone());
   }
-  // praças soltas pela cidade
-  for (const [x, z, r] of [[-13, -9, 1.5], [11, 7, 1.6], [-4, -14, 1.3], [16, 3, 1.2], [-15, 2, 1.3]]) {
-    const pr = ponto([x, z]);
-    PRACAS.push({ x: pr.x, z: pr.z, r, monumento: 0.6 + r * 0.3, cor: 0x9b3cff });
-  }
+  // soltas, cada uma de um jeito, longe da rota e uma da outra
+  const hex = ponto([-14, -9]), comprido = ponto([12, 9]);
+  PRACAS.push({ forma: 'hex', x: hex.x, z: hex.z, r: 1.5 });
+  PRACAS.push({ forma: 'parque', x: comprido.x, z: comprido.z, rx: 1.1, rz: 2.4 });
   // curva suave por todos os pontos, amostrada a cada ~0.12; cada empresa
   // vira um índice exato dentro da lista
   const curva = new THREE.CatmullRomCurve3(ctrl, false, 'centripetal');
@@ -287,7 +306,7 @@ function montar() {
   // rota amarela e rotatórias primeiro: os prédios abrem espaço para elas
   montarRota();
   const pertoRota = (x, z) => { let d = Infinity; for (const p of rota.pts) d = Math.min(d, (x - p.x) ** 2 + (z - p.z) ** 2); return Math.sqrt(d); };
-  const naPraca = (x, z, folga) => PRACAS.some((pr) => Math.hypot(x - pr.x, z - pr.z) < pr.r + folga);
+  const naPraca = (x, z, folga) => PRACAS.some((pr) => dentroPraca(pr, x, z, folga));
 
   // tipos de prédio em malhas instanciadas
   const geoCaixa = new THREE.BoxGeometry(1, 1, 1); geoCaixa.translate(0, 0.5, 0);
@@ -370,30 +389,64 @@ function montar() {
       POR(x, 0, z, lado, h, lado); caixas.setMatrixAt(nc, m); caixas.setColorAt(nc++, tom(0.65 + sorte() * 0.4));
     }
   }
-  // rotatórias: gramado redondo, anel de rua neon, árvores em roda e um
-  // monumento aceso no meio
+  // praças: cada forma com o seu desenho
+  const plano = (geo, mat, x, z, y = 0.007) => { const o = new THREE.Mesh(geo, mat); o.rotation.x = -Math.PI / 2; o.position.set(x, y, z); cena.add(o); return o; };
+  const arvore = (x, z, k = 1) => { POR(x, 0, z, k, k * (0.8 + sorte() * 0.6), k); arvores.setMatrixAt(na++, m); };
   const matGrama = new THREE.MeshBasicMaterial({ color: 0x0d3b3a });
-  const matAnel = new THREE.MeshBasicMaterial({ color: COR.rua, transparent: true, opacity: 0.85, side: THREE.DoubleSide });
-  const matAnelFraco = new THREE.MeshBasicMaterial({ color: COR.rua, transparent: true, opacity: 0.25, side: THREE.DoubleSide });
+  const matPiso = new THREE.MeshBasicMaterial({ color: 0x1b1240 });
+  const matLago = new THREE.MeshBasicMaterial({ color: 0x0a2350 });
   const matMonu = new THREE.MeshLambertMaterial({ color: 0x3a1d5c });
+  const linhaNeon = (cor, op) => new THREE.MeshBasicMaterial({ color: cor, transparent: true, opacity: op, side: THREE.DoubleSide });
   for (const pr of PRACAS) {
-    const grama = new THREE.Mesh(new THREE.CircleGeometry(pr.r - 0.25, 40), matGrama);
-    grama.rotation.x = -Math.PI / 2; grama.position.set(pr.x, 0.007, pr.z);
-    const anel = new THREE.Mesh(new THREE.RingGeometry(pr.r - 0.05, pr.r + 0.05, 64), matAnel);
-    anel.rotation.x = -Math.PI / 2; anel.position.set(pr.x, 0.009, pr.z);
-    const anelFora = new THREE.Mesh(new THREE.RingGeometry(pr.r + 0.38, pr.r + 0.42, 64), matAnelFraco);
-    anelFora.rotation.x = -Math.PI / 2; anelFora.position.set(pr.x, 0.009, pr.z);
-    const base = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.4, 0.12, 20), matMonu);
-    base.position.set(pr.x, 0.06, pr.z);
-    const agulha = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.09, pr.monumento, 8), matMonu);
-    agulha.position.set(pr.x, 0.12 + pr.monumento / 2, pr.z);
-    const halo = new THREE.Mesh(new THREE.TorusGeometry(0.22, 0.015, 6, 32), new THREE.MeshBasicMaterial({ color: pr.cor }));
-    halo.rotation.x = Math.PI / 2; halo.position.set(pr.x, 0.12 + pr.monumento * 0.7, pr.z);
-    cena.add(grama, anel, anelFora, base, agulha, halo);
-    const nArv = Math.round(pr.r * 9);
-    for (let a = 0; a < nArv; a++) {
-      const ang = (a / nArv) * Math.PI * 2, rr = pr.r - 0.45 - (a % 2) * 0.25;
-      POR(pr.x + Math.cos(ang) * rr, 0, pr.z + Math.sin(ang) * rr, 1, 0.8 + sorte() * 0.6, 1); arvores.setMatrixAt(na++, m);
+    if (pr.forma === 'rotatoria') {
+      // gramado redondo, dois anéis de rua e um obelisco amarelo no meio
+      plano(new THREE.CircleGeometry(pr.r - 0.25, 48), matGrama, pr.x, pr.z);
+      plano(new THREE.RingGeometry(pr.r - 0.05, pr.r + 0.05, 72), linhaNeon(COR.rua, 0.85), pr.x, pr.z, 0.009);
+      plano(new THREE.RingGeometry(pr.r + 0.38, pr.r + 0.42, 72), linhaNeon(COR.rua, 0.25), pr.x, pr.z, 0.009);
+      const agulha = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.12, 1.6, 4), matMonu);
+      agulha.position.set(pr.x, 0.8, pr.z);
+      const halo = new THREE.Mesh(new THREE.TorusGeometry(0.26, 0.018, 6, 32), new THREE.MeshBasicMaterial({ color: COR.rota }));
+      halo.rotation.x = Math.PI / 2; halo.position.set(pr.x, 1.15, pr.z);
+      cena.add(agulha, halo);
+      const n = 20;
+      for (let k = 0; k < n; k++) { const ang = (k / n) * Math.PI * 2, rr = pr.r - 0.45 - (k % 2) * 0.3; arvore(pr.x + Math.cos(ang) * rr, pr.z + Math.sin(ang) * rr); }
+    } else if (pr.forma === 'parque') {
+      // gramado oval, lago no meio com borda ciano e árvores soltas em volta
+      plano(new THREE.CircleGeometry(1, 48), matGrama, pr.x, pr.z).scale.set(pr.rx, pr.rz, 1);
+      plano(new THREE.CircleGeometry(1, 40), matLago, pr.x + pr.rx * 0.12, pr.z, 0.009).scale.set(pr.rx * 0.5, pr.rz * 0.45, 1);
+      plano(new THREE.RingGeometry(0.97, 1, 48), linhaNeon(COR.rua, 0.7), pr.x + pr.rx * 0.12, pr.z, 0.01).scale.set(pr.rx * 0.5, pr.rz * 0.45, 1);
+      plano(new THREE.RingGeometry(0.985, 1, 48), linhaNeon(0x1fd6a0, 0.5), pr.x, pr.z, 0.01).scale.set(pr.rx, pr.rz, 1);
+      for (let k = 0; k < 26; k++) {
+        const ang = sorte() * Math.PI * 2, rr = 0.62 + sorte() * 0.3;
+        arvore(pr.x + Math.cos(ang) * pr.rx * rr, pr.z + Math.sin(ang) * pr.rz * rr, 0.8 + sorte() * 0.7);
+      }
+    } else if (pr.forma === 'quadrada') {
+      // piso de pedra com borda rosa, chafariz ciano e uma árvore em cada canto
+      plano(new THREE.PlaneGeometry(pr.meia * 2, pr.meia * 2), matPiso, pr.x, pr.z);
+      const borda = new THREE.EdgesGeometry(new THREE.PlaneGeometry(pr.meia * 2, pr.meia * 2));
+      const contorno = new THREE.LineSegments(borda, new THREE.LineBasicMaterial({ color: 0xff2a6d }));
+      contorno.rotation.x = -Math.PI / 2; contorno.position.set(pr.x, 0.012, pr.z); cena.add(contorno);
+      const bacia = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.44, 0.08, 24), matMonu);
+      bacia.position.set(pr.x, 0.04, pr.z);
+      const agua = new THREE.Mesh(new THREE.CircleGeometry(0.36, 24), new THREE.MeshBasicMaterial({ color: COR.rua }));
+      agua.rotation.x = -Math.PI / 2; agua.position.set(pr.x, 0.085, pr.z);
+      const jato = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.05, 0.5, 6), new THREE.MeshBasicMaterial({ color: 0x9ff8ff, transparent: true, opacity: 0.7 }));
+      jato.position.set(pr.x, 0.33, pr.z);
+      cena.add(bacia, agua, jato);
+      const c0 = pr.meia - 0.25;
+      for (const [sx, sz] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) arvore(pr.x + sx * c0, pr.z + sz * c0, 1.4);
+    } else {
+      // hexágono de piso, seis árvores nas pontas e torre holográfica rosa
+      plano(new THREE.CircleGeometry(pr.r, 6), matPiso, pr.x, pr.z);
+      plano(new THREE.RingGeometry(pr.r - 0.04, pr.r, 6), linhaNeon(0x9b3cff, 0.9), pr.x, pr.z, 0.009);
+      const torre = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.2, 2.4, 6), matMonu);
+      torre.position.set(pr.x, 1.2, pr.z);
+      cena.add(torre);
+      for (let k = 0; k < 3; k++) {
+        const anel = new THREE.Mesh(new THREE.TorusGeometry(0.34 - k * 0.07, 0.014, 6, 6), new THREE.MeshBasicMaterial({ color: 0xff2a6d }));
+        anel.rotation.x = Math.PI / 2; anel.position.set(pr.x, 0.9 + k * 0.55, pr.z); cena.add(anel);
+      }
+      for (let k = 0; k < 6; k++) { const ang = (k / 6) * Math.PI * 2; arvore(pr.x + Math.cos(ang) * (pr.r - 0.3), pr.z + Math.sin(ang) * (pr.r - 0.3), 1.2); }
     }
   }
 
