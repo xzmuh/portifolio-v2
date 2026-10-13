@@ -291,7 +291,7 @@ const faixa = (campo) => {
   const soma = (ordem) => PARTES.reduce((s, p) => s + [...p.opcoes].sort((a, b) => ordem * (b[campo] - a[campo])).slice(0, p.slots).reduce((t, o) => t + o[campo], 0), 0);
   return { min: soma(-1), max: soma(1) };
 };
-const FAIXA_CAP = faixa('nivel'), FAIXA_ARM = faixa('armadura');
+const FAIXA_ARM = faixa('armadura');
 const ARM_MAX = FAIXA_ARM.max;
 const naFaixa = (v, f) => 0.12 + 0.8 * ((v - f.min) / Math.max(1, f.max - f.min));
 const somar = (campo) => PARTES.reduce((s, p) => s + instalado[p.id].reduce((t, id) => t + IMPLANTE[id][campo], 0), 0);
@@ -335,19 +335,20 @@ function desenharMedidores() {
   const usados = somar('nivel'), arm = somar('armadura');
   // capacidade: a barra amarela enche a régua toda (limite = topo)
   const barras = $('[data-barras-cap]');
-  const fracCap = naFaixa(usados, FAIXA_CAP);
+  // proporção real: em uso / capacidade total (a linha do limite fica no topo)
+  const fracCap = (usados / capacidade) * 0.92;
   barras.style.setProperty('--limite', '92%');
   barras.style.setProperty('--uso', fracCap * 100 + '%');
   const yLimite = REGUA.topo + REGUA.alt * (1 - 0.92);
   const yUso = REGUA.topo + REGUA.alt * (1 - fracCap);
   const total = $('[data-cap-total]');
-  total.textContent = FAIXA_CAP.max;
+  total.textContent = capacidade;
   total.style.top = (yLimite - 26) + 'px';
   const uso = $('[data-cap-uso]');
   contar(uso, usados);
   uso.style.top = (yUso - 12) + 'px';
   $('[data-cap-delta]').style.top = (yUso + 16) + 'px';
-  $('[data-info-cap]').innerHTML = `<b>Capacidade</b>${usados} de ${FAIXA_CAP.max} em uso. Implante mais raro custa mais. Troque no zoom de cada parte ou escolha uma build embaixo.`;
+  $('[data-info-cap]').innerHTML = `<b>Capacidade</b>${usados} de ${capacidade} em uso. Implante mais raro custa mais. Troque no zoom de cada parte ou escolha uma build embaixo.`;
 
   // armadura: proporcional ao máximo possível
   const fracArm = naFaixa(arm, FAIXA_ARM);
