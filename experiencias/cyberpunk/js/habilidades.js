@@ -1,7 +1,7 @@
 /*
- * Tela Habilidades: árvore de competências no molde da árvore de perks do
- * Cyberpunk 2077 2.0: principais grandes, satélites presos dos
- * lados, trilhos grossos. Abas de categoria (Q/E), card ao passar o mouse
+ * Tela Habilidades: árvore de competências no molde da árvore Relic do
+ * Cyberpunk 2077: nós octogonais acesos, trilhos duplos com dobras de 45°
+ * abrindo do nó central para as pontas. Abas de categoria (Q/E), card ao passar o mouse
  * dizendo o que é cada tecnologia.
  */
 import { CATEGORIAS } from './dados-habilidades.js';
@@ -42,10 +42,13 @@ const ICONES = {
   cadeado: 'M6 11h12v9H6zM9 11V8a3 3 0 0 1 6 0v3M12 15v2',
 };
 
-// grade da árvore no palco (1600x900): col -3..3 a partir do centro, lin 0..3
-const ARVORE = { cx: 800, passoX: 175, y0: 245, passoY: 140 };
-const TAM = { principal: 72, lenda: 88, sat: 42 };
-const posNo = (n) => ({ x: ARVORE.cx + n.col * ARVORE.passoX, y: ARVORE.y0 + n.lin * ARVORE.passoY });
+// árvore no palco (1600x900): os nós guardam x,y a partir do nó central
+const CENTRO = { x: 800, y: 480 };
+// espaçamento: só a altura abre; na largura as pontas (±520) já encostam nos
+// 1180 px que a tela garante no celular (LARGURA_MIN em tela.js)
+const ABRE = 1.15;
+const TAM = { raiz: 108, no: 82 };
+const posNo = (n) => ({ x: CENTRO.x + n.x, y: CENTRO.y + n.y * ABRE });
 
 const raiz = document.querySelector('.habilidades');
 const $ = (s) => raiz.querySelector(s);
@@ -67,37 +70,32 @@ CATEGORIAS.forEach((c, i) => {
   abasEl.append(b);
 });
 
-// satélites em volta do principal: com 2, um de cada lado; com 4, dois de cada
-function posSatelites(n) {
-  const { x, y } = posNo(n);
-  const dx = TAM.principal / 2 + 30 + TAM.sat / 2;
-  const q = (n.sat || []).length;
-  return (n.sat || []).map((s, i) => {
-    const lado = i % 2 === 0 ? -1 : 1;
-    // com 2, ficam um pouco acima: o trilho que chega pelo lado passa por baixo
-    const dy = q <= 2 ? -(TAM.sat / 2 + 4) : (i < 2 ? -1 : 1) * (TAM.sat / 2 + 6);
-    return { ...s, x: x + lado * dx, y: y + dy, lado };
-  });
+/* Trilho como na Relic: só retas e dobras de 45°. Galho mais alto que largo
+   sai na vertical e entra na diagonal; mais largo que alto sai na diagonal e
+   entra na horizontal. O que sai na vertical nasce deslocado para o lado do
+   filho, então dois irmãos (um pra cada lado) sobem paralelos e não colados. */
+const DESVIO = 12;
+function trilho(a, b) {
+  const dx = b.x - a.x, dy = b.y - a.y;
+  const sx = Math.sign(dx), sy = Math.sign(dy);
+  if (!dx || !dy) return `M${a.x} ${a.y}L${b.x} ${b.y}`;
+  if (Math.abs(dy) >= Math.abs(dx)) {
+    const x0 = a.x + sx * DESVIO;
+    return `M${x0} ${a.y}V${b.y - sy * Math.abs(b.x - x0)}L${b.x} ${b.y}`;
+  }
+  return `M${a.x} ${a.y}L${a.x + sx * Math.abs(dy)} ${b.y}H${b.x}`;
+}
+// trilho duplo: uma faixa larga com o miolo escuro por cima vira duas linhas
+function linha(d, estado) {
+  for (const camada of ['brilho', 'faixa', 'miolo']) {
+    const p = document.createElementNS(SVG, 'path');
+    p.setAttribute('d', d);
+    p.setAttribute('class', `hab_trilho hab_trilho--${camada} hab_trilho--${estado}`);
+    trilhasEl.append(p);
+  }
 }
 
-// trilho ortogonal com cantos arredondados
-function trilho(a, b, raio = 16) {
-  if (a.x === b.x || a.y === b.y) return `M${a.x} ${a.y}L${b.x} ${b.y}`;
-  // dobra logo depois de sair do pai, longe dos nomes que ficam embaixo dos nós
-  const sy = Math.sign(b.y - a.y);
-  const meio = a.y + sy * (TAM.principal / 2 + 14);
-  const sx = Math.sign(b.x - a.x);
-  const r = Math.min(raio, Math.abs(b.x - a.x) / 2, Math.abs(meio - a.y));
-  return `M${a.x} ${a.y}V${meio - sy * r}Q${a.x} ${meio} ${a.x + sx * r} ${meio}H${b.x - sx * r}Q${b.x} ${meio} ${b.x} ${meio + sy * r}V${b.y}`;
-}
-function linha(d, classe) {
-  const p = document.createElementNS(SVG, 'path');
-  p.setAttribute('d', d);
-  p.setAttribute('class', classe);
-  trilhasEl.append(p);
-}
-
-function criarNo({ classe, x, y, tam, icone, rotulo, conta, ver, arte }) {
+function criarNo({ classe, x, y, tam, icone, rotulo, ver, arte }) {
   const b = document.createElement('button');
   b.type = 'button';
   b.className = classe;
@@ -105,8 +103,7 @@ function criarNo({ classe, x, y, tam, icone, rotulo, conta, ver, arte }) {
   b.style.top = y - tam / 2 + 'px';
   b.style.width = b.style.height = tam + 'px';
   b.setAttribute('aria-label', rotulo);
-  b.innerHTML = `<svg class="hab_icone" viewBox="0 0 24 24" aria-hidden="true"><path d="${ICONES[icone] || ICONES.chip}"/></svg>`
-    + (conta ? `<span class="hab_conta">${conta}</span>` : '');
+  b.innerHTML = `<svg class="hab_icone" viewBox="0 0 24 24" aria-hidden="true"><path d="${ICONES[icone] || ICONES.chip}"/></svg>`;
   // ilustração gravada (img/perks), pintada na cor do estado; sem ela, fica o ícone
   if (arte) {
     const teste = new Image();
@@ -137,37 +134,18 @@ function mostrarCategoria(i) {
   esconderCard();
   trilhasEl.innerHTML = '';
   const porId = Object.fromEntries(cat.nos.map((n) => [n.id, n]));
-  const nos = [];
 
-  // trilhos grossos entre principais
   for (const n of cat.nos) {
     const pai = porId[n.pai];
-    if (!pai) continue;
-    const d = trilho(posNo(pai), posNo(n));
-    linha(d, 'hab_trilho hab_trilho--fundo');
-    linha(d, `hab_trilho hab_trilho--${n.bloqueado ? 'meta' : 'aceso'}`);
+    if (pai) linha(trilho(posNo(pai), posNo(n)), n.bloqueado ? 'meta' : 'aceso');
   }
 
-  for (const n of cat.nos) {
+  const nos = cat.nos.map((n) => {
     const { x, y } = posNo(n);
-    // satélites e as ligações curtas até eles
-    for (const s of posSatelites(n)) {
-      // ligação reta na altura do satélite, da borda do principal até a borda dele
-      const borda = x + s.lado * (TAM.principal / 2);
-      const bordaSat = s.x - s.lado * (TAM.sat / 2);
-      const d = `M${borda} ${s.y}H${bordaSat}`;
-      linha(d, 'hab_ramal hab_ramal--aceso');
-      nos.push(criarNo({
-        classe: 'hab_no hab_no--sat hab_no--dominado',
-        x: s.x, y: s.y, tam: TAM.sat, icone: s.icone,
-        rotulo: s.nome,
-        ver: () => mostrarCard(s.x, s.y, TAM.sat, { nome: s.nome, texto: `Ferramenta de ${n.nome}.` }),
-      }));
-    }
-    const tam = n.bloqueado ? TAM.lenda : TAM.principal;
+    const tam = n.pai ? TAM.no : TAM.raiz;
     const no = criarNo({
-      classe: n.bloqueado ? 'hab_no hab_no--lenda hab_no--meta' : 'hab_no hab_no--principal hab_no--dominado',
-      x, y, tam, icone: n.bloqueado ? 'cadeado' : n.icone, arte: n.arte && `img/perks/${n.arte}.webp`,
+      classe: 'hab_no' + (n.pai ? '' : ' hab_no--raiz') + (n.bloqueado ? ' hab_no--meta' : ''),
+      x, y, tam, icone: n.bloqueado ? 'cadeado' : n.icone, arte: !n.bloqueado && n.arte && `img/perks/${n.arte}.webp`,
       rotulo: n.bloqueado ? `${n.nome}, bloqueado` : n.nome,
       ver: () => mostrarCard(x, y, tam, { nome: n.nome, texto: n.texto, bloqueado: n.bloqueado }),
     });
@@ -176,11 +154,11 @@ function mostrarCategoria(i) {
     nome.className = 'hab_nome';
     nome.textContent = n.nome;
     no.append(nome);
-    nos.push(no);
-    no.style.animationDelay = (3 - n.lin) * 60 + 'ms';
-  }
+    // acende do centro para as pontas
+    no.style.animationDelay = Math.round(Math.hypot(n.x, n.y) / 2) + 'ms';
+    return no;
+  });
   arvoreEl.replaceChildren(...nos);
-
 }
 
 function mostrarCard(x, y, tam, d) {

@@ -47,115 +47,88 @@ body[data-tela='habilidades'] .habilidades { display: block; }
   background: var(--vermelho-borda);
 }
 
-/* cores dos estados: ouro aceso (dominado), aço-ciano (em evolução), magenta escuro (meta) */
+/* cores: azul aceso da Relic para o que eu domino, magenta para as vagas trancadas */
 .habilidades {
-  --ouro: #ffc93c;
-  --ouro-fundo: #2b1c04;
-  --aco: #7cc6d6;
-  --aco-fundo: #0c1d27;
-  --meta: #c2306a;
+  --relic: #5ab8ff;
+  --relic-fundo: #08142a;
+  --meta: #ff2a8c;
   --meta-fundo: #1c0616;
 }
 
-/* trilhos: grossos, cantos arredondados, com uma sombra larga por baixo */
+/* trilhos duplos: brilho largo embaixo, faixa na cor e o miolo escuro que
+   separa a faixa em duas linhas */
 .hab_trilhas { position: absolute; inset: 0; width: 1600px; height: 900px; pointer-events: none; overflow: visible; }
-.hab_trilho { fill: none; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; }
-.hab_trilho--fundo { stroke: rgba(0, 0, 0, 0.55); stroke-width: 12; }
-.hab_trilho--aceso { stroke: var(--ouro); filter: drop-shadow(0 0 6px rgba(255, 201, 60, 0.6)); }
-.hab_trilho--frio { stroke: rgba(124, 198, 214, 0.55); }
-.hab_trilho--meta { stroke: rgba(194, 48, 106, 0.55); }
-.hab_ramal { fill: none; stroke-width: 3; stroke-linejoin: round; }
-.hab_ramal--aceso { stroke: rgba(255, 201, 60, 0.85); }
-.hab_ramal--meta { stroke: rgba(194, 48, 106, 0.5); }
+.hab_trilho { fill: none; stroke-linejoin: miter; stroke-linecap: butt; }
+.hab_trilho--brilho { stroke-width: 16; opacity: 0.16; filter: blur(4px); }
+.hab_trilho--faixa { stroke-width: 9; }
+.hab_trilho--miolo { stroke-width: 4; stroke: #0a0b22; }
+.hab_trilho--aceso.hab_trilho--brilho, .hab_trilho--aceso.hab_trilho--faixa { stroke: var(--relic); }
+.hab_trilho--aceso.hab_trilho--faixa { opacity: 0.8; }
+.hab_trilho--meta.hab_trilho--brilho, .hab_trilho--meta.hab_trilho--faixa { stroke: var(--meta); }
+.hab_trilho--meta.hab_trilho--faixa { opacity: 0.5; }
 
-/* nós */
+/* nós: octógono com moldura fina, miolo escuro e halo azul */
 .hab_arvore { position: absolute; inset: 0; pointer-events: none; }
-.hab_no { pointer-events: auto; }
 .hab_no {
   position: absolute;
   padding: 0;
   overflow: visible;
+  pointer-events: auto;
   animation: no-entra 0.35s steps(5) both;
   transition: transform 0.12s;
-  --cor: var(--ouro);
-  --fundo-no: var(--ouro-fundo);
+  --cor: var(--relic);
+  --fundo-no: var(--relic-fundo);
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--cor) 70%, transparent)) drop-shadow(0 0 18px color-mix(in srgb, var(--cor) 35%, transparent));
 }
-.hab_no--evolucao { --cor: var(--aco); --fundo-no: var(--aco-fundo); }
-.hab_no--meta { --cor: var(--meta); --fundo-no: var(--meta-fundo); }
-.hab_no::before { /* moldura grossa com canto cortado */
+.hab_no--meta { --cor: var(--meta); --fundo-no: var(--meta-fundo); filter: drop-shadow(0 0 6px rgba(255, 42, 140, 0.35)); }
+.hab_no::before, .hab_no::after {
   content: '';
   position: absolute;
-  inset: 0;
-  background: var(--cor);
-  clip-path: polygon(14% 0, 100% 0, 100% 86%, 86% 100%, 0 100%, 0 14%);
+  clip-path: polygon(29% 0, 71% 0, 100% 29%, 100% 71%, 71% 100%, 29% 100%, 0 71%, 0 29%);
 }
-.hab_no::after { /* miolo escuro dentro da moldura */
-  content: '';
-  position: absolute;
-  inset: 4px;
-  background: radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--cor) 22%, var(--fundo-no)), var(--fundo-no) 75%);
-  clip-path: polygon(14% 0, 100% 0, 100% 86%, 86% 100%, 0 100%, 0 14%);
+.hab_no::before { inset: 0; background: var(--cor); }
+.hab_no::after {
+  inset: 3px;
+  background: radial-gradient(circle at 50% 45%, color-mix(in srgb, var(--cor) 26%, var(--fundo-no)), var(--fundo-no) 72%);
 }
-.hab_no--dominado { filter: drop-shadow(0 0 10px rgba(255, 201, 60, 0.55)); }
-.hab_no--lenda::before, .hab_no--lenda::after { clip-path: polygon(30% 0, 70% 0, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0 70%, 0 30%); }
-.hab_no--lenda::after { inset: 5px; }
-.hab_no--sat::before, .hab_no--sat::after { clip-path: polygon(0 0, 100% 0, 100% 78%, 78% 100%, 0 100%); }
-.hab_no--sat::after { inset: 3px; }
+/* o central: moldura mais grossa e halo mais forte */
+.hab_no--raiz::after { inset: 4px; }
+.hab_no--raiz { filter: drop-shadow(0 0 8px color-mix(in srgb, var(--cor) 80%, transparent)) drop-shadow(0 0 26px color-mix(in srgb, var(--cor) 45%, transparent)); }
+.hab_no--meta::after { background: repeating-linear-gradient(135deg, rgba(255, 42, 140, 0.08) 0 4px, transparent 4px 9px), var(--fundo-no); }
 .hab_icone {
   position: absolute;
   z-index: 1;
-  inset: 24%;
-  width: 52%;
-  height: 52%;
+  inset: 27%;
+  width: 46%;
+  height: 46%;
   fill: none;
   stroke: var(--cor);
   stroke-width: 1.6;
   stroke-linecap: round;
   stroke-linejoin: round;
-  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--cor) 60%, transparent));
-}
-/* em evolução: o miolo enche de baixo até a fração do nível */
-.hab_no--principal.hab_no--evolucao::after {
-  background:
-    linear-gradient(0deg, color-mix(in srgb, var(--aco) 30%, transparent) var(--enche), transparent var(--enche)),
-    var(--aco-fundo);
-}
-/* contador numa abinha embaixo do principal */
-.hab_conta {
-  position: absolute;
-  z-index: 2;
-  left: 50%;
-  bottom: -10px;
-  transform: translateX(-50%);
-  padding: 0 6px;
-  font-size: 12px;
-  line-height: 1.2;
-  color: var(--cor);
-  background: var(--fundo-no);
-  border: 1.5px solid var(--cor);
 }
 .hab_nome {
   position: absolute;
   z-index: 2;
   left: 50%;
-  top: calc(100% + 12px);
+  top: calc(100% + 8px);
   transform: translateX(-50%);
-  /* fundo da cor da tela: o trilho que desce passa por trás, não por cima da letra */
+  /* fundo da cor da tela: o trilho que passa por baixo não corta a letra */
   width: max-content;
   max-width: 170px;
-  padding: 2px 6px;
-  background: #120a2e;
-  font-size: 12px;
+  padding: 1px 6px;
+  background: #0d0a26;
+  font-size: 13px;
   line-height: 1.15;
+  letter-spacing: 0.08em;
   text-align: center;
-  color: color-mix(in srgb, var(--cor) 85%, white);
+  color: color-mix(in srgb, var(--cor) 75%, white);
   pointer-events: none;
 }
-.hab_no--lenda .hab_nome { top: auto; bottom: calc(100% + 6px); }
-.hab_no:hover, .hab_no:focus-visible { outline: none; transform: scale(1.06); --cor: var(--ciano); }
+.hab_no:hover, .hab_no:focus-visible { outline: none; transform: scale(1.06); --cor: var(--amarelo); }
 @keyframes no-entra {
-  0% { opacity: 0; filter: brightness(2.4); }
-  60% { opacity: 1; filter: brightness(1.5); }
+  0% { opacity: 0; }
+  60% { opacity: 1; }
   100% { opacity: 1; }
 }
 
@@ -194,7 +167,7 @@ body[data-tela='habilidades'] .habilidades { display: block; }
 .hab_arte {
   position: absolute;
   z-index: 1;
-  inset: 9%;
+  inset: 14%;
   background: var(--cor);
   -webkit-mask-position: center;
   mask-position: center;
@@ -202,7 +175,6 @@ body[data-tela='habilidades'] .habilidades { display: block; }
   mask-size: contain;
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
-  filter: drop-shadow(0 0 3px color-mix(in srgb, var(--cor) 70%, transparent));
 }
 .hab_no--com-arte .hab_icone { display: none; }
-.hab_no--lenda .hab_arte { inset: 16%; }
+.hab_no--raiz .hab_arte { inset: 16%; }
