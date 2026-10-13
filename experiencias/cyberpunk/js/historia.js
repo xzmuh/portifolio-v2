@@ -892,6 +892,7 @@ function ligarSandy(de, para) {
     corredor.modelo.visible = true;
     corredor.modelo.scale.setScalar(ESCALA_CORREDOR);
     corredor.modelo.position.copy(corredor.caminho.getPoint(0));
+    cam.segue = corredor.caminho.getPoint(0).clone();
     corredor.acoes.idle?.stop();
     corredor.acoes.run?.reset().setEffectiveWeight(1).play(); // já sai correndo, sem misturar com o parado
   }
@@ -975,9 +976,14 @@ function quadro(agora) {
       let giro = rumo - (corredor.rumo ?? rumo);
       giro = Math.atan2(Math.sin(giro), Math.cos(giro));
       corredor.rumo = rumo;
-      corredor.curva = (corredor.curva ?? 0) * 0.85 + Math.max(-0.35, Math.min(0.35, giro * 6)) * 0.15;
+      // inclinação bem de leve e lenta: nas esquinas fechadas ela balançava a tela
+      corredor.curva = (corredor.curva ?? 0) * 0.94 + Math.max(-0.08, Math.min(0.08, giro * 2)) * 0.06;
       corredor.modelo.rotation.y = rumo;
-      cam.alvo.copy(p); // a câmera acompanha o corredor
+      // a câmera persegue o corredor com amortecimento: esquina e rotatória
+      // viram uma curva suave na tela, não um tranco
+      if (!cam.segue) cam.segue = p.clone();
+      cam.segue.lerp(p, 1 - Math.exp(-dt * 6));
+      cam.alvo.copy(cam.segue);
       posicionarCamera();
       if (agora - corredor.ultimoFantasma > 110) {
         corredor.ultimoFantasma = agora;
