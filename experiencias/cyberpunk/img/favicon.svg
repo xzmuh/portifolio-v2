@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <rect width="100" height="100" rx="14" fill="#07061a"/>
+  <path d="M8 90V10H18L44 52L70 10H80V90" transform="translate(12 6) matrix(0.95 0 -0.2 0.88 9 0)" fill="none" stroke="#fcee0a" stroke-width="13" stroke-linejoin="bevel"/>
+  <path d="M8 90V10H18L44 52L70 10H80V90" transform="translate(15 6) matrix(0.95 0 -0.2 0.88 9 0)" fill="none" stroke="#00e5ff" stroke-width="4" stroke-linejoin="bevel" opacity=".55"/>
+</svg>

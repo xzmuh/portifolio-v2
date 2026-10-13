@@ -1,0 +1,723 @@
+:root {
+  --fundo: #07061a;
+  --vermelho: #ff5fa2;
+  --vermelho-forte: #ff2a6d;
+  --vermelho-borda: rgba(255, 42, 140, 0.55);
+  --linha: rgba(255, 42, 140, 0.45);
+  --linha-fraca: rgba(255, 42, 140, 0.15);
+  --ciano: #00f0ff;
+  --verde: #b8ff2c;
+  --verde-barra: #2ff07a;
+  --amarelo: #fcee0a;
+  --fonte: 'Rajdhani', 'Arial Narrow', sans-serif;
+  --ease: cubic-bezier(0.65, 0, 0.25, 1);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background: var(--fundo);
+  color: var(--vermelho);
+  font-family: var(--fonte);
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 45% 60% at 50% 45%, rgba(120, 30, 160, 0.28), transparent 70%),
+    radial-gradient(ellipse 70% 50% at 50% 100%, rgba(0, 120, 200, 0.18), transparent 70%),
+    radial-gradient(ellipse 110% 90% at 50% 50%, #120a2e, var(--fundo) 75%);
+}
+
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; text-transform: inherit; letter-spacing: inherit; }
+a { color: inherit; text-decoration: none; }
+ul { list-style: none; }
+
+/* ---------- palco fixo 1600x900, escalado pelo JS ---------- */
+.palco {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1600px; /* o JS estica a largura conforme a janela (ver escalar em tela.js) */
+  height: 900px;
+  transform: translate(-50%, -50%) scale(var(--escala, 1));
+  text-transform: uppercase;
+  overflow: hidden; /* o zoom não vaza para fora da tela */
+}
+
+/* cruzinhas fracas no fundo, como a grade do jogo */
+.fundo {
+  position: absolute;
+  inset: 70px 200px 40px;
+  pointer-events: none;
+  opacity: 0.5;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96'%3E%3Cpath d='M43 48h10M48 43v10' stroke='%23ff2a8c' stroke-opacity='.3'/%3E%3C/svg%3E");
+  background-size: 96px 96px;
+}
+
+/* ---------- boneco e zoom ---------- */
+.mundo {
+  position: absolute;
+  left: 560px;
+  top: 92px;
+  width: 480px;
+  height: 720px;
+  pointer-events: none;
+  transform-origin: 0 0;
+  transition: transform 1s var(--ease);
+  z-index: 1;
+}
+.mundo_corpo { display: block; width: 100%; height: 100%; transition: opacity 0.55s ease; }
+.mundo_close {
+  position: absolute;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  /* borda bem suave: o close vai sumindo devagar até emendar no fundo */
+  -webkit-mask-image: radial-gradient(closest-side, #000 38%, rgba(0, 0, 0, 0.75) 58%, rgba(0, 0, 0, 0.3) 80%, transparent 100%);
+  mask-image: radial-gradient(closest-side, #000 38%, rgba(0, 0, 0, 0.75) 58%, rgba(0, 0, 0, 0.3) 80%, transparent 100%);
+}
+/* entrando no zoom: o corpo some enquanto o close aparece, cruzados */
+.palco--zoom .mundo_corpo { opacity: 0; transition-delay: 0.3s; }
+.efeitos { position: absolute; z-index: 1; pointer-events: none; opacity: 0; transition: opacity 0.35s ease; }
+.efeitos--on { opacity: 1; transition: opacity 0.6s ease 0.7s; }
+.palco--zoom .mundo_close.mundo_close--on { opacity: 1; transition-delay: 0.2s; }
+
+/* ---------- topo ---------- */
+.topo {
+  position: absolute;
+  left: 14px;
+  right: 34px;
+  top: 0;
+  height: 58px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 0 20px 6px;
+  border-bottom: 1px solid var(--linha);
+  z-index: 3;
+}
+.topo_stats { display: flex; gap: 52px; }
+.stat { display: flex; align-items: flex-start; gap: 6px; }
+.stat b { font-size: 32px; font-weight: 500; line-height: 1; }
+.stat > span { display: flex; flex-direction: column; gap: 4px; font-size: 19px; line-height: 1; padding-top: 3px; }
+.stat i { display: block; height: 3px; width: 100%; background: linear-gradient(90deg, currentColor 55%, transparent 55% 62%, rgba(255, 255, 255, 0.25) 62% 64%, transparent 64%); }
+.stat--nivel { color: var(--ciano); }
+.stat--cred { color: var(--verde); }
+
+.topo_abas { display: flex; align-items: center; gap: 10px; font-size: 17px; margin-bottom: -6px; }
+.aba { padding: 6px 8px 8px; color: var(--vermelho); border-bottom: 2px solid var(--vermelho-forte); }
+.aba--ativa { color: var(--ciano); border-color: var(--ciano); text-shadow: 0 0 10px rgba(0, 240, 255, 0.6); }
+.aba { border-bottom-color: rgba(255, 42, 140, 0.5); }
+.tecla {
+  display: inline-grid;
+  place-items: center;
+  min-width: 24px;
+  height: 26px;
+  padding: 0 5px;
+  border: 1.5px solid var(--ciano);
+  color: var(--ciano);
+  font-size: 15px;
+  line-height: 1;
+}
+.tecla--ciano { border-color: var(--ciano); color: var(--ciano); font-size: 11px; height: 22px; }
+
+.topo_recursos { display: flex; align-items: center; gap: 32px; }
+.contatos { display: flex; gap: 22px; }
+.contatos a { display: flex; align-items: center; gap: 7px; font-size: 16px; color: var(--vermelho); transition: color 0.12s; }
+.contatos img { width: 18px; height: 18px; filter: invert(52%) sepia(90%) saturate(3000%) hue-rotate(300deg) brightness(1.1); }
+.contatos a:hover, .contatos a:focus-visible { color: var(--ciano); outline: none; }
+.contatos a:hover img, .contatos a:focus-visible img { filter: invert(86%) sepia(40%) saturate(900%) hue-rotate(130deg); }
+.eddies { font-size: 22px; color: var(--amarelo); font-weight: 500; text-shadow: 0 0 10px rgba(252, 238, 10, 0.4); }
+
+/* ---------- medidores laterais ---------- */
+.medidor { position: absolute; top: 120px; width: 80px; height: 470px; z-index: 3; }
+.medidor--esq { left: 96px; }
+.medidor--dir { right: 116px; }
+.medidor_icone {
+  display: block;
+  width: 28px;
+  height: 28px;
+  margin: 0 auto 14px;
+  fill: none;
+  stroke: var(--amarelo);
+  stroke-width: 1.6;
+}
+.medidor--dir .medidor_icone { fill: var(--ciano); stroke: none; }
+.medidor_barras {
+  position: relative;
+  margin: 0 auto;
+  width: 54px;
+  height: 400px;
+  background:
+    repeating-linear-gradient(0deg, rgba(255, 42, 140, 0.22) 0 2px, transparent 2px 6px) 0 0 / 24px 100% no-repeat,
+    repeating-linear-gradient(0deg, rgba(255, 42, 140, 0.22) 0 2px, transparent 2px 6px) 30px 0 / 24px 100% no-repeat;
+}
+.medidor_barras::after { /* parte acesa, de baixo para cima */
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--uso, 0%);
+  background:
+    repeating-linear-gradient(0deg, var(--amarelo) 0 2px, transparent 2px 6px) 0 0 / 24px 100% no-repeat,
+    repeating-linear-gradient(0deg, var(--amarelo) 0 2px, transparent 2px 6px) 30px 0 / 24px 100% no-repeat;
+  opacity: 0.9;
+  transition: height 1s var(--ease);
+}
+.medidor--dir .medidor_barras::after {
+  background:
+    repeating-linear-gradient(0deg, rgba(0, 240, 255, 0.6) 0 2px, transparent 2px 6px) 0 0 / 24px 100% no-repeat,
+    repeating-linear-gradient(0deg, rgba(0, 240, 255, 0.6) 0 2px, transparent 2px 6px) 30px 0 / 24px 100% no-repeat;
+}
+.medidor_barras::before { /* linha do limite */
+  content: '';
+  position: absolute;
+  left: -30px;
+  width: 110px;
+  bottom: var(--limite, 100%);
+  height: 3px;
+  transition: bottom 0.5s var(--ease);
+  background: var(--vermelho-forte);
+  box-shadow: 0 0 10px var(--vermelho-forte);
+  z-index: 1;
+}
+.medidor--dir .medidor_barras::before { left: -10px; width: 74px; background: var(--ciano); box-shadow: 0 0 12px var(--ciano); bottom: var(--uso, 0%); }
+
+.medidor_total, .medidor_uso, .medidor_valor, .medidor_delta {
+  transition: top 0.5s var(--ease);
+}
+.medidor_total, .medidor_uso, .medidor_valor {
+  position: absolute;
+  padding: 1px 6px;
+  font-size: 20px;
+  line-height: 1.1;
+}
+.medidor_total { left: -52px; color: var(--vermelho); border: 1.5px solid var(--vermelho-forte); background: rgba(20, 6, 30, 0.9); }
+.medidor_uso { right: -58px; color: #120a00; background: var(--amarelo); box-shadow: 0 0 12px rgba(252, 238, 10, 0.5); }
+.medidor_valor { left: -112px; color: #00262b; background: var(--ciano); box-shadow: 0 0 12px rgba(0, 240, 255, 0.5); }
+
+.medidor_info {
+  position: absolute;
+  top: 40px;
+  width: 240px;
+  padding: 12px 14px;
+  background: rgba(14, 8, 30, 0.96);
+  border: 1px solid var(--vermelho-borda);
+  font-size: 15px;
+  text-transform: none;
+  color: #f3d9e8;
+  line-height: 1.35;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s;
+}
+.medidor--esq .medidor_info { left: 74px; }
+.medidor--dir .medidor_info { right: 74px; }
+.medidor_info b { display: block; font-size: 17px; text-transform: uppercase; color: var(--amarelo); margin-bottom: 4px; }
+.medidor--dir .medidor_info b { color: var(--ciano); }
+.medidor:hover .medidor_info { opacity: 1; }
+
+/* ---------- tela geral ---------- */
+.geral { position: absolute; inset: 0; transition: opacity 0.3s ease; z-index: 2; }
+.palco--zoom .geral { opacity: 0; pointer-events: none; }
+
+.parte { position: absolute; display: flex; flex-direction: column; gap: 8px; }
+.coluna--esq .parte { align-items: flex-end; }
+.coluna--dir .parte { align-items: flex-start; }
+.parte_nome {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--vermelho);
+  transition: color 0.12s, text-shadow 0.12s;
+}
+.parte_nome:hover, .parte_nome:focus-visible { outline: none; color: var(--ciano); text-shadow: 0 0 10px rgba(0, 240, 255, 0.6); }
+.parte_ponto { width: 6px; height: 6px; border-radius: 50%; background: var(--ciano); box-shadow: 0 0 6px var(--ciano); }
+
+.slots { display: flex; gap: 14px; }
+.slots--grade { display: grid; grid-template-columns: repeat(4, 82px); gap: 14px; }
+
+/* slot: borda vermelha, canto de baixo cortado, traços de circuito por dentro */
+.slot {
+  --corte: 16px;
+  position: relative;
+  width: 82px;
+  height: 82px;
+  flex: none;
+  background: var(--vermelho-borda);
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--corte)), calc(100% - var(--corte)) 100%, 0 100%);
+  transition: background 0.12s;
+}
+.slot::before {
+  content: '';
+  position: absolute;
+  inset: 1.5px;
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%);
+  background:
+    linear-gradient(135deg, transparent 46%, rgba(255, 42, 140, 0.14) 46% 48%, transparent 48%),
+    linear-gradient(135deg, transparent 30%, rgba(255, 42, 140, 0.08) 30% 31%, transparent 31%),
+    linear-gradient(160deg, #1d0c2e, #0d0718);
+}
+.slot_mais {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 30px;
+  font-weight: 500;
+  color: rgba(0, 240, 255, 0.6);
+}
+.slot--vazio { cursor: pointer; }
+
+/* instalado: borda escura, barra verde na esquerda, seta e canto ciano */
+.slot--cheio { cursor: pointer; background: rgba(0, 240, 255, 0.35); }
+.slot--cheio::before { background: radial-gradient(circle at 50% 45%, #1c1236, #0b0718 75%); }
+.slot_barra { position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: var(--cor, var(--verde-barra)); }
+.slot_canto { position: absolute; right: 0; bottom: 0; width: 22px; height: 22px; background: var(--cor, #e9eaeb); clip-path: polygon(100% 0, 100% 100%, 0 100%); }
+.slot_seta {
+  position: absolute;
+  right: 6px;
+  top: 6px;
+  width: 15px;
+  height: 13px;
+  border: 1px solid rgba(252, 238, 10, 0.75);
+  background: rgba(40, 34, 0, 0.6);
+}
+.slot_seta::after {
+  content: '';
+  position: absolute;
+  left: 2.5px;
+  top: 3px;
+  border: 4px solid transparent;
+  border-bottom: 5px solid var(--amarelo);
+  border-top: 0;
+}
+.slot_img {
+  position: absolute;
+  left: 18px;
+  top: 16px;
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  filter: invert(1) drop-shadow(0 0 6px rgba(255, 255, 255, 0.3));
+}
+.slot_sigla {
+  position: absolute;
+  inset: 0 0 0 5px;
+  display: grid;
+  place-items: center;
+  font-size: 20px;
+  font-weight: 700;
+  color: #f2f2f2;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.35);
+  text-transform: none;
+}
+.slot--cheio:hover, .slot--cheio:focus-visible, .slot--sel { outline: none; background: var(--ciano); box-shadow: 0 0 14px rgba(0, 240, 255, 0.5); }
+.slot--vazio:hover { background: var(--vermelho-forte); }
+.slots--grade .slot_canto { display: none; }
+
+/* ---------- zoom ---------- */
+.zoom {
+  position: absolute;
+  left: 310px;
+  top: 96px;
+  width: 380px;
+  z-index: 2;
+  opacity: 0;
+  transform: translateX(-20px);
+  transition: opacity 0.3s ease 0.35s, transform 0.5s var(--ease) 0.35s;
+}
+.palco--zoom .zoom { opacity: 1; transform: none; }
+.zoom_nav {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 42px;
+  padding: 0 8px;
+  background:
+    linear-gradient(var(--vermelho-borda), var(--vermelho-borda)) 0 0 / 100% 1px no-repeat,
+    linear-gradient(var(--vermelho-borda), var(--vermelho-borda)) 0 100% / 100% 1px no-repeat,
+    linear-gradient(var(--vermelho-borda), var(--vermelho-borda)) 0 0 / 1px 100% no-repeat,
+    linear-gradient(var(--vermelho-borda), var(--vermelho-borda)) 100% 0 / 1px 100% no-repeat;
+}
+.zoom_seta { display: flex; align-items: center; gap: 8px; font-size: 20px; color: #cfe9ea; }
+.zoom_seta:hover .tecla, .zoom_seta:focus-visible .tecla { border-color: var(--ciano); color: var(--ciano); }
+.zoom_seta:focus-visible { outline: none; }
+.zoom_titulo { font-size: 19px; color: var(--ciano); text-shadow: 0 0 8px rgba(0, 240, 255, 0.5); }
+.zoom_trilho { position: absolute; left: 58px; right: 58px; bottom: 6px; height: 2px; background: rgba(0, 240, 255, 0.15); }
+.zoom_trilho i { position: absolute; top: 0; height: 100%; background: var(--ciano); transition: left 0.3s var(--ease); }
+.zoom_nome { margin: 20px 0 10px; font-size: 22px; font-weight: 600; text-align: right; color: var(--vermelho); }
+.zoom_linha { border: 0; height: 1px; background: var(--vermelho-forte); margin: 30px 0 14px; opacity: 0.8; }
+.zoom_vazio { font-size: 15px; color: rgba(255, 95, 162, 0.55); }
+
+/* ---------- card do implante ---------- */
+.card {
+  position: absolute;
+  width: 330px;
+  padding: 16px 20px 20px;
+  background: rgba(14, 8, 30, 0.96);
+  border: 1px solid var(--vermelho-borda);
+  pointer-events: none;
+  z-index: 6;
+}
+.card::after { /* canto cortado embaixo, na diagonal */
+  content: '';
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
+  width: 22px;
+  height: 22px;
+  background: linear-gradient(135deg, transparent 48%, var(--vermelho-borda) 48% 54%, var(--fundo) 54%);
+}
+.card_nome { display: block; font-size: 25px; font-weight: 600; color: #fbe7f2; padding-bottom: 10px; border-bottom: 1px solid var(--linha-fraca); }
+.card_cat { display: block; margin-top: 10px; font-size: 18px; color: var(--cor, var(--verde)); }
+.card_tipo { display: block; font-size: 18px; color: var(--vermelho); text-transform: none; padding-bottom: 10px; border-bottom: 1px solid var(--linha-fraca); }
+.card_nivel { display: flex; align-items: center; gap: 6px; padding: 10px 0; color: var(--amarelo); border-bottom: 1px solid var(--linha-fraca); }
+.card_nivel b { font-size: 28px; font-weight: 500; line-height: 1; }
+.card_nivel svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.6; }
+.card_texto { margin-top: 12px; font-size: 16px; font-weight: 500; color: #f3d9e8; text-transform: none; line-height: 1.35; }
+.card_onde { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--linha-fraca); display: grid; gap: 4px; }
+.card_onde li { font-size: 15px; color: #8ff7ff; text-transform: none; }
+.card_onde li::before { content: '+ '; color: var(--ciano); }
+
+/* ---------- rodapé ---------- */
+.rodape {
+  position: absolute;
+  right: 40px;
+  bottom: 14px;
+  display: flex;
+  gap: 30px;
+  align-items: center;
+  z-index: 3;
+}
+.acao { display: flex; align-items: center; gap: 8px; font-size: 22px; color: var(--vermelho); text-transform: none; }
+.acao svg { width: 14px; height: 22px; fill: none; stroke: var(--ciano); stroke-width: 1.5; }
+.acao:hover, .acao:focus-visible { color: var(--ciano); outline: none; }
+.acao--zoom { display: none; }
+.palco--zoom .acao--zoom { display: flex; }
+
+/* ---------- scanlines por cima de tudo ---------- */
+.scan {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.16) 0 1px, transparent 1px 3px);
+}
+.scan::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 60%, rgba(0, 0, 0, 0.6));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zoom, .geral, .mundo, .mundo_corpo, .mundo_close { transition: none; }
+}
+
+/* ---------- telas internas: o que é só da cibernética ---------- */
+body:not([data-tela='cibernetica']) .so-ciber { display: none !important; }
+@media (prefers-reduced-motion: reduce) { .som--desligado, .slot--instalando, .slot--instalando *, .slot--instalando::after { animation: none !important; } }
+.aba { cursor: pointer; transition: color 0.12s, border-color 0.12s; }
+.aba:hover:not(.aba--ativa), .aba:focus-visible:not(.aba--ativa) { outline: none; color: var(--amarelo); border-bottom-color: var(--amarelo); }
+
+/* ---------- telas que ainda não existem ---------- */
+.breve {
+  position: absolute;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  text-align: center;
+  pointer-events: none;
+}
+body[data-tela='nenhuma'] .breve { display: flex; }
+.breve_rotulo { font-size: 15px; letter-spacing: 0.3em; color: rgba(255, 95, 162, 0.7); }
+.breve_titulo {
+  font-size: 92px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--amarelo);
+  text-shadow: 4px 0 rgba(255, 42, 109, 0.8), -4px 0 rgba(0, 240, 255, 0.7);
+  animation: tremor 3.2s steps(1) infinite;
+}
+@keyframes tremor {
+  0%, 92%, 100% { transform: none; }
+  93% { transform: translateX(-4px) skewX(-6deg); }
+  95% { transform: translateX(3px); clip-path: inset(30% 0 40% 0); }
+  97% { transform: translateX(-2px); }
+}
+.breve_texto { font-size: 18px; color: var(--vermelho); text-transform: none; display: flex; gap: 6px; align-items: center; }
+
+/* ---------- passagem entre telas: corte digital ----------
+ * A tela que sai se parte em fatias com separação de cor e fecha no meio;
+ * a que entra abre do meio, ainda tremida, e assenta. Sem tela preta. */
+.sai { animation: sai 0.16s steps(4) both; }
+.entra { animation: entra 0.32s steps(7) both; }
+@keyframes sai {
+  0% { clip-path: inset(0 0 0 0); filter: none; }
+  35% { clip-path: inset(8% 0 22% 0); filter: drop-shadow(6px 0 rgba(255, 42, 109, 0.9)) drop-shadow(-6px 0 rgba(0, 240, 255, 0.9)); }
+  70% { clip-path: inset(38% 0 41% 0); filter: drop-shadow(-10px 0 rgba(255, 42, 109, 0.9)) drop-shadow(10px 0 rgba(0, 240, 255, 0.9)) brightness(1.6); }
+  100% { clip-path: inset(50% 0 50% 0); filter: brightness(2); }
+}
+@keyframes entra {
+  0% { clip-path: inset(49% 0 49% 0); filter: brightness(2.2); }
+  30% { clip-path: inset(20% 0 34% 0); filter: drop-shadow(-8px 0 rgba(255, 42, 109, 0.85)) drop-shadow(8px 0 rgba(0, 240, 255, 0.85)); }
+  60% { clip-path: inset(0 0 6% 0); filter: drop-shadow(4px 0 rgba(255, 42, 109, 0.7)) drop-shadow(-4px 0 rgba(0, 240, 255, 0.7)); }
+  100% { clip-path: inset(0 0 0 0); filter: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sai, .entra, .breve_titulo { animation: none; }
+}
+
+/* ---------- #app: tudo mora aqui ----------
+ * É o "container" das medidas (cqw/cqh no menu, escala do palco no JS).
+ * No celular em pé a interface é de jogo, 16:9: o app gira para paisagem e
+ * ocupa a tela inteira, como os jogos fazem. */
+#app {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  container-type: size;
+}
+@media (orientation: portrait) and (max-width: 900px) {
+  #app {
+    inset: auto;
+    top: 0;
+    left: 100vw;
+    width: 100vh;
+    height: 100vw;
+    transform-origin: top left;
+    transform: rotate(90deg);
+  }
+}
+
+/* ---------- botão de som (canto de baixo à esquerda, em todas as telas) ---------- */
+.som {
+  position: absolute;
+  left: 16px;
+  bottom: 12px;
+  z-index: 8000;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px 4px 8px;
+  font-family: var(--fonte);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ciano);
+  background: rgba(7, 6, 26, 0.75);
+  border: 1px solid rgba(0, 240, 255, 0.5);
+  cursor: pointer;
+}
+.som .tecla { min-width: 18px; height: 18px; font-size: 11px; }
+.som i { /* alto-falante com as ondinhas */
+  width: 14px;
+  height: 14px;
+  background: currentColor;
+  clip-path: polygon(0 35%, 30% 35%, 60% 5%, 60% 95%, 30% 65%, 0 65%);
+}
+.som--desligado { color: var(--vermelho); border-color: var(--vermelho-borda); animation: som-chama 1.6s steps(2) infinite; }
+@keyframes som-chama { 50% { border-color: rgba(255, 42, 140, 0.15); } }
+.som:hover { background: rgba(0, 240, 255, 0.12); }
+/* durante o glitch de entrada o botão espera */
+html.glitch-intro-ativo .som { display: none; }
+
+/* conteúdo do centro: sempre 1600 de largura no meio do palco; o que fica
+   fora dele (medidores, progressão, rodapé) gruda nas bordas */
+.palco_centro {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 1600px;
+  height: 900px;
+  margin-left: -800px;
+  pointer-events: none;
+}
+.palco_centro > * { pointer-events: auto; }
+.palco_centro > .geral, .palco_centro > .mundo, .palco_centro > .efeitos { pointer-events: none; }
+.geral .parte, .geral .slot, .geral .parte_nome { pointer-events: auto; }
+.palco--zoom .geral * { pointer-events: none !important; }
+
+/* ---------- implantes: arte, slot marcado, instalação ---------- */
+.slot_arte {
+  position: absolute;
+  inset: 8px 6px 8px 10px;
+  width: calc(100% - 16px);
+  height: calc(100% - 16px);
+  object-fit: contain;
+  z-index: 1;
+  filter: drop-shadow(0 0 6px rgba(0, 0, 0, 0.6));
+}
+.slot--alvo { background: var(--amarelo) !important; box-shadow: 0 0 14px rgba(252, 238, 10, 0.5); }
+.slot--disponivel { cursor: pointer; }
+.slot--disponivel:hover { background: var(--amarelo) !important; }
+/* implante entrando: a borda pisca, a arte se materializa de baixo para
+   cima e uma linha de varredura sobe pelo quadradinho */
+.slot--instalando { animation: borda-instala 0.9s steps(9) both; }
+.slot--instalando .slot_arte, .slot--instalando .slot_sigla { animation: materializa 0.9s steps(12) both; }
+.slot--instalando::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 2;
+  background: var(--amarelo);
+  box-shadow: 0 0 10px var(--amarelo), 0 0 22px var(--amarelo);
+  animation: varredura-slot 0.9s linear both;
+}
+@keyframes borda-instala {
+  0%, 20%, 40% { background: var(--amarelo); }
+  10%, 30% { background: var(--ciano); }
+  100% { background: rgba(0, 240, 255, 0.35); }
+}
+@keyframes materializa {
+  0% { clip-path: inset(100% 0 0 0); filter: brightness(3) saturate(0); }
+  70% { clip-path: inset(0 0 0 0); filter: brightness(1.8) hue-rotate(40deg); }
+  100% { clip-path: inset(0 0 0 0); filter: drop-shadow(0 0 6px rgba(0, 0, 0, 0.6)); }
+}
+@keyframes varredura-slot {
+  from { bottom: 0; opacity: 1; }
+  to { bottom: 100%; opacity: 0; }
+}
+
+/* card: custo e armadura lado a lado */
+.card_nivel small { font-size: 12px; color: var(--vermelho); margin-right: 14px; }
+.card_arm { color: var(--ciano); }
+.card_nivel .card_arm_icone { fill: var(--ciano); stroke: none; width: 20px; height: 20px; }
+.card_tipo { text-transform: none; }
+
+/* prévia de troca nos medidores */
+.medidor_delta {
+  position: absolute;
+  padding: 0 6px;
+  font-size: 18px;
+  font-weight: 700;
+  border: 1.5px solid currentColor;
+  background: rgba(7, 6, 26, 0.9);
+}
+.medidor--esq .medidor_delta { right: -58px; }
+.medidor--dir .medidor_delta { left: -112px; }
+.medidor_delta--sobe { color: var(--verde); }
+.medidor_delta--desce { color: var(--vermelho-forte); }
+.medidor--esq .medidor_delta--sobe { color: var(--amarelo); } /* custo subindo é gasto, amarelo de alerta */
+.zoom_dica { margin-top: 14px; font-size: 14px; color: rgba(252, 238, 10, 0.75); text-transform: none; }
+.card_dica { display: block; margin-top: 12px; padding: 4px 8px; font-size: 14px; color: #120a00; background: var(--amarelo); text-align: center; }
+.card_dica[hidden] { display: none; }
+
+/* barra de builds, embaixo no centro */
+.builds {
+  position: absolute;
+  left: 50%;
+  bottom: 22px;
+  transform: translateX(-50%);
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.builds_rot { margin-right: 6px; font-size: 14px; letter-spacing: 0.2em; color: var(--vermelho); }
+.build {
+  height: 34px;
+  padding: 0 16px;
+  font-size: 16px;
+  color: var(--vermelho);
+  border: 1px solid var(--vermelho-borda);
+  background: rgba(255, 42, 140, 0.06);
+  clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+}
+.build:hover { color: var(--amarelo); border-color: var(--amarelo); }
+.build--ativa { color: var(--ciano); border-color: var(--ciano); background: rgba(0, 240, 255, 0.1); text-shadow: 0 0 8px rgba(0, 240, 255, 0.5); }
+.build--custom { color: var(--amarelo); border-color: var(--amarelo); background: rgba(252, 238, 10, 0.08); cursor: default; }
+.build--custom[hidden] { display: none; }
+
+/* contornos das regiões do corpo */
+.regioes { position: absolute; inset: 0; pointer-events: none; }
+.regiao {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  filter: drop-shadow(0 0 4px rgba(0, 240, 255, 0.9)) drop-shadow(0 0 10px rgba(0, 240, 255, 0.5));
+}
+.regiao--hover { opacity: 0.85; }
+.regiao--pisca { animation: regiao-pisca 1s steps(8) both; }
+@keyframes regiao-pisca {
+  0%, 20%, 40%, 60% { opacity: 1; filter: drop-shadow(0 0 6px #fcee0a) drop-shadow(0 0 18px #fcee0a) drop-shadow(0 0 30px rgba(252, 238, 10, 0.6)); }
+  10%, 30%, 50% { opacity: 0.4; }
+  100% { opacity: 0; }
+}
+.regiao--pisca { animation-duration: 1.4s; }
+.palco--zoom .regioes { opacity: 0; }
+@media (prefers-reduced-motion: reduce) { .regiao--pisca { animation: none; } }
+
+/* medidor pisca quando o valor muda */
+.medidor--mudou .medidor_barras { animation: medidor-pisca 0.6s steps(4); }
+@keyframes medidor-pisca { 0%, 50% { filter: brightness(2); } 100% { filter: none; } }
+
+/* close pulsando quando um implante entra (no zoom) */
+.mundo_close--instala { animation: close-instala 1.1s ease-out; }
+@keyframes close-instala {
+  0% { filter: brightness(2.2) drop-shadow(0 0 0 rgba(252, 238, 10, 0)); }
+  25% { filter: brightness(1.6) drop-shadow(0 0 3px #fcee0a) drop-shadow(0 0 14px rgba(252, 238, 10, 0.8)); }
+  55% { filter: brightness(1.25) drop-shadow(0 0 2px #00f0ff) drop-shadow(0 0 10px rgba(0, 240, 255, 0.7)); }
+  100% { filter: none; }
+}
+@media (prefers-reduced-motion: reduce) { .mundo_close--instala { animation: none; } }
+
+/* linha de explicação embaixo da barra de cima */
+.tela_intro {
+  position: absolute;
+  left: 50%;
+  top: 66px;
+  transform: translateX(-50%);
+  z-index: 3;
+  max-width: 900px;
+  padding: 4px 14px;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.3;
+  text-align: center;
+  text-transform: none;
+  color: #f3d9e8;
+  background: rgba(7, 6, 26, 0.7);
+  border-bottom: 1px solid var(--linha-fraca);
+  pointer-events: none;
+}
+.tela_intro:empty { display: none; }
+.tela_intro b { color: var(--amarelo); font-weight: 600; }
+.tela_intro i { font-style: normal; font-weight: 600; }
+.tela_intro .dom { color: #ffc93c; }
+.tela_intro .evo { color: #7cc6d6; }
+.tela_intro .met { color: #ff4f8a; }
+/* no zoom da cibernética a linha sai, para não brigar com o painel */
+.palco--zoom .tela_intro { display: none; }
+
+/* nome dos implantes escrito embaixo dos slots (tela geral) */
+.parte_legenda {
+  max-width: 300px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: #f3d9e8;
+  text-transform: none;
+  opacity: 0.9;
+}
+.coluna--esq .parte_legenda { text-align: right; }

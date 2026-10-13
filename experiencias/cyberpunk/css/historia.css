@@ -1,0 +1,133 @@
+/*
+ * Tela História: mapa 3D (canvas atrás do palco) com a lista da trajetória
+ * e o cartão da empresa por cima, no molde do mapa do Cyberpunk 2077.
+ */
+.mapa, .mapa_rotulos { position: absolute; inset: 0; display: none; }
+.mapa { width: 100%; height: 100%; }
+body[data-tela='historia'] .mapa, body[data-tela='historia'] .mapa_rotulos { display: block; }
+body[data-tela='historia']::before { display: none; } /* o mapa já é o fundo */
+.mapa_rotulos { pointer-events: none; overflow: hidden; z-index: 1; }
+.historia { position: absolute; inset: 0; display: none; pointer-events: none; }
+body[data-tela='historia'] .historia { display: block; }
+.historia > * { pointer-events: auto; }
+/* o palco fica por cima do mapa, mas sem fundo próprio */
+body[data-tela='historia'] .fundo { display: none; }
+
+/* rótulo de cada empresa no mapa, como os nomes de rua do jogo */
+.mapa_rotulo {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 10px;
+  font-family: var(--fonte);
+  text-transform: uppercase;
+  pointer-events: auto;
+  cursor: pointer;
+  background: rgba(7, 6, 26, 0.75);
+  border: 1px solid rgba(252, 238, 10, 0.5);
+  white-space: nowrap;
+}
+.mapa_rotulo b { font-size: 16px; color: var(--amarelo); letter-spacing: 0.06em; }
+.mapa_rotulo small { font-size: 11px; color: var(--ciano); letter-spacing: 0.12em; }
+.mapa_rotulo--sel { border-color: var(--amarelo); box-shadow: 0 0 14px rgba(252, 238, 10, 0.5); }
+.mapa_rotulo:hover { background: rgba(252, 238, 10, 0.15); }
+
+/* lista da trajetória (esquerda) */
+.hist_lista {
+  position: absolute;
+  left: 60px;
+  top: 90px;
+  width: 300px;
+  padding: 14px;
+  background: rgba(7, 6, 26, 0.82);
+  border: 1px solid var(--vermelho-borda);
+  border-left-width: 4px;
+}
+.hist_rot { display: block; margin-bottom: 10px; font-size: 14px; letter-spacing: 0.2em; color: var(--vermelho); }
+.hist_item {
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+  padding: 8px 8px;
+  text-align: left;
+  color: var(--vermelho);
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+.hist_item:hover:not(.hist_item--sel) { background: rgba(255, 42, 140, 0.1); }
+.hist_item--sel { background: linear-gradient(90deg, rgba(255, 42, 109, 0.85), rgba(200, 20, 90, 0.6)); color: #fff; border-color: #ff7aa8; }
+.hist_num { font-size: 20px; font-weight: 600; color: var(--amarelo); }
+.hist_item--sel .hist_num { color: #fff; }
+.hist_txt { display: flex; flex-direction: column; gap: 2px; }
+.hist_txt b { font-size: 17px; font-weight: 600; }
+.hist_txt small { font-size: 12px; opacity: 0.85; text-transform: none; }
+.hist_dica { display: flex; align-items: center; gap: 6px; margin-top: 12px; font-size: 13px; color: rgba(255, 95, 162, 0.75); text-transform: none; }
+
+/* cartão da empresa (direita) */
+.hist_cartao {
+  position: absolute;
+  right: 60px;
+  top: 90px;
+  width: 400px;
+  padding: 18px 20px 20px;
+  background: rgba(7, 6, 26, 0.88);
+  border: 1px solid var(--vermelho-borda);
+  border-top: 4px solid var(--amarelo);
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 22px), calc(100% - 22px) 100%, 0 100%);
+}
+.hist_atual { display: inline-block; margin-bottom: 8px; padding: 2px 8px; font-size: 12px; letter-spacing: 0.12em; color: #120a00; background: var(--amarelo); }
+.hist_atual[hidden] { display: none; }
+.hist_cartao h2 { font-size: 32px; line-height: 1; color: var(--amarelo); text-shadow: 3px 0 rgba(255, 42, 109, 0.6); }
+.hist_cartao strong { display: block; margin-top: 6px; font-size: 18px; color: var(--ciano); }
+.hist_local { display: block; margin-top: 4px; font-size: 14px; color: var(--vermelho); text-transform: none; }
+.hist_cartao p { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--linha-fraca); font-size: 16px; font-weight: 500; line-height: 1.4; color: #f3d9e8; text-transform: none; }
+.hist_cartao ul { margin-top: 10px; display: flex; flex-direction: column; gap: 5px; }
+.hist_cartao li { position: relative; padding-left: 16px; font-size: 15px; color: var(--vermelho); text-transform: none; }
+.hist_cartao li::before { content: ''; position: absolute; left: 1px; top: 7px; width: 6px; height: 6px; background: var(--amarelo); transform: rotate(45deg); }
+.hist_stack { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.hist_stack span { padding: 2px 8px; font-size: 13px; color: var(--ciano); border: 1px solid rgba(0, 240, 255, 0.5); text-transform: none; }
+.hist_cartao--troca { animation: hist-troca 0.35s steps(5) both; }
+@keyframes hist-troca { from { opacity: 0; transform: translateX(14px); filter: brightness(1.8); } to { opacity: 1; transform: none; filter: none; } }
+@media (prefers-reduced-motion: reduce) { .hist_cartao--troca { animation: none; } }
+
+/* cartão com a cor da empresa */
+.hist_cartao { border-top-color: var(--marca, var(--amarelo)); }
+.hist_cartao h2 { color: var(--marca, var(--amarelo)); }
+
+/* Sandevistan: flash verde ao ligar, vinheta, separação de cor forte na
+   tela toda e o mundo saturado enquanto dura */
+#app::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 7000;
+  pointer-events: none;
+  opacity: 0;
+  background:
+    radial-gradient(ellipse at center, transparent 35%, rgba(0, 255, 140, 0.22) 70%, rgba(0, 50, 25, 0.7) 100%),
+    linear-gradient(90deg, rgba(255, 42, 109, 0.22), transparent 18%, transparent 82%, rgba(0, 255, 160, 0.22));
+}
+body.sandy #app::after { animation: sandy-tela 2.3s ease-out both; }
+@keyframes sandy-tela {
+  0% { opacity: 1; background-color: rgba(120, 255, 180, 0.55); }
+  8% { opacity: 1; background-color: rgba(0, 255, 140, 0.12); }
+  80% { opacity: 1; background-color: transparent; }
+  100% { opacity: 0; }
+}
+body.sandy .mapa { animation: sandy-mundo 2.3s ease-out both; }
+@keyframes sandy-mundo {
+  0% { filter: saturate(2.4) brightness(1.8) hue-rotate(-30deg) drop-shadow(14px 0 rgba(255, 0, 110, 0.75)) drop-shadow(-14px 0 rgba(0, 255, 150, 0.75)); }
+  50% { filter: saturate(1.9) contrast(1.2) hue-rotate(-15deg) drop-shadow(8px 0 rgba(255, 0, 110, 0.6)) drop-shadow(-8px 0 rgba(0, 255, 150, 0.6)); }
+  100% { filter: none; }
+}
+body.sandy .hist_cartao, body.sandy .hist_lista, body.sandy .mapa_rotulos { animation: sandy-ui 2.3s ease-out both; }
+@keyframes sandy-ui {
+  0% { filter: drop-shadow(10px 0 rgba(0, 255, 140, 0.8)) drop-shadow(-10px 0 rgba(255, 42, 109, 0.8)); }
+  100% { filter: none; }
+}

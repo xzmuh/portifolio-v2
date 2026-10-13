@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cibernética · Murilo Gonzales</title>
+  <meta name="description" content="O currículo do Murilo Gonzales como a tela de cibernética de um ripperdoc." />
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Roboto:wght@500;900&display=swap" rel="stylesheet" />
+  <!-- o import map tem que vir antes de qualquer script módulo -->
+  <script type="importmap">{ "imports": { "three": "./vendor/three.module.js" } }</script>
+  <link rel="stylesheet" href="css/estilo.css" />
+  <link rel="stylesheet" href="css/menu.css" />
+  <link rel="stylesheet" href="css/habilidades.css" />
+  <link rel="stylesheet" href="css/projetos.css" />
+  <link rel="stylesheet" href="css/contato.css" />
+  <link rel="stylesheet" href="css/historia.css" />
+  <link rel="stylesheet" href="css/glitch-intro.css" />
+  <script>
+    /* Antes do primeiro paint: decide se o glitch de entrada roda. Não roda
+       para quem pediu menos movimento, ao recarregar já dentro de uma tela
+       (#cibernetica etc.) e no celular em pé (a interface gira, ver #app). */
+    (function () {
+      var mm = function (q) { return window.matchMedia && window.matchMedia(q).matches; };
+      var naTela = /^#(cibernetica|habilidades|historia|projetos|contato)$/.test(location.hash);
+      window.semIntro = naTela || mm('(prefers-reduced-motion: reduce)') || mm('(orientation: portrait) and (max-width: 900px)');
+      if (!window.semIntro) {
+        document.documentElement.className += ' glitch-intro-ativo';
+        setTimeout(function () {
+          document.documentElement.classList.remove('glitch-intro-ativo');
+          var menu = document.querySelector('.menu');
+          if (menu) menu.style.opacity = '1';
+        }, 6000);
+      }
+    })();
+  </script>
+</head>
+<body data-tela="menu">
+  <script>if (/^#(cibernetica|habilidades|historia|projetos|contato)$/.test(location.hash)) document.body.dataset.tela = location.hash.slice(1);</script>
+  <!-- #app: tudo que aparece; no celular em pé ele gira para paisagem -->
+  <div id="app">
+  <div id="glitch-intro" aria-hidden="true"><canvas class="glitch-intro_canvas"></canvas></div>
+
+  <!-- menu principal: o glitch de entrada pousa no logo (.menu_nome/.menu_sub) -->
+  <section class="menu" aria-label="Menu principal">
+    <div class="menu_fundo" aria-hidden="true"></div>
+    <!-- rajadas de glitch no fundo (js/menu.js): fatias deslocadas e separação de cor -->
+    <div class="menu_glitch menu_glitch--a" aria-hidden="true"></div>
+    <div class="menu_glitch menu_glitch--b" aria-hidden="true"></div>
+    <div class="menu_varredura" aria-hidden="true"></div>
+    <div class="menu_faixa" aria-hidden="true"><i></i><i></i><i></i></div>
+    <div class="menu_painel">
+      <div class="menu_marcas" aria-hidden="true"><span>MG-OS // PERFIL 2077</span><span></span></div>
+      <div class="menu_logo">
+        <!-- mesmos traços e geometria do canvas do glitch (glifos em js/glitch-intro.js) -->
+        <h1 class="menu_nome"><span class="sr">Murilo Gonzales</span><svg class="menu_glifos" viewBox="0 0 800 232.2" preserveAspectRatio="none" aria-hidden="true"><g transform="translate(100 2.70) matrix(1 0 -0.34 1 25 0)"><path transform="translate(0 0)" d="M8 90V10H18L44 52L70 10H80V90"/><path transform="translate(100 0)" d="M8 10V72L25 90H64L80 72V10"/><path transform="translate(200 0)" d="M8 90V10H65L80 24V41L65 53H8M47 53L83 90"/><path transform="translate(300 0)" d="M14 10H74M44 10V90M14 90H74"/><path transform="translate(400 0)" d="M8 10V90H80"/><path transform="translate(500 0)" d="M26 10H64L80 27V73L64 90H26L8 73V27Z"/></g><g transform="translate(0 118.80) matrix(1 0 -0.34 1 25 0)"><path transform="translate(0 0)" d="M80 25L64 10H26L8 27V73L26 90H80V53H48"/><path transform="translate(100 0)" d="M26 10H64L80 27V73L64 90H26L8 73V27Z"/><path transform="translate(200 0)" d="M8 90V10H18L80 90V10"/><path transform="translate(300 0)" d="M8 10H80V19L8 81V90H80"/><path transform="translate(400 0)" d="M4 90L34 10H54L84 90M19 61H69"/><path transform="translate(500 0)" d="M8 10V90H80"/><path transform="translate(600 0)" d="M80 10H8V90H80M8 49H65"/><path transform="translate(700 0)" d="M80 10H26L8 27V43L80 58V73L64 90H8"/></g><path class="menu_lamina" d="M757.8 203.2L845.5 238.3L780.7 191.0Z"/></svg></h1>
+        <p class="menu_sub">Full Stack Developer</p>
+      </div>
+      <nav class="menu_lista" aria-label="Telas">
+        <button class="menu_item" type="button" data-ir="cibernetica"><span class="menu_texto">Cibernética</span></button>
+        <button class="menu_item" type="button" data-ir="habilidades"><span class="menu_texto">Habilidades</span></button>
+        <button class="menu_item" type="button" data-ir="historia"><span class="menu_texto">História</span></button>
+        <button class="menu_item" type="button" data-ir="projetos"><span class="menu_texto">Projetos</span></button>
+        <button class="menu_item" type="button" data-ir="contato"><span class="menu_texto">Contato</span></button>
+        <button class="menu_item" type="button" data-ir="sair"><span class="menu_texto">Sair</span></button>
+      </nav>
+      <div class="menu_versao"><span>build.murilo.dev</span>v6.0</div>
+    </div>
+    <div class="menu_disponivel"><b>8</b><span>Disponível para projetos</span><i aria-hidden="true"></i></div>
+    <div class="menu_dica"><svg viewBox="0 0 16 24" aria-hidden="true"><rect x="1.5" y="1.5" width="13" height="21" rx="6.5" /><path d="M8 1.5v8" /></svg>Selecionar</div>
+  </section>
+
+  <!-- mapa 3D da História (js/historia.js): atrás do palco, no tamanho real da tela -->
+  <canvas class="mapa" data-mapa aria-hidden="true"></canvas>
+  <div class="mapa_rotulos" data-mapa-rotulos></div>
+
+  <!-- a tela é desenhada em 1600x900 e escalada para caber (js/tela.js).
+       .palco ganha .palco--zoom quando uma parte do corpo está aberta -->
+  <main class="palco" id="palco">
+    <div class="fundo" aria-hidden="true"></div>
+
+    <!-- o boneco e o close da parte moram no mesmo "mundo": o zoom é uma
+         transformação só nele, então o close cai sempre em cima da região -->
+    <!-- conteúdo do centro: 1600 de largura sempre no meio, os lados grudam nas bordas -->
+    <div class="palco_centro" id="centro-ciber">
+    <div class="mundo so-ciber" id="mundo" aria-hidden="true">
+      <img class="mundo_corpo" src="img/corpo.webp" alt="" />
+      <!-- contorno de cada região do corpo (acende no hover e pisca ao instalar) -->
+      <div class="regioes" data-regioes></div>
+      <img class="mundo_close" alt="" />
+      <img class="mundo_close" alt="" />
+    </div>
+    <!-- raios, plasma e pulsos por cima do close (js/efeitos.js) -->
+    <canvas class="efeitos so-ciber" aria-hidden="true"></canvas>
+    </div>
+
+    <header class="topo">
+      <div class="topo_stats">
+        <span class="stat stat--nivel"><b data-nivel></b><span>Nível<i></i></span></span>
+        <span class="stat stat--cred"><b data-cred></b><span>Credibilidade<i></i></span></span>
+      </div>
+      <!-- mesma barra em todas as telas internas; 1 e 3 trocam de aba (js/menu.js) -->
+      <nav class="topo_abas" aria-label="Telas">
+        <span class="tecla">1</span>
+        <button class="aba" type="button" data-ir="cibernetica">Cibernética</button>
+        <button class="aba" type="button" data-ir="habilidades">Habilidades</button>
+        <button class="aba" type="button" data-ir="historia">História</button>
+        <button class="aba" type="button" data-ir="projetos">Projetos</button>
+        <span class="tecla">3</span>
+      </nav>
+      <div class="topo_recursos">
+        <ul class="contatos" data-contatos aria-label="Contato"></ul>
+      </div>
+    </header>
+
+    <!-- uma linha dizendo o que a tela mostra e como usar (js/menu.js) -->
+    <p class="tela_intro" data-tela-intro></p>
+
+    <!-- medidores laterais: cibernética (tecnologias instaladas / slots) e armadura (empresas) -->
+    <div class="medidor medidor--esq so-ciber" data-dica-medidor="cap">
+      <svg class="medidor_icone" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l9 5v10l-9 5-9-5V7z" /><circle cx="12" cy="8.5" r="2" /><path d="M8.5 17v-3.5a3.5 3.5 0 0 1 7 0V17" /></svg>
+      <div class="medidor_barras" data-barras-cap></div>
+      <span class="medidor_total" data-cap-total></span>
+      <span class="medidor_uso" data-cap-uso></span>
+      <span class="medidor_delta" data-cap-delta hidden></span>
+      <div class="medidor_info" data-info-cap></div>
+    </div>
+    <div class="medidor medidor--dir so-ciber" data-dica-medidor="arm">
+      <svg class="medidor_icone" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h4v6l-2 3H5zM18 3h-4v6l2 3h3zM5 13h3l1 8H5zM19 13h-3l-1 8h4z" /></svg>
+      <div class="medidor_barras" data-barras-arm></div>
+      <span class="medidor_valor" data-armadura></span>
+      <span class="medidor_delta medidor_delta--arm" data-arm-delta hidden></span>
+      <div class="medidor_info" data-info-arm></div>
+    </div>
+
+    <!-- tela geral -->
+    <div class="palco_centro" id="centro-ciber-ui">
+    <section class="geral so-ciber" id="geral" aria-label="Cibernética">
+      <div class="coluna coluna--esq" id="col-esq"></div>
+      <div class="coluna coluna--dir" id="col-dir"></div>
+    </section>
+
+    <!-- zoom numa parte -->
+    <section class="zoom so-ciber" id="zoom" aria-label="Parte do corpo" hidden>
+      <div class="zoom_nav">
+        <button class="zoom_seta" type="button" data-passo="-1" aria-label="Parte anterior">◁ <span class="tecla">A</span></button>
+        <span class="zoom_titulo" data-ztitulo></span>
+        <button class="zoom_seta" type="button" data-passo="1" aria-label="Próxima parte"><span class="tecla">D</span> ▷</button>
+        <span class="zoom_trilho"><i data-trilho></i></span>
+      </div>
+      <h2 class="zoom_nome" data-znome></h2>
+      <div class="slots" data-zinstalados></div>
+      <hr class="zoom_linha" />
+      <p class="zoom_vazio" data-zvazio hidden>Só tem este implante nesta parte</p>
+      <div class="slots slots--grade" data-zextras></div>
+      <p class="zoom_dica" data-zdica>Clique num disponível para instalar no lugar do slot marcado</p>
+    </section>
+
+    <div class="card so-ciber" id="card" role="tooltip" hidden>
+      <strong class="card_nome" data-cnome></strong>
+      <span class="card_cat" data-ccat></span>
+      <span class="card_tipo" data-ctipo></span>
+      <span class="card_nivel"><b data-cnivel></b><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l9 5v10l-9 5-9-5V7z" /><circle cx="12" cy="8.5" r="2" /><path d="M8.5 17v-3.5a3.5 3.5 0 0 1 7 0V17" /></svg><small>custo</small><b class="card_arm" data-carm></b><svg class="card_arm_icone" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h4v6l-2 3H5zM18 3h-4v6l2 3h3zM5 13h3l1 8H5zM19 13h-3l-1 8h4z" /></svg><small>armadura</small></span>
+      <p class="card_texto" data-ctexto></p>
+      <ul class="card_onde" data-conde></ul>
+      <span class="card_dica" data-cdica hidden>Clique para instalar</span>
+    </div>
+    <!-- builds prontas por vaga: equipam os implantes que contam para ela -->
+    <div class="builds so-ciber" data-builds>
+      <span class="builds_rot">Vaga</span>
+      <span class="build build--custom" data-build-custom hidden>Personalizada</span>
+    </div>
+    </div>
+
+    <!-- Habilidades: árvore de competências (js/habilidades.js, dados em js/dados-habilidades.js) -->
+    <section class="habilidades" aria-label="Habilidades">
+      <div class="hab_pontos"><b data-hab-pontos></b><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4zM8 8h3v3H8zM13 8h3v3h-3zM8 13h3v3H8zM13 13h3v3h-3z" /></svg><span>Metas em<br />estudo</span></div>
+      <nav class="hab_abas" data-hab-abas aria-label="Categorias"></nav>
+      <span class="hab_teclas"><span class="tecla">Q</span><span class="tecla">E</span></span>
+      <div class="palco_centro" id="centro-hab">
+        <svg class="hab_trilhas" data-hab-trilhas viewBox="0 0 1600 900" aria-hidden="true"></svg>
+        <div class="hab_arvore" data-hab-arvore></div>
+        <div class="hab_card" data-hab-card role="tooltip" hidden>
+          <strong data-hab-cnome></strong>
+          <span class="hab_card_estado" data-hab-cestado></span>
+          <span class="hab_card_nivel">Nível <b data-hab-cnivel></b></span>
+          <p data-hab-ctexto></p>
+          <ul data-hab-conde></ul>
+        </div>
+      </div>
+      <div class="hab_prog">
+        <span class="hab_prog_rot">Progressão</span>
+        <div class="hab_prog_linha"><b data-hab-prog-num></b><span data-hab-prog-nome></span><em data-hab-prog-txt></em></div>
+        <div class="hab_prog_trilho"><i data-hab-prog-barra></i></div>
+        <div class="hab_prog_rodape"><span>Competências dominadas</span><span data-hab-prog-pct></span></div>
+        <div class="hab_legenda">
+          <span class="hab_leg hab_leg--dominado">Dominado</span>
+          <span class="hab_leg hab_leg--evolucao">Em evolução</span>
+          <span class="hab_leg hab_leg--meta">Meta</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Projetos: no molde do Journal do jogo (js/projetos.js, dados em js/dados-projetos.js) -->
+    <section class="projetos" aria-label="Projetos">
+      <div class="palco_centro">
+        <div class="proj_marcas" aria-hidden="true"><i></i><i></i><i></i></div>
+        <div class="proj_lista" data-proj-lista></div>
+        <article class="proj_detalhe" data-proj-detalhe>
+          <h2 class="proj_titulo" data-proj-titulo></h2>
+          <ul class="proj_objetivos" data-proj-objetivos></ul>
+          <div class="proj_texto" data-proj-texto></div>
+        </article>
+        <figure class="proj_mini">
+          <img data-proj-img alt="" />
+          <a class="proj_link" data-proj-link target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v6H4V6h6" /></svg>Ver site</a>
+        </figure>
+      </div>
+    </section>
+
+    <!-- Contato: mensagem chegando, como no celular do jogo (js/contato.js) -->
+    <section class="contato" aria-label="Contato">
+      <div class="palco_centro">
+        <div class="msg">
+          <header class="msg_topo">
+            <span class="msg_avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9zM12 8a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM7.5 17c1-2 2.6-3 4.5-3s3.5 1 4.5 3" /></svg></span>
+            <span class="msg_rot">Nova mensagem · canal seguro</span>
+            <strong class="msg_nome">Murilo Gonzales</strong>
+          </header>
+          <div class="msg_corpo">
+            <span class="msg_ico" aria-hidden="true"></span>
+            <div class="msg_conversa" data-msg-conversa aria-live="polite"></div>
+          </div>
+          <div class="msg_respostas" data-msg-respostas hidden></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- História: lista da trajetória e cartão da empresa por cima do mapa -->
+    <section class="historia" aria-label="História">
+      <div class="hist_lista">
+        <span class="hist_rot">Trajetória</span>
+        <div data-hist-lista></div>
+        <span class="hist_dica"><span class="tecla">A</span><span class="tecla">D</span> ou clique no mapa</span>
+      </div>
+      <article class="hist_cartao" data-hist-cartao>
+        <span class="hist_atual" data-hc-atual>Contrato ativo</span>
+        <h2 data-hc-nome></h2>
+        <strong data-hc-cargo></strong>
+        <span class="hist_local" data-hc-local></span>
+        <p data-hc-resumo></p>
+        <ul data-hc-feitos></ul>
+        <div class="hist_stack" data-hc-stack></div>
+      </article>
+    </section>
+
+    <!-- telas que ainda não existem: mesmo padrão, só o aviso -->
+    <section class="breve" aria-live="polite">
+      <span class="breve_rotulo">Acesso negado // módulo em construção</span>
+      <h2 class="breve_titulo" data-breve-titulo></h2>
+      <p class="breve_texto">Em breve. Use <span class="tecla">1</span> <span class="tecla">3</span> para trocar de tela ou <span class="tecla tecla--ciano">Esc</span> para voltar ao menu.</p>
+    </section>
+
+    <footer class="rodape">
+      <a class="acao acao--zoom so-ciber" href="mailto:murilo_agudos@hotmail.com"><svg viewBox="0 0 16 24" aria-hidden="true"><rect x="1.5" y="1.5" width="13" height="21" rx="6.5" /><path d="M8 1.5v8" /></svg>Contratar</a>
+      <a class="acao" id="fechar" href="#menu"><span class="tecla tecla--ciano">Esc</span><span data-fechar>Fechar</span></a>
+    </footer>
+  </main>
+  <div class="scan" aria-hidden="true"></div>
+  <!-- o navegador só toca som depois de um gesto; este botão mostra o estado e liga/desliga (M) -->
+  <button class="som" type="button" data-som><i aria-hidden="true"></i><span data-som-texto>Som desligado · ligar</span><span class="tecla">M</span></button>
+  </div>
+
+  <script type="module" src="js/tela.js"></script>
+  <script type="module" src="js/habilidades.js"></script>
+  <script type="module" src="js/projetos.js"></script>
+  <script type="module" src="js/contato.js"></script>
+  <script type="module" src="js/historia.js"></script>
+  <script src="js/glitch-intro.js"></script>
+</body>
+</html>
