@@ -466,6 +466,7 @@ function carregarCorredor() {
         if (/CLOTH|Body_00_SKIN/i.test(mat.name)) mat.color.setRGB(0.1, 0.1, 0.13);
       }
     });
+    juntarPedacos(personagem);
     // pares de ossos para passar a corrida
     const humanos = vrm.parser.json.extensions.VRM.humanoid.humanBones;
     const porNome = {};
@@ -510,9 +511,42 @@ function caminhoEntre(i, j) {
   for (let k = 1; k < pts.length; k++) c.add(new THREE.LineCurve3(pts[k - 1], pts[k]));
   return c;
 }
+// o VRoid vem em 102 pedaços (só o cabelo tem 83): cada um é um desenho por
+// quadro, e com os ecos passava de mil. Junta os pedaços de cada malha que
+// usam o mesmo material num só (os vértices já são compartilhados; só o
+// índice é emendado). Sai também a deformação de rosto, que não é usada
+function juntarPedacos(raiz) {
+  const grupos = new Map(); // pai + material -> pedaços
+  raiz.traverse((o) => {
+    if (!o.isSkinnedMesh) return;
+    const chave = o.parent.uuid + '|' + o.material.uuid + '|' + o.geometry.attributes.position.uuid;
+    if (!grupos.has(chave)) grupos.set(chave, []);
+    grupos.get(chave).push(o);
+  });
+  for (const pecas of grupos.values()) {
+    const base = pecas[0];
+    const indices = [];
+    for (const p of pecas) indices.push(...p.geometry.index.array);
+    const g = new THREE.BufferGeometry();
+    for (const [nome, attr] of Object.entries(base.geometry.attributes)) g.setAttribute(nome, attr);
+    g.setIndex(indices);
+    g.computeBoundingSphere();
+    const nova = new THREE.SkinnedMesh(g, base.material);
+    nova.name = base.name;
+    nova.position.copy(base.position);
+    nova.quaternion.copy(base.quaternion);
+    nova.scale.copy(base.scale);
+    nova.layers.mask = base.layers.mask;
+    nova.bind(base.skeleton, base.bindMatrix);
+    nova.frustumCulled = false;
+    base.parent.add(nova);
+    for (const p of pecas) p.parent.remove(p);
+  }
+}
+
 // ecos do Sandy: um estoque de cópias montado uma vez na carga. Clonar o
 // personagem inteiro a cada eco travava a corrida; aqui só se copia a pose
-const ECOS = 18;
+const ECOS = 12;
 function montarFantasmas() {
   const m = corredor.modelo;
   const ossos = [];
@@ -527,6 +561,7 @@ function montarFantasmas() {
       if (o.isBone) meus.push(o);
       if (o.isMesh) o.material = mat;
     });
+    juntarPedacos(f); // eco tem material único: vira um desenho por malha (3 no total)
     f.visible = false;
     cena.add(f);
     corredor.pool.push({ f, mat, ossos: meus, vida: 0, livre: true });
@@ -694,7 +729,7 @@ function quadro(agora) {
       corredor.modelo.rotation.y = rumo;
       cam.alvo.copy(p); // a câmera acompanha o corredor
       posicionarCamera();
-      if (agora - corredor.ultimoFantasma > 90) {
+      if (agora - corredor.ultimoFantasma > 110) {
         corredor.ultimoFantasma = agora;
         const fase = (agora - sandy.ini) / (sandy.dur * 1000);
         soltarFantasma(new THREE.Color().setHSL((0.33 + fase * 0.75) % 1, 1, 0.55));

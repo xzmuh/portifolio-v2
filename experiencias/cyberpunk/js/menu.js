@@ -47,27 +47,21 @@ function aplicar(tela) {
   window.dispatchEvent(new Event('resize'));
 }
 
-/* Troca de tela com corte digital: a tela visível sai em fatias (.sai) e a
-   nova entra abrindo do meio (.entra). O menu e o palco são camadas
-   diferentes, então anima quem estiver no ar. */
-// anima o #app inteiro (menu, palco e o mapa 3D), com faixas de glitch por cima
+/* Troca de tela com glitch: a tela nova entra na hora e é revelada em
+   faixas tremidas (.revela no #app inteiro: menu, palco e mapa 3D), com as
+   faixas coloridas varrendo por cima. */
 const camada = () => document.getElementById('app');
 const faixas = document.querySelector('.troca_fx');
 export function mostrar(tela) {
   if (tela === telaAtual() || trocando) return;
   if (calmoNav) { aplicar(tela); return; }
-  const antes = camada(telaAtual());
-  antes.classList.add('sai');
+  aplicar(tela);
+  const app = camada();
+  app.classList.remove('revela');
+  void app.offsetWidth;
+  app.classList.add('revela');
   if (faixas) { faixas.classList.remove('troca_fx--on'); void faixas.offsetWidth; faixas.classList.add('troca_fx--on'); }
-  trocando = setTimeout(() => {
-    antes.classList.remove('sai');
-    aplicar(tela);
-    const depois = camada(tela);
-    depois.classList.remove('entra');
-    void depois.offsetWidth;
-    depois.classList.add('entra');
-    setTimeout(() => { depois.classList.remove('entra'); trocando = null; }, 420);
-  }, 200);
+  trocando = setTimeout(() => { app.classList.remove('revela'); trocando = null; }, 450);
 }
 
 function selecionar(i, som = true) {
