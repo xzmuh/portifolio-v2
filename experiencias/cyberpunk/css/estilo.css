@@ -712,6 +712,9 @@ html.glitch-intro-ativo .som { display: none; }
   0%, 100% { scale: 1; }
   45% { scale: 1.015; }
 }
+/* no zoom o mundo está ampliado umas 3x: filtro ou scale nele faz o Chrome
+   redesenhar a foto em baixa e sem o degradê da borda, e o close achata */
+.palco--zoom .mundo--instala, .palco--zoom .mundo--instala .mundo_close--on { animation: none; }
 @media (prefers-reduced-motion: reduce) { .mundo--instala, .mundo--instala .mundo_corpo, .mundo--instala .mundo_close--on { animation: none; } }
 
 /* linha de explicação embaixo da barra de cima */
