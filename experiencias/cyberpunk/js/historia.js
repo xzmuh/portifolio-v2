@@ -395,7 +395,11 @@ const OSSOS = {
 // passa uma animação de um esqueleto para outro: os dois de frente para +Z e
 // em pose de descanso; cada osso do alvo gira no mundo o mesmo tanto que o
 // osso da fonte girou a partir do descanso
+// ossos com movimento ampliado: passada mais longa, braço mais solto
+const AMPLIA = { UpperLeg: 1.35, LowerLeg: 1.3, UpperArm: 1.25, LowerArm: 1.2 };
+const amplitude = (nome) => { for (const [k, v] of Object.entries(AMPLIA)) if (nome.includes(k)) return v; return 1; };
 function reposicionar(fonte, clip, alvo, pares, fps = 30) {
+  const qr = new THREE.Quaternion(), eixo = new THREE.Vector3();
   fonte.updateMatrixWorld(true);
   alvo.updateMatrixWorld(true);
   const q = new THREE.Quaternion(), qp = new THREE.Quaternion(), v = new THREE.Vector3();
@@ -425,6 +429,18 @@ function reposicionar(fonte, clip, alvo, pares, fps = 30) {
       o.f.getWorldQuaternion(q).multiply(o.f0).multiply(o.a0); // rotação no mundo que o alvo deve ter
       o.a.parent.getWorldQuaternion(qp).invert();
       o.a.quaternion.copy(qp.multiply(q));
+      // amplia o giro em relação ao descanso (pernas e braços)
+      const amp = amplitude(o.a.name);
+      if (amp !== 1) {
+        qr.copy(o.descanso).invert().multiply(o.a.quaternion);
+        if (qr.w < 0) { qr.x = -qr.x; qr.y = -qr.y; qr.z = -qr.z; qr.w = -qr.w; }
+        const ang = 2 * Math.acos(Math.min(1, qr.w));
+        if (ang > 1e-4) {
+          eixo.set(qr.x, qr.y, qr.z).normalize();
+          qr.setFromAxisAngle(eixo, ang * amp);
+          o.a.quaternion.copy(o.descanso).multiply(qr);
+        }
+      }
       o.a.updateMatrixWorld(true);
       o.a.quaternion.toArray(valores[k], i * 4);
     });
@@ -635,17 +651,22 @@ function escolher(i, som = true) {
 }
 
 /* ---------- Sandevistan ---------- */
+// velocidade no chão do Sandy (unidades por segundo): sempre a mesma, então
+// trecho curto termina mais cedo em vez de ser percorrido devagar
+const VELOCIDADE_SANDY = 13;
 function ligarSandy(de, para) {
   tocar('sandy-entra');
+  const caminho = caminhoEntre(de, para);
+  sandy.dur = Math.min(2.4, Math.max(1, caminho.getLength() / VELOCIDADE_SANDY));
   if (corredor.modelo) {
-    corredor.caminho = caminhoEntre(de, para);
+    corredor.caminho = caminho;
     // sai de dentro do prédio: aparece no centro e já corre
     corredor.entrando = null;
     corredor.modelo.visible = true;
     corredor.modelo.scale.setScalar(ESCALA_CORREDOR);
     corredor.modelo.position.copy(corredor.caminho.getPoint(0));
-    corredor.acoes.idle?.fadeOut(0.15);
-    corredor.acoes.run?.reset().fadeIn(0.15).play();
+    corredor.acoes.idle?.stop();
+    corredor.acoes.run?.reset().setEffectiveWeight(1).play(); // já sai correndo, sem misturar com o parado
   }
   sandy.ativo = true;
   sandy.ini = performance.now();
@@ -665,10 +686,10 @@ function ligarSandy(de, para) {
     if (corredor.modelo) corredor.entrando = performance.now(); // entra no prédio
   }, sandy.dur * 1000);
 }
-// curva do Sandy: larga já em disparada e ainda acelera até entrar no
-// prédio. Posição = 0.8t + 0.2t^4; velocidade vai de 0.8x a 1.6x a média
-const curvaSandy = (t) => 0.8 * t + 0.2 * t ** 4;
-const velocidadeSandy = (t) => 0.8 + 0.8 * t ** 3;
+// curva do Sandy: larga no máximo e ainda dá um tranco no fim, ao entrar
+// no prédio. Posição = 0.9t + 0.1t^4; velocidade de 0.9x a 1.3x a média
+const curvaSandy = (t) => 0.9 * t + 0.1 * t ** 4;
+const velocidadeSandy = (t) => 0.9 + 0.4 * t ** 3;
 const suave = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
 /* ---------- quadro ---------- */
@@ -713,7 +734,7 @@ function quadro(agora) {
     if (sandy.ativo && corredor.caminho) {
       // as pernas acompanham a aceleração: começa em corrida e termina em disparada
       const velocidade = (corredor.caminho.getLength() / sandy.dur) * velocidadeSandy(cam.t); // unidades por segundo
-      ritmo = Math.min(5, Math.max(3.2, velocidade / PASSADA));
+      ritmo = Math.min(3.2, Math.max(2.2, (velocidade / PASSADA) * 0.75)); // menos passos e mais longos
     }
     corredor.mixer.update(dt * ritmo);
     if (sandy.ativo && corredor.caminho) {
