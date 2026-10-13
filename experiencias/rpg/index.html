@@ -13,8 +13,8 @@
        sem o flash branco/preto; o resto da página fica invisível até lá -->
   <style>html,body{background:#0d0805;height:100%;margin:0;overflow:hidden}.sem-css body>:not(#carregando),.sem-css #carregando>*{visibility:hidden}#carregando{z-index:30;background:radial-gradient(at 50% 42%,#2a1709 0%,#120a05 45%,#0d0805 80%);position:fixed;inset:0}</style>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@600;700&family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=UnifrakturMaguntia&family=Pinyon+Script&display=swap" rel="stylesheet" />
-  <script type="module" crossorigin src="./assets/index-p7fEbvyl.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-DHCeVYiV.css">
+  <script type="module" crossorigin src="./assets/index-BvIkTnrC.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-8F1CueXl.css">
 </head>
 <body>
   <div id="palco" aria-label="Tabuleiro de RPG sobre uma mesa de taverna"></div>
@@ -242,7 +242,10 @@
   </div>
   <div class="aventura-hud" id="aventuraHud" hidden>
     <i class="aventura-mira" aria-hidden="true"></i>
-    <p class="aventura-dica">WASD anda · Shift corre · Espaço pula · Esc solta o mouse</p>
+    <p class="aventura-dica aventura-dica-pc">WASD anda · Shift corre · Espaço pula · Esc solta o mouse</p>
+    <p class="aventura-dica aventura-dica-toque">joystick anda (na borda, corre) · arraste a tela para olhar</p>
+    <div class="aventura-joy" id="aventuraJoy" aria-label="joystick para andar"><i></i></div>
+    <button type="button" class="aventura-pular" id="aventuraPular">Pular</button>
     <p class="aventura-solto" id="aventuraSolto" hidden>Clique para continuar andando · Esc de novo volta à mesa</p>
     <button type="button" id="sairAventura">Voltar à mesa</button>
   </div>
@@ -250,7 +253,8 @@
     <div class="modal-fp-caixa">
       <h2 id="modalFpTit">Passeio em primeira pessoa</h2>
       <p>Um modo extra, só para se divertir e explorar o mundo de perto, pelos olhos do herói. Não faz parte da jornada.</p>
-      <p class="modal-fp-teclas"><b>WASD</b> anda · <b>Shift</b> corre · <b>Espaço</b> pula · <b>mouse</b> olha · <b>Esc</b> sai</p>
+      <p class="modal-fp-teclas aventura-dica-pc"><b>WASD</b> anda · <b>Shift</b> corre · <b>Espaço</b> pula · <b>mouse</b> olha · <b>Esc</b> sai</p>
+      <p class="modal-fp-teclas aventura-dica-toque"><b>joystick</b> anda · <b>arraste</b> a tela para olhar · <b>Pular</b> pula</p>
       <div class="modal-fp-botoes">
         <button type="button" id="modalFpVoltar">Agora não</button>
         <button type="button" id="modalFpEntrar" class="principal">Explorar</button>
