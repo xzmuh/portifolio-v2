@@ -155,7 +155,9 @@ atualizarBotao();
 // ainda está baixando, toca assim que chegar (só se ainda der tempo)
 let glitchPendente = false;
 addEventListener('intro-comecou', () => {
-  if (buffers.glitch) tocar('glitch');
+  // o áudio pode estar terminando de ligar (resume é assíncrono): espera ele
+  if (buffers.glitch && ctx?.state === 'running') tocar('glitch');
+  else if (ctx && ctx.state !== 'running') ctx.resume().then(() => tocar('glitch')).catch(() => {});
   else { glitchPendente = true; setTimeout(() => { glitchPendente = false; }, 800); }
 });
 

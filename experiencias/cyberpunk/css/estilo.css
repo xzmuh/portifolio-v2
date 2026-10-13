@@ -770,3 +770,29 @@ html.glitch-intro-ativo .som { display: none; }
 .palco--estreito .aba small { white-space: nowrap; }
 .palco--estreito .medidor_valor { left: -66px; }
 .palco--estreito .medidor--dir .medidor_delta { left: -66px; }
+
+/* ---------- tela de acesso ----------
+ * Primeira coisa que aparece, no jeito das telas do jogo: fundo do menu
+ * apagado, textos técnicos nos cantos e um painel vermelho de conexão.
+ * O clique libera o som e dispara o glitch. */
+.acesso { position: fixed; inset: 0; z-index: 10000; container-type: size; display: grid; place-items: center; font-family: var(--fonte); text-transform: uppercase; background: linear-gradient(rgba(7, 6, 26, 0.86), rgba(7, 6, 26, 0.92)), url('../img/menu-fundo.webp') center / cover; transition: opacity 0.3s ease; }
+.acesso::before { content: ''; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(255, 42, 109, 0.06) 0 1px, transparent 1px 3px); }
+.acesso--saindo { opacity: 0; pointer-events: none; }
+.acesso_canto { position: absolute; font-size: 12px; letter-spacing: 0.18em; color: rgba(255, 95, 162, 0.7); }
+.acesso_canto--ce { top: 22px; left: 26px; }
+.acesso_canto--cd { top: 22px; right: 26px; color: rgba(0, 240, 255, 0.6); }
+.acesso_canto--be { bottom: 22px; left: 26px; }
+.acesso_canto--bd { bottom: 22px; right: 26px; color: rgba(252, 238, 10, 0.7); }
+.acesso_painel { position: relative; display: grid; gap: 10px; width: min(560px, 86cqw); padding: 22px 30px 22px 36px; text-align: left; font: inherit; color: var(--vermelho); cursor: pointer; background: linear-gradient(90deg, rgba(255, 42, 109, 0.16), rgba(255, 42, 109, 0.04)); border: 1px solid rgba(255, 42, 109, 0.7); clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 22px, 100% 100%, 0 100%); }
+.acesso_painel::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: var(--amarelo); box-shadow: 0 0 12px var(--amarelo); }
+.acesso_rotulo { font-size: 13px; letter-spacing: 0.22em; color: var(--amarelo); }
+.acesso_linha { display: flex; align-items: center; gap: 4px; font-size: clamp(22px, 3.4cqw, 34px); font-weight: 600; letter-spacing: 0.06em; color: #ffd2e2; text-shadow: 2px 0 rgba(255, 42, 109, 0.7), -2px 0 rgba(0, 240, 255, 0.5); }
+.acesso_linha i { width: 0.5em; height: 0.95em; margin-left: 6px; background: var(--ciano); box-shadow: 0 0 10px var(--ciano); animation: acesso-cursor 0.9s steps(1) infinite; }
+.acesso_carga { height: 3px; background: rgba(255, 42, 109, 0.2); overflow: hidden; }
+.acesso_carga b { display: block; height: 100%; width: 100%; background: var(--vermelho); box-shadow: 0 0 8px var(--vermelho); transform-origin: left; animation: acesso-carga 1.4s cubic-bezier(0.6, 0, 0.3, 1) both; }
+.acesso_dica { font-size: 13px; letter-spacing: 0.2em; color: rgba(0, 240, 255, 0.8); animation: acesso-pisca 1.4s ease-in-out 1.4s infinite; }
+.acesso_painel:hover, .acesso_painel:focus-visible { outline: none; background: linear-gradient(90deg, rgba(255, 42, 109, 0.3), rgba(255, 42, 109, 0.08)); }
+@keyframes acesso-cursor { 50% { opacity: 0; } }
+@keyframes acesso-carga { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes acesso-pisca { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+@media (prefers-reduced-motion: reduce) { .acesso_linha i, .acesso_carga b, .acesso_dica { animation: none; } }

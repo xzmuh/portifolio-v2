@@ -28,11 +28,14 @@
       window.semIntro = naTela || mm('(prefers-reduced-motion: reduce)') || mm('(orientation: portrait) and (max-width: 900px)');
       if (!window.semIntro) {
         document.documentElement.className += ' glitch-intro-ativo';
-        setTimeout(function () {
-          document.documentElement.classList.remove('glitch-intro-ativo');
-          var menu = document.querySelector('.menu');
-          if (menu) menu.style.opacity = '1';
-        }, 6000);
+        // rede de segurança: 6 s depois do clique de acesso, o menu aparece de qualquer jeito
+        window.addEventListener('acessar', function () {
+          setTimeout(function () {
+            document.documentElement.classList.remove('glitch-intro-ativo');
+            var menu = document.querySelector('.menu');
+            if (menu) menu.style.opacity = '1';
+          }, 6000);
+        });
       }
     })();
   </script>
@@ -41,6 +44,19 @@
   <script>if (/^#(cibernetica|habilidades|historia|projetos|contato)$/.test(location.hash)) document.body.dataset.tela = location.hash.slice(1);</script>
   <!-- #app: tudo que aparece; no celular em pé ele gira para paisagem -->
   <div id="app">
+  <!-- tela de acesso: o clique libera o som (o navegador exige um gesto) e só então começa o glitch -->
+  <div class="acesso" data-acesso>
+    <span class="acesso_canto acesso_canto--ce">MG-25 // PERFIL 2077</span>
+    <span class="acesso_canto acesso_canto--cd">NET::BAURU-SP · CANAL SEGURO</span>
+    <span class="acesso_canto acesso_canto--be">V6.0 · BUILD 0x3F2A</span>
+    <span class="acesso_canto acesso_canto--bd">ÁUDIO NEURAL · ON</span>
+    <button class="acesso_painel" type="button">
+      <span class="acesso_rotulo">Conexão disponível</span>
+      <span class="acesso_linha">&gt; Iniciar link neural<i aria-hidden="true"></i></span>
+      <span class="acesso_carga" aria-hidden="true"><b></b></span>
+      <span class="acesso_dica">Clique ou aperte qualquer tecla</span>
+    </button>
+  </div>
   <div id="glitch-intro" aria-hidden="true"><canvas class="glitch-intro_canvas"></canvas></div>
 
   <!-- menu principal: o glitch de entrada pousa no logo (.menu_nome/.menu_sub) -->
@@ -262,6 +278,21 @@
   <!-- faixas de glitch da troca de tela (js/menu.js); fora do #app, que é recortado pelo glitch -->
   <div class="troca_fx" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
 
+  <script>
+    (function () {
+      var acesso = document.querySelector('[data-acesso]');
+      function entrar() {
+        if (!acesso || acesso.classList.contains('acesso--saindo')) return;
+        acesso.classList.add('acesso--saindo');
+        removeEventListener('keydown', entrar);
+        window.dispatchEvent(new Event('acessar'));
+        setTimeout(function () { acesso.remove(); }, 400);
+      }
+      acesso.addEventListener('click', entrar);
+      // o canto é texto de ambiente, não lista de controles
+      addEventListener('keydown', entrar);
+    })();
+  </script>
   <script type="module" src="js/tela.js"></script>
   <script type="module" src="js/habilidades.js"></script>
   <script type="module" src="js/projetos.js"></script>

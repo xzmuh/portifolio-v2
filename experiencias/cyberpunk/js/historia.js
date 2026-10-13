@@ -713,7 +713,8 @@ function quadro(agora) {
   // no Sandy a câmera chega perto do corredor; depois volta para a vista do mapa
   const perto = sandy.ativo ? 1 : 0;
   cam.zoom = (cam.zoom ?? 0) + (perto - (cam.zoom ?? 0)) * Math.min(1, dt * 3);
-  const dist = cam.dist * (1 - 0.45 * cam.zoom), alt = cam.alt * (1 - 0.5 * cam.zoom);
+  // mais perto e mais baixa: o chão passa mais rápido pela tela
+  const dist = cam.dist * (1 - 0.55 * cam.zoom), alt = cam.alt * (1 - 0.62 * cam.zoom);
   // inclinação na curva (some devagar na reta e fora do Sandy)
   if (!sandy.ativo) corredor.curva = (corredor.curva ?? 0) * 0.9;
   const inclina = corredor.curva ?? 0;
@@ -723,8 +724,9 @@ function quadro(agora) {
     camera.lookAt(cam.alvo);
   };
   posicionarCamera();
-  const fovAlvo = sandy.ativo ? 52 : 40;
-  if (Math.abs(camera.fov - fovAlvo) > 0.05) { camera.fov += (fovAlvo - camera.fov) * 0.1; camera.updateProjectionMatrix(); }
+  // FOV abre junto com a velocidade (como nos jogos de corrida): as bordas esticam e passam voando
+  const fovAlvo = sandy.ativo ? 50 + 14 * velocidadeSandy(cam.t) : 40;
+  if (Math.abs(camera.fov - fovAlvo) > 0.05) { camera.fov += (fovAlvo - camera.fov) * (sandy.ativo ? 0.18 : 0.08); camera.updateProjectionMatrix(); }
 
   // corredor: anda pela rota no ritmo do Sandy e solta uma cópia a cada instante
   if (corredor.modelo) {

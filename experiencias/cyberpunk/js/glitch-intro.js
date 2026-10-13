@@ -743,7 +743,9 @@
   function pronto() { if (--pendentes <= 0) largada(); }
   function largada() { if (!partiu && liberado) { partiu = true; comecar(); } }
 
-  var liberado = true;
+  // espera o clique de acesso (index.html), que é o que libera o som
+  var liberado = !document.querySelector('[data-acesso]');
+  window.addEventListener('acessar', function () { liberado = true; largada(); });
 
   if (document.fonts && document.fonts.load) {
     document.fonts.load('900 100px Roboto').then(pronto).catch(pronto);
