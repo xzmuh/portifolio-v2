@@ -19,6 +19,8 @@ const ICONE = {
 };
 let sel = 0;
 const botoes = [];
+// já baixa as miniaturas: trocar de projeto não espera a imagem chegar
+PROJETOS.forEach((p) => { new Image().src = `img/projetos/${p.imagem}`; });
 
 for (const g of GRUPOS) {
   const cab = document.createElement('button');

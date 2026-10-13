@@ -125,9 +125,12 @@ body[data-tela='projetos'] .projetos { display: block; }
 .proj_link svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; }
 .proj_link:hover { color: var(--amarelo); }
 .proj_link[hidden] { display: none; }
-/* troca de projeto: o detalhe entra com um tranco */
-.proj_detalhe--troca, .proj_mini--troca { animation: proj-troca 0.3s steps(4) both; }
-@keyframes proj-troca { from { opacity: 0; transform: translateX(10px); filter: brightness(1.8); } to { opacity: 1; transform: none; filter: none; } }
+/* troca de projeto: desliza e acende suave. Era steps(4) com brilho no
+   painel todo, e parecia o jogo travando em vez de glitch */
+.proj_detalhe--troca { animation: proj-troca 0.28s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.proj_mini--troca { animation: proj-troca 0.28s cubic-bezier(0.2, 0.7, 0.2, 1) both, proj-flash 0.4s ease-out; }
+@keyframes proj-troca { from { opacity: 0; transform: translateX(12px); } to { opacity: 1; transform: none; } }
+@keyframes proj-flash { from { filter: brightness(1.6); } to { filter: none; } }
 @media (prefers-reduced-motion: reduce) { .proj_detalhe--troca, .proj_mini--troca, .proj_item--entra { animation: none; } .proj_itens { transition: none; } }
 
 /* janela estreita: as três colunas se apertam dentro dos 1180 visíveis */
