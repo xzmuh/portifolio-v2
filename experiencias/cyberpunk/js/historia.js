@@ -493,13 +493,8 @@ function carregarCorredor() {
     m.position.copy(ponto(EMPRESAS[sel].lote));
     cena.add(m);
     montarFantasmas();
-    // aquece a GPU: compila personagem e ecos e sobe as texturas agora, não no clique
-    corredor.pool.forEach((g) => { g.f.visible = true; });
-    camera.layers.enableAll();
-    renderer.compile(cena, camera);
-    camera.layers.set(0);
-    corredor.pool.forEach((g) => { g.f.visible = false; });
     m.traverse((o) => { if (o.isMesh) for (const mat of [].concat(o.material)) if (mat.map) renderer.initTexture(mat.map); });
+    aquecerSandy();
     m.visible = false; // está dentro do prédio da empresa atual
   });
 }
@@ -771,20 +766,43 @@ function quadro(agora) {
   renderer.render(cena, camera);
   semCor += ((sandy.ativo ? 1 : 0) - semCor) * Math.min(1, dt * (sandy.ativo ? 5 : 2.5));
   if (semCor > 0.01) {
-    materialSemCor ??= new THREE.MeshLambertMaterial({ color: 0x5c7564, emissive: 0x05120b, transparent: true, depthWrite: false, depthFunc: THREE.LessEqualDepth });
-    materialSemCor.opacity = semCor;
-    cena.overrideMaterial = materialSemCor;
-    for (const m of coloridas) { m.userData.cor ??= m.instanceColor; m.instanceColor = null; }
-    // luz branca nessa passada (a rosa deixaria o cinza rosado)
-    cena.children.forEach((o) => { if (o.isLight) { o.userData.cor ??= o.color.getHex(); o.color.setHex(0xffffff); } });
-    renderer.render(cena, camera);
-    cena.overrideMaterial = null;
-    for (const m of coloridas) m.instanceColor = m.userData.cor;
-    cena.children.forEach((o) => { if (o.isLight && o.userData.cor !== undefined) o.color.setHex(o.userData.cor); });
+    desenharSemCor(semCor);
   }
   camera.layers.set(CAMADA_CORREDOR);
   renderer.render(cena, camera); // corredor e ecos, coloridos (sem limpar a cena)
   camera.layers.set(0);
+}
+
+// passada do mundo sem cor (verde-acinzentado) do Sandy
+function desenharSemCor(opacidade) {
+  materialSemCor ??= new THREE.MeshLambertMaterial({ color: 0x5c7564, emissive: 0x05120b, transparent: true, depthWrite: false, depthFunc: THREE.LessEqualDepth });
+  materialSemCor.opacity = opacidade;
+  cena.overrideMaterial = materialSemCor;
+  for (const m of coloridas) { m.userData.cor ??= m.instanceColor; m.instanceColor = null; }
+  // luz branca nessa passada (a rosa deixaria o cinza rosado)
+  cena.children.forEach((o) => { if (o.isLight) { o.userData.cor ??= o.color.getHex(); o.color.setHex(0xffffff); } });
+  renderer.render(cena, camera);
+  cena.overrideMaterial = null;
+  for (const m of coloridas) m.instanceColor = m.userData.cor;
+  cena.children.forEach((o) => { if (o.isLight && o.userData.cor !== undefined) o.color.setHex(o.userData.cor); });
+}
+// ensaio do Sandy assim que tudo carrega: desenha uma vez cada passada dele
+// (rastro, mundo sem cor, corredor e ecos) para o navegador preparar os
+// shaders agora. Sem isso, o primeiro clique na História travava
+function aquecerSandy() {
+  corredor.modelo.visible = true;
+  corredor.pool.forEach((g) => { g.f.visible = true; });
+  renderer.render(cenaFade, cameraFade);
+  renderer.clearDepth();
+  camera.layers.set(0);
+  renderer.render(cena, camera);
+  desenharSemCor(0.5);
+  camera.layers.set(CAMADA_CORREDOR);
+  renderer.render(cena, camera);
+  camera.layers.set(0);
+  corredor.pool.forEach((g) => { g.f.visible = false; });
+  corredor.modelo.visible = false;
+  renderer.clear();
 }
 
 function ligar() {
