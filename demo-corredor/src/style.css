@@ -17,6 +17,7 @@ html.livre #palco canvas { touch-action: none; }
 .sala { position: fixed; top: 58px; right: 16px; font-size: 30px; font-weight: 700; pointer-events: none; }
 
 button { font: 700 21px Caveat, cursive; color: var(--tinta); background: var(--papel); border: 2px solid var(--tinta); border-radius: var(--rabisco); padding: 2px 14px 4px; cursor: pointer; }
+button { touch-action: manipulation; }
 button:hover, button:focus-visible { background: var(--tinta); color: var(--papel); outline: none; }
 
 .controles { position: fixed; top: 14px; right: 16px; display: grid; justify-items: end; gap: 6px; }
@@ -51,6 +52,7 @@ html.livre .dica { bottom: auto; top: 14px; }
 
 /* joystick do celular */
 .joystick { position: fixed; left: 26px; bottom: 30px; width: 124px; height: 124px; border: 2px solid var(--tinta); border-radius: 50% 48% 52% 50% / 49% 52% 48% 51%; background: rgba(244, 241, 234, .75); touch-action: none; }
+.joystick::after { content: 'andar'; position: absolute; left: 0; right: 0; top: -30px; text-align: center; font-size: 20px; color: var(--suave); pointer-events: none; }
 .joystick .pino { position: absolute; left: 50%; top: 50%; width: 52px; height: 52px; margin: -26px 0 0 -26px; border-radius: 50%; background: var(--tinta); transition: transform .08s; }
 
 .campo-escondido { position: fixed; left: -9999px; top: 0; width: 1px; height: 1px; opacity: 0; }
@@ -74,6 +76,8 @@ html.livre .dica { bottom: auto; top: 14px; }
   .dica { font-size: 20px; }
   .assinatura { font-size: 24px; }
   .dicas-livre { display: none; }
+  /* no celular a dica do andar livre fica, curtinha, logo abaixo do botão */
+  html.livre .dicas-livre { display: block; position: fixed; left: 170px; right: 16px; bottom: 30px; text-align: right; font-size: 17px; line-height: 1.1; }
   /* Mantém o som fora do cartão de instrução na abertura estreita. */
   .som { bottom: 94px; }
 }
