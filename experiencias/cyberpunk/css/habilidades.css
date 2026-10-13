@@ -259,5 +259,3 @@ body[data-tela='habilidades'] .habilidades { display: block; }
   0% { filter: brightness(2.4) drop-shadow(0 0 22px var(--liberado)); transform: scale(1.12); }
   100% { transform: none; }
 }
-/* TEMPORÁRIO: nome do som de teste ao liberar */
-.hab_som_teste { position: absolute; top: calc(100% + 8px); left: 50%; transform: translateX(-50%); white-space: nowrap; font-size: 16px; letter-spacing: 0.1em; color: var(--amarelo); }
