@@ -160,16 +160,8 @@ body[data-tela='habilidades'] .habilidades { display: block; }
 .hab_prog_linha { display: flex; align-items: baseline; gap: 12px; margin-top: 6px; }
 .hab_prog_linha b { font-size: 48px; line-height: 1; font-weight: 500; color: #fbe7f2; }
 .hab_prog_linha span { font-size: 24px; color: #fbe7f2; }
-.hab_prog_linha em { margin-left: auto; font-style: normal; font-size: 15px; color: var(--vermelho); }
-.hab_prog_trilho { height: 4px; margin-top: 8px; background: rgba(255, 42, 140, 0.2); }
-.hab_prog_trilho i { display: block; height: 100%; background: var(--amarelo); box-shadow: 0 0 10px rgba(252, 238, 10, 0.6); transition: width 0.5s var(--ease); }
-.hab_prog_rodape { display: flex; justify-content: space-between; margin-top: 6px; font-size: 13px; color: rgba(255, 95, 162, 0.75); }
-.hab_legenda { display: flex; gap: 18px; margin-top: 18px; font-size: 13px; }
-.hab_leg { display: flex; align-items: center; gap: 7px; color: var(--vermelho); }
-.hab_leg::before { content: ''; width: 12px; height: 12px; }
-.hab_leg--dominado::before { background: #ffc93c; box-shadow: 0 0 8px #ffc93c; }
-.hab_leg--evolucao::before { background: #7cc6d6; }
-.hab_leg--meta::before { background: #c2306a; }
+.hab_prog_lista { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 18px; margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(255, 42, 140, 0.3); font-size: 15px; color: #ffc93c; }
+.hab_prog_lista li::before { content: '▸ '; color: var(--vermelho); }
 
 /* card do nó */
 .hab_card {
@@ -183,17 +175,9 @@ body[data-tela='habilidades'] .habilidades { display: block; }
   pointer-events: none;
 }
 .hab_card strong { display: block; font-size: 24px; line-height: 1.05; color: #fbe7f2; }
-.hab_card_estado { display: inline-block; margin-top: 10px; padding: 2px 8px; font-size: 13px; color: #241800; background: #ffc93c; }
-.hab_card--evolucao .hab_card_estado { background: #7cc6d6; color: #04161c; }
-.hab_card--evolucao { border-left-color: #7cc6d6; }
-.hab_card--dominado { border-left-color: #ffc93c; }
-.hab_card--meta { border-left-color: #c2306a; }
-.hab_card--meta .hab_card_estado { background: #c2306a; color: #fff; }
-.hab_card_nivel[hidden] { display: none; }
-.hab_card_nivel { display: block; margin-top: 10px; font-size: 14px; color: var(--vermelho); }
-.hab_card_nivel b { color: var(--ciano); font-weight: 600; }
+.hab_card_onde { display: block; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--linha-fraca); font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--vermelho); }
 .hab_card p { margin-top: 8px; font-size: 16px; font-weight: 500; line-height: 1.35; color: #f3d9e8; text-transform: none; }
-.hab_card ul { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--linha-fraca); display: grid; gap: 4px; }
+.hab_card ul { margin-top: 6px; display: grid; gap: 4px; }
 .hab_card li { font-size: 15px; color: #8ff7ff; text-transform: none; }
 .hab_card li::before { content: '+ '; color: var(--ciano); }
 

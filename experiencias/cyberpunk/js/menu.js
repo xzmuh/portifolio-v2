@@ -21,7 +21,7 @@ const OUTRAS = ['contato'];
 // o que cada tela mostra, em uma linha (aparece embaixo da barra de cima)
 const INTRO = {
   cibernetica: '<b>Como eu trabalho.</b> Cada implante é um traço meu. Escolha a vaga embaixo ou clique numa parte do corpo para trocar.',
-  habilidades: '<b>O que eu sei fazer.</b> Cada nó é uma competência: <i class="dom">dourado</i> eu domino, <i class="evo">azul</i> estou evoluindo, <i class="met">magenta</i> estou estudando.',
+  habilidades: '<b>O que eu sei fazer.</b> Cada nó é algo que já fiz. Passe o mouse para ver em qual empresa ou projeto usei.',
   historia: '<b>Por onde passei.</b> Cada prédio é uma empresa. Clique numa ou use A/D.',
   projetos: '<b>O que eu entreguei.</b> Escolha um projeto na lista para ver o que ele é.',
   contato: '',
