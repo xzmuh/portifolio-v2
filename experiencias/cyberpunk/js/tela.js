@@ -76,7 +76,7 @@ Object.keys(CLOSES).forEach((n) => { new Image().src = `img/close-${n}.webp`; })
  */
 const BRACO = [[0, 30], [18.5, 30], [46, 17], [52, 11], [57, 13], [59, 50]]; // [y%, x%]
 const BORDA = { esq: 701, dir: 930 };
-const TOPO_LINHAS = 128, PASSO_MAX = 150, FIM_LINHAS = 700, ALTURA_LINHA = 112;
+const TOPO_LINHAS = 128, PASSO_MAX = 162, FIM_LINHAS = 700, ALTURA_LINHA = 112;
 function braçoX(yPx) {
   const y = ((yPx - MUNDO.y) / MUNDO.h) * 100;
   for (let i = 1; i < BRACO.length; i++) {
@@ -201,7 +201,7 @@ const LAYOUT = [
   ...layoutColuna(PARTES.filter((p) => p.lado === 'dir'), 'dir'),
 ];
 const linhas = {};
-const legendas = {}; // nomes dos implantes instalados, escritos embaixo dos slots
+const legendas = {}; // significado dos implantes instalados, escrito embaixo dos slots
 for (const { parte, topo: y, borda: x } of LAYOUT) {
   const linha = document.createElement('div');
   linha.className = 'parte';
@@ -243,7 +243,8 @@ function desenharGeral(novo) {
       return s;
     }));
     for (let k = ids.length; k < p.slots; k++) linhas[p.id].append(criarVago());
-    legendas[p.id].textContent = ids.map((id) => IMPLANTE[id].nome).join(' · ');
+    // o que cada implante quer dizer, em português claro (o nome de jogo fica no card)
+    legendas[p.id].replaceChildren(...ids.map((id) => Object.assign(document.createElement('span'), { textContent: IMPLANTE[id].sub })));
   }
   desenharMedidores();
   desenharBuilds();

@@ -712,6 +712,9 @@ html.glitch-intro-ativo .som { display: none; }
 
 /* nome dos implantes escrito embaixo dos slots (tela geral) */
 .parte_legenda {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
   max-width: 300px;
   font-size: 13px;
   font-weight: 500;
@@ -720,4 +723,5 @@ html.glitch-intro-ativo .som { display: none; }
   text-transform: none;
   opacity: 0.9;
 }
-.coluna--esq .parte_legenda { text-align: right; }
+.coluna--esq .parte_legenda { text-align: right; align-items: flex-end; }
+.parte_legenda span::before { content: '▸ '; color: var(--amarelo); }
