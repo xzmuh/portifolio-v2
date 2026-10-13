@@ -6,7 +6,7 @@
  */
 import { CATEGORIAS } from './dados-habilidades.js';
 import { tocar } from './som.js';
-import { telaAtual } from './menu.js';
+import { telaAtual, mostrar } from './menu.js';
 
 // ícones de traço, 24x24
 const ICONES = {
@@ -171,6 +171,7 @@ function mostrarCategoria(i) {
       rotulo: n.bloqueado ? `${n.nome}, bloqueado` : n.nome,
       ver: () => mostrarCard(x, y, tam, { nome: n.nome, texto: n.texto, bloqueado: n.bloqueado }),
     });
+    if (n.bloqueado) no.addEventListener('click', () => { tocar('abrir'); mostrar('contato'); });
     const nome = document.createElement('span');
     nome.className = 'hab_nome';
     nome.textContent = n.nome;
