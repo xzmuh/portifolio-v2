@@ -196,11 +196,22 @@ function acender(parte, on) { regiao[parte.regiao]?.classList.toggle('regiao--ho
 // brilho no contorno da foto inteira (corpo ou close) quando algo é instalado.
 // Fica no .mundo, por fora da máscara do close: na própria imagem a máscara cortava o glow
 const mundoEl = document.getElementById('mundo');
+const halo = document.querySelector('[data-halo]');
 function brilhar() {
   mundoEl.classList.remove('mundo--instala');
   void mundoEl.offsetWidth;
   mundoEl.classList.add('mundo--instala');
+  // no zoom, o anel azul em volta do close (o close fica em ALVO com `tela` px)
+  if (!atual) return;
+  const lado = CLOSES[atual.close].tela * 1.1;
+  halo.style.left = ALVO.x - lado / 2 + 'px';
+  halo.style.top = ALVO.y - lado / 2 + 'px';
+  halo.style.width = halo.style.height = lado + 'px';
+  halo.classList.remove('halo-instala--on');
+  void halo.offsetWidth;
+  halo.classList.add('halo-instala--on');
 }
+halo.addEventListener('animationend', () => halo.classList.remove('halo-instala--on'));
 // sem tirar a classe, a animação voltava toda vez que a tela reaparecia
 mundoEl.addEventListener('animationend', (e) => { if (e.animationName === 'mundo-instala') mundoEl.classList.remove('mundo--instala'); });
 palco.addEventListener('animationend', (e) => {
