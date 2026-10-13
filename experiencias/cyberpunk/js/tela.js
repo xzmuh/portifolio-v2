@@ -58,12 +58,13 @@ function posicionarClose(img, nome) {
   img.style.top = (e.cy / 100) * MUNDO.h - lado / 2 + 'px';
 }
 function camera(nome) {
-  if (!nome) { mundo.style.transform = ''; return; }
+  if (!nome) { mundo.style.transform = ''; mundo.style.setProperty('--k', 1); return; }
   const e = CLOSES[nome];
   const lado = (e.w / 100) * MUNDO.w;
   const cx = (e.cx / 100) * MUNDO.w, cy = (e.cy / 100) * MUNDO.h;
   const s = e.tela / lado;
   mundo.style.transform = `translate(${ALVO.x - MUNDO.x - s * cx}px, ${ALVO.y - MUNDO.y - s * cy}px) scale(${s})`;
+  mundo.style.setProperty('--k', 1 / s); // o glow do contorno não cresce junto com o zoom
 }
 // já baixa os closes para o zoom não piscar
 Object.keys(CLOSES).forEach((n) => { new Image().src = `img/close-${n}.webp`; });
@@ -192,6 +193,14 @@ for (const r of new Set(PARTES.map((p) => p.regiao))) {
   regiao[r] = img;
 }
 function acender(parte, on) { regiao[parte.regiao]?.classList.toggle('regiao--hover', on); }
+// brilho no contorno da foto inteira (corpo ou close) quando algo é instalado.
+// Fica no .mundo, por fora da máscara do close: na própria imagem a máscara cortava o glow
+const mundoEl = document.getElementById('mundo');
+function brilhar() {
+  mundoEl.classList.remove('mundo--instala');
+  void mundoEl.offsetWidth;
+  mundoEl.classList.add('mundo--instala');
+}
 function piscar(r) {
   const el = regiao[r];
   if (!el) return;
@@ -273,6 +282,7 @@ for (const b of BUILDS) {
     tocar('instalar');
     const velho = JSON.parse(JSON.stringify(instalado));
     equiparBuild(b.id);
+    brilhar();
     for (const p of PARTES) if (velho[p.id].join() !== instalado[p.id].join()) piscar(p.regiao);
     // todos os slots que mudaram piscam como recém-instalados
     desenharGeral();
@@ -418,8 +428,7 @@ function instalar(parte, id) {
   buildAtiva = 'custom';
   tocar('instalar');
   piscar(parte.regiao);
-  const c = closes[closeAtivo];
-  c.classList.remove('mundo_close--instala'); void c.offsetWidth; c.classList.add('mundo_close--instala');
+  brilhar();
   esconderCard();
   semPrevia();
   desenharZoom(parte, id);
