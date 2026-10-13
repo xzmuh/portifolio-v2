@@ -66,8 +66,7 @@ function escolher(i, som = true) {
   $('[data-proj-titulo]').textContent = p.nome;
   $('[data-proj-objetivos]').replaceChildren(...p.objetivos.map((o) => {
     const li = document.createElement('li');
-    li.textContent = o.texto + (o.feito ? '' : ' [em andamento]');
-    if (o.feito) li.className = 'feito';
+    li.textContent = o.texto;
     return li;
   }));
   // texto: o que o projeto é

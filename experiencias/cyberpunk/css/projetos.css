@@ -84,18 +84,8 @@ body[data-tela='projetos'] .projetos { display: block; }
 .proj_detalhe { position: absolute; left: 720px; top: 120px; width: 580px; bottom: 90px; display: flex; flex-direction: column; }
 .proj_titulo { font-size: 30px; font-weight: 600; color: var(--vermelho); padding-bottom: 12px; border-bottom: 1px solid var(--linha); }
 .proj_objetivos { margin-top: 14px; display: flex; flex-direction: column; gap: 10px; padding-bottom: 14px; border-bottom: 1px solid var(--linha-fraca); }
-.proj_objetivos li { display: flex; gap: 12px; align-items: flex-start; font-size: 17px; color: var(--ciano); text-transform: none; line-height: 1.25; }
-.proj_objetivos li::before {
-  content: '';
-  flex: none;
-  width: 16px;
-  height: 16px;
-  margin-top: 2px;
-  border: 1.5px solid currentColor;
-}
-.proj_objetivos li.feito { color: rgba(0, 240, 255, 0.55); }
-.proj_objetivos li.feito::before { background: linear-gradient(45deg, transparent 42%, currentColor 42% 58%, transparent 58%), rgba(0, 240, 255, 0.15); }
-.proj_objetivos li:not(.feito) { color: var(--amarelo); }
+.proj_objetivos li { position: relative; padding-left: 20px; font-size: 17px; color: var(--ciano); text-transform: none; line-height: 1.25; }
+.proj_objetivos li::before { content: ''; position: absolute; left: 3px; top: 7px; width: 7px; height: 7px; background: var(--ciano); transform: rotate(45deg); }
 .proj_texto {
   flex: 1;
   margin-top: 16px;
