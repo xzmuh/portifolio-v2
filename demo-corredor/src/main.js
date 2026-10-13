@@ -1056,7 +1056,7 @@ function atualizaTitulo() {
   const n = visitadas.size;
   const [nome, sub] = estado.modo === 'fachada'
     ? ['EXPLORADOR', toque ? 'toque na porta para entrar' : 'clique na porta para entrar']
-    : n === 0 ? ['ANDARILHO', 'role para explorar o corredor']
+    : n === 0 ? ['ANDARILHO', toque ? 'arraste para explorar o corredor' : 'role para explorar o corredor']
       : n < SALAS.length ? ['CURIOSO', `${n} de ${SALAS.length} portas abertas`]
         : ['VETERANO', 'você abriu todas as portas!'];
   ui.tituloNome.textContent = nome;
@@ -1524,7 +1524,7 @@ function entrarLivre() {
   ui.rotulo.hidden = true;
   dica(null);
   ui.modo.textContent = toque ? 'voltar ao passeio' : '[G] voltar ao passeio';
-  ui.dicasLivre.hidden = toque;
+  ui.dicasLivre.hidden = false;
   ui.joystick.hidden = !toque;
   if (!toque) renderer.domElement.requestPointerLock?.()?.catch?.(() => {});
 }
@@ -1622,14 +1622,16 @@ function lugarDa(pos) {
 
 const olharLivre = new THREE.Vector3();
 function andar(dt) {
-  let f = -joy.y, l = 0;
+  // joystick: frente/trás e para os lados (olhar é arrastando a tela); empurrado até a borda, corre
+  let f = -joy.y, l = joy.x;
   if (teclas.has('w') || teclas.has('arrowup')) f += 1;
   if (teclas.has('s') || teclas.has('arrowdown')) f -= 1;
   if (teclas.has('d') || teclas.has('arrowright')) l += 1;
   if (teclas.has('a') || teclas.has('arrowleft')) l -= 1;
-  estado.yaw -= joy.x * 1.9 * dt;
   f = THREE.MathUtils.clamp(f, -1, 1);
-  const v = (teclas.has('shift') ? 4.2 : 2.3) * dt;
+  l = THREE.MathUtils.clamp(l, -1, 1);
+  const correndo = teclas.has('shift') || Math.hypot(joy.x, joy.y) > 0.9;
+  const v = (correndo ? 4.2 : 2.3) * dt;
   const sy = Math.sin(estado.yaw), cy = Math.cos(estado.yaw);
   const dx = (-sy * f + cy * l) * v, dz = (-cy * f - sy * l) * v;
   const p = cam.pos;
@@ -1830,7 +1832,10 @@ function quadro() {
 /* ---------- início ---------- */
 
 await montaRetrato();
-if (toque) ui.modo.textContent = 'andar livre';
+if (toque) {
+  ui.modo.textContent = 'andar livre';
+  ui.dicasLivre.textContent = 'joystick anda (na borda, corre) · arraste a tela para olhar · toque para interagir';
+}
 document.documentElement.classList.add('na-fachada');
 scrollTo(0, 0);
 lerRolagem();
