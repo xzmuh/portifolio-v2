@@ -403,6 +403,11 @@ ul { list-style: none; }
 .acao { display: flex; align-items: center; gap: 8px; font-size: 22px; color: var(--vermelho); text-transform: none; }
 .acao svg { width: 14px; height: 22px; fill: none; stroke: var(--ciano); stroke-width: 1.5; }
 .acao:hover, .acao:focus-visible { color: var(--ciano); outline: none; }
+/* voltar: botão de verdade, com seta e borda, não só a dica do Esc */
+.acao--voltar { padding: 8px 14px 8px 10px; border: 1.5px solid var(--ciano); color: var(--ciano); background: rgba(0, 240, 255, 0.08); clip-path: polygon(0 0, 100% 0, 100% 70%, calc(100% - 12px) 100%, 0 100%); }
+.acao--voltar:hover, .acao--voltar:focus-visible { background: rgba(0, 240, 255, 0.2); color: #fff; }
+.acao--voltar .acao_seta { width: 20px; height: 20px; fill: none; stroke: var(--ciano); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.acao--voltar .tecla { margin-left: 4px; opacity: 0.7; }
 .acao--zoom { display: none; }
 .palco--zoom .acao--zoom { display: flex; }
 

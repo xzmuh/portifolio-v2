@@ -69,7 +69,7 @@ export const PARTES = [
     ],
   },
   {
-    id: 'esqueleto', nome: 'Esqueleto', lado: 'esq', slots: 1, close: 'tronco', regiao: 'tronco',
+    id: 'esqueleto', nome: 'Esqueleto', lado: 'esq', slots: 1, close: 'esqueleto', regiao: 'tronco',
     area: 'O que me sustenta',
     opcoes: [
       { id: 'chassi-fullstack', nome: 'Coluna Full Stack', sub: 'Aguenta do banco até a tela', nivel: 5, armadura: 8, builds: ['back', 'front', 'produto'],
@@ -77,7 +77,7 @@ export const PARTES = [
     ],
   },
   {
-    id: 'nervoso', nome: 'Sistema nervoso', lado: 'esq', slots: 2, close: 'tronco', regiao: 'tronco',
+    id: 'nervoso', nome: 'Sistema nervoso', lado: 'esq', slots: 2, close: 'nervoso', regiao: 'tronco',
     area: 'Reflexos',
     opcoes: [
       { id: 'kerenzikov-incidente', nome: 'Modo Plantão', sub: 'Reflexo em chamado urgente', nivel: 4, armadura: 5, builds: ['back'],
@@ -142,7 +142,10 @@ export const CLOSES = {
   cabeca: { cx: 50, cy: 10.7, w: 31.2, tela: 780 }, // sem uso agora; fica para quando quiser
   rosto: { cx: 50, cy: 5.8, w: 15, tela: 700 },
   so: { cx: 50, cy: 13.2, w: 15, tela: 720 },
-  tronco: { cx: 50, cy: 32, w: 58, tela: 660 },
+  tronco: { cx: 50, cy: 32, w: 58, tela: 660 }, // sem uso agora
+  // esqueleto e nervoso: mesmo enquadramento do tronco, cada um com a sua foto
+  esqueleto: { cx: 50, cy: 32, w: 58, tela: 660 },
+  nervoso: { cx: 50, cy: 32, w: 58, tela: 660 },
   braco: { cx: 25.7, cy: 32.6, w: 39.8, tela: 640 },
   mao: { cx: 79.5, cy: 48.7, w: 31.7, tela: 720 },
   joelhos: { cx: 49.3, cy: 65.6, w: 57.5, tela: 760 },

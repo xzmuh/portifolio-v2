@@ -455,7 +455,7 @@ function abrir(parte) {
   trilho.style.left = (i * 100) / PARTES.length + '%';
   desenharZoom(parte);
   zoom.hidden = false;
-  $('[data-fechar]').textContent = 'Voltar';
+  $('[data-fechar]').textContent = 'Voltar ao corpo';
   // troca o close só se a região mudou: o novo entra enquanto o antigo sai,
   // os dois presos ao corpo, então a câmera andando leva os dois juntos
   const src = `img/close-${parte.close}.webp`;
@@ -484,7 +484,7 @@ function fecharZoom() {
   camera(null);
   desligarEfeitos();
   canvasEfeitos.dataset.close = '';
-  $('[data-fechar]').textContent = 'Fechar';
+  $('[data-fechar]').textContent = 'Voltar ao menu';
   setTimeout(() => {
     if (atual) return;
     zoom.hidden = true;
@@ -561,7 +561,7 @@ addEventListener('tela', (e) => {
     desligarEfeitos();
     canvasEfeitos.dataset.close = '';
     zoom.hidden = true;
-    $('[data-fechar]').textContent = 'Fechar';
+    $('[data-fechar]').textContent = 'Voltar ao menu';
   }
 });
 
