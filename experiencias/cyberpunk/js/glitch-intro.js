@@ -46,6 +46,8 @@
     document.documentElement.classList.remove('glitch-intro-ativo');
     return;
   }
+  // o canvas mora no #app, que no celular em pé está girado 90°
+  var app = document.getElementById('app') || document.documentElement;
   var elNome = hero.querySelector('.menu_nome');
   var elSub = hero.querySelector('.menu_sub');
   var elFoto = hero.querySelector('.hero-split_foto');   // opcional
@@ -137,11 +139,22 @@
      Medir o hero de verdade. É isso que faz a aterrissagem bater: o
      último frame do canvas é desenhado nas coordenadas exatas do DOM.
      ----------------------------------------------------------------- */
+  /* Retângulo nas coordenadas do #app. Com o app girado (rotate(90deg) a
+     partir do canto de cima à esquerda, ver estilo.css) o getBoundingClientRect
+     vem na tela deitada: x do app é o y da tela e y do app sai da direita. */
+  function girado() { return getComputedStyle(app).transform !== 'none'; }
+  function retangulo(el) {
+    var r = el.getBoundingClientRect();
+    if (!girado()) return r;
+    var a = app.getBoundingClientRect();
+    return { left: r.top - a.top, top: a.right - r.right, width: r.height, height: r.width };
+  }
+
   function medirAlvos() {
-    var rNome = elNome.getBoundingClientRect();
-    var rSub = elSub.getBoundingClientRect();
-    var rFoto = elFoto ? elFoto.getBoundingClientRect()
-      : { left: innerWidth / 2, top: innerHeight / 2, width: 0, height: 0 };
+    var rNome = retangulo(elNome);
+    var rSub = retangulo(elSub);
+    var rFoto = elFoto ? retangulo(elFoto)
+      : { left: app.clientWidth / 2, top: app.clientHeight / 2, width: 0, height: 0 };
     var estNome = getComputedStyle(elNome);
     var estSub = getComputedStyle(elSub);
 
@@ -665,11 +678,11 @@
      ----------------------------------------------------------------- */
   function dimensionar() {
     dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-    L = Math.round(window.innerWidth * dpr);
-    A = Math.round(window.innerHeight * dpr);
+    L = Math.round(app.clientWidth * dpr);
+    A = Math.round(app.clientHeight * dpr);
     cv.width = L; cv.height = A;
-    cv.style.width = window.innerWidth + 'px';
-    cv.style.height = window.innerHeight + 'px';
+    cv.style.width = app.clientWidth + 'px';
+    cv.style.height = app.clientHeight + 'px';
     src.width = L; src.height = A;
 
     var p = document.createElement('canvas');
@@ -726,7 +739,7 @@
     requestAnimationFrame(frame);
   }
 
-  /* Sem cartão: menos movimento, recarregou dentro de uma tela ou celular em pé. */
+  /* Sem cartão: menos movimento ou recarregou dentro de uma tela. */
   if (menosMovimento || window.semIntro) {
     hero.style.opacity = '1';
     document.documentElement.classList.remove('glitch-intro-ativo');

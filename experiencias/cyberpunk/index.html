@@ -20,12 +20,12 @@
   <link rel="stylesheet" href="css/glitch-intro.css" />
   <script>
     /* Antes do primeiro paint: decide se o glitch de entrada roda. Não roda
-       para quem pediu menos movimento, ao recarregar já dentro de uma tela
-       (#cibernetica etc.) e no celular em pé (a interface gira, ver #app). */
+       para quem pediu menos movimento e ao recarregar já dentro de uma tela
+       (#cibernetica etc.). No celular em pé roda girado junto com o #app. */
     (function () {
       var mm = function (q) { return window.matchMedia && window.matchMedia(q).matches; };
       var naTela = /^#(cibernetica|habilidades|historia|projetos|contato)$/.test(location.hash);
-      window.semIntro = naTela || mm('(prefers-reduced-motion: reduce)') || mm('(orientation: portrait) and (max-width: 900px)');
+      window.semIntro = naTela || mm('(prefers-reduced-motion: reduce)');
       if (!window.semIntro) {
         document.documentElement.className += ' glitch-intro-ativo';
         // rede de segurança: 6 s depois do clique de acesso, o menu aparece de qualquer jeito
