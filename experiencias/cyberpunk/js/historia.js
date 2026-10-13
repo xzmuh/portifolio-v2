@@ -3,7 +3,7 @@
  *
  * A cidade tem bairros com tons diferentes, prédios de vários formatos, rio,
  * praças de formas diferentes (rotatória, parque com lago, quadrada,
- * hexagonal), uma rodovia elevada por onde a rota passa, um elevado com tráfego e painéis holográficos. Cada empresa é um
+ * hexagonal), uma rodovia elevada por onde a rota passa com tráfego e painéis holográficos. Cada empresa é um
  * prédio-marco com a identidade dela (cores, forma do logo e o logo num
  * painel). A rota amarela liga as empresas na ordem da carreira.
  *
@@ -28,7 +28,7 @@ const listaEl = document.querySelector('[data-hist-lista]');
 const cartao = document.querySelector('[data-hist-cartao]');
 
 // grade da cidade: lote de 1, rua de 0.42, avenida a cada 5 ruas
-const N = 76, LOTE = 1, RUA = 0.42, PASSO = LOTE + RUA;
+const N = 64, LOTE = 1, RUA = 0.42, PASSO = LOTE + RUA;
 const canto = (i) => (i - N / 2) * PASSO;
 const ponto = ([x, z]) => new THREE.Vector3(x * PASSO - RUA / 2, 0, z * PASSO - RUA / 2);
 const COR = { fundo: 0x07061a, rua: 0x00f0ff, rota: 0xfcee0a };
@@ -46,10 +46,10 @@ for (let tentativa = 0; tentativa < 20; tentativa++) {
 // bairros: tom dos prédios conforme a região
 const BAIRROS = [
   { centro: [0, 0], cor: 0xff2a6d, raio: 14 },       // centro: rosa quente
-  { centro: [-20, 15], cor: 0xff6a2b, raio: 15 },    // zona industrial (perto da I-SINC): laranja
-  { centro: [12, -18], cor: 0x9b3cff, raio: 17 },    // lado das empresas remotas: violeta
-  { centro: [-20, -20], cor: 0xd01870, raio: 15 },   // norte: magenta escuro
-  { centro: [22, 18], cor: 0x2b6bff, raio: 13 },     // sul: azul
+  { centro: [-15, 12], cor: 0xff6a2b, raio: 13 },    // zona industrial (perto da I-SINC): laranja
+  { centro: [10, -14], cor: 0x9b3cff, raio: 14 },    // lado das empresas remotas: violeta
+  { centro: [-16, -16], cor: 0xd01870, raio: 13 },   // norte: magenta escuro
+  { centro: [18, 14], cor: 0x2b6bff, raio: 11 },     // sul: azul
 ];
 
 let renderer, cena, camera, rodando = false, montado = false;
@@ -232,9 +232,9 @@ function montarRota() {
   const bruto = [];
 
   // 1) ruas até a rotatória
-  const rot = { centro: P(-5, 6), r: 2.6 };
+  const rot = { centro: P(-4, 5), r: 2.4 };
   PRACAS.push({ forma: 'rotatoria', x: rot.centro.x, z: rot.centro.z, r: rot.r });
-  bruto.push(isinc, P(-20, 11), P(-9, 11), P(-9, 6));
+  bruto.push(isinc, P(-15, 8), P(-7, 8), P(-7, 5));
   const raioAnel = rot.r + 0.2;
   // entra pelo oeste e contorna pelo sul até sair a leste
   for (let k = 0; k <= 24; k++) {
@@ -244,10 +244,10 @@ function montarRota() {
   bruto.push(next);
 
   // 2) rodovia elevada em diagonal
-  bruto.push(P(3, 6), P(5, 4, ALTURA_RODOVIA), P(14, -5, ALTURA_RODOVIA), P(16, -7), dialogi);
+  bruto.push(P(2, 5), P(4, 3, ALTURA_RODOVIA), P(11, -4, ALTURA_RODOVIA), P(13, -6), dialogi);
 
   // 3) outra área: reta longa, esquerda, desce
-  bruto.push(P(16, -20), P(4, -20), sigma);
+  bruto.push(P(13, -15), P(4, -15), sigma);
 
   const pts = reamostrar(arredondar(bruto, 0.55), 0.12);
   rota.indice = lotes.map((l) => {
@@ -260,7 +260,7 @@ function montarRota() {
   rota.pts.push(...pts);
 
   // praças ao longo do caminho e soltas, cada uma de um jeito
-  const parque = P(12, 2), quadrada = P(10, -23), hex = P(-22, -16), comprido = P(24, 14);
+  const parque = P(10, 2), quadrada = P(8, -18), hex = P(-19, -13), comprido = P(19, 11);
   PRACAS.push({ forma: 'parque', x: parque.x, z: parque.z, rx: 2.6, rz: 1.7 });
   PRACAS.push({ forma: 'quadrada', x: quadrada.x, z: quadrada.z, meia: 1.2 });
   PRACAS.push({ forma: 'hex', x: hex.x, z: hex.z, r: 1.5 });
@@ -281,6 +281,23 @@ function fita(pts, largura, y, material, lado = 0) {
   const g = new THREE.BufferGeometry();
   g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
   g.setIndex(idx);
+  return new THREE.Mesh(g, material);
+}
+
+// parede vertical seguindo uma lista de pontos, deslocada para o lado
+function parede(pts, lado, y0, y1, material) {
+  const pos = [], idx = [];
+  for (let k = 0; k < pts.length; k++) {
+    const a = pts[Math.max(0, k - 1)], b = pts[Math.min(pts.length - 1, k + 1)];
+    const dx = b.x - a.x, dz = b.z - a.z, l = Math.hypot(dx, dz) || 1;
+    const x = pts[k].x - (dz / l) * lado, z = pts[k].z + (dx / l) * lado;
+    pos.push(x, pts[k].y + y0, z, x, pts[k].y + y1, z);
+    if (k) { const i = k * 2; idx.push(i - 2, i - 1, i, i - 1, i + 1, i); }
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  g.setIndex(idx);
+  g.computeVertexNormals();
   return new THREE.Mesh(g, material);
 }
 
@@ -334,6 +351,15 @@ function montar() {
 
   // rota amarela e rotatórias primeiro: os prédios abrem espaço para elas
   montarRota();
+  // o rio também não passa por baixo das praças: desce até sair delas
+  const distRio = (x, z) => Math.abs(z - (RIO.a * x + RIO.b)) / Math.hypot(RIO.a, 1);
+  for (let tentativa = 0; tentativa < 30; tentativa++) {
+    const molhado = PRACAS.some((pr) => distRio(pr.x, pr.z) < RIO.meia + (pr.r || pr.meia || Math.max(pr.rx, pr.rz)) + 0.6)
+      || EMPRESAS.some((e) => { const q = ponto(e.lote); return distRio(q.x, q.z) < RIO.meia + 1.6; });
+    if (!molhado) break;
+    RIO.b += 1.2;
+  }
+  agua.position.z = RIO.b;
   const pertoRota = (x, z) => { let d = Infinity; for (const p of rota.pts) d = Math.min(d, (x - p.x) ** 2 + (z - p.z) ** 2); return Math.sqrt(d); };
   const naPraca = (x, z, folga) => PRACAS.some((pr) => dentroPraca(pr, x, z, folga));
 
@@ -498,38 +524,38 @@ function montar() {
     b.rotation.x = -Math.PI / 2; b.position.set(-RUA / 2, 0.005, v); cena.add(b);
   }
 
-  // elevado: via suspensa sobre uma avenida, com luzes de tráfego andando
-  const zElev = (5 - 0) * PASSO * 1 + 3 * PASSO - RUA / 2; // avenida ao sul do centro
-  const matElev = new THREE.MeshLambertMaterial({ color: 0x24123f });
-  const via = new THREE.Mesh(new THREE.BoxGeometry(tam, 0.06, 0.32), matElev);
-  via.position.set(-RUA / 2, 0.55, zElev);
-  const bordaVia = new THREE.Mesh(new THREE.BoxGeometry(tam, 0.02, 0.34), new THREE.MeshBasicMaterial({ color: 0xff2a6d }));
-  bordaVia.position.set(-RUA / 2, 0.59, zElev);
-  cena.add(via, bordaVia);
-  const geoPilar = new THREE.BoxGeometry(0.08, 0.55, 0.08);
-  for (let x = -tam / 2; x < tam / 2; x += 2.8) {
-    const pilar = new THREE.Mesh(geoPilar, matElev);
-    pilar.position.set(x, 0.275, zElev); cena.add(pilar);
-  }
-  trafego = { malha: new THREE.InstancedMesh(new THREE.BoxGeometry(0.22, 0.04, 0.06), new THREE.MeshBasicMaterial({ color: 0xffffff }), 40), z: zElev, tam };
-  for (let i = 0; i < 40; i++) trafego.malha.setColorAt(i, c.setHex(i % 2 ? 0xfcee0a : 0x00f0ff));
-  cena.add(trafego.malha);
-
-  // rodovia elevada: tabuleiro escuro, bordas rosa e pilares onde a rota sobe
+  // rodovia elevada de verdade: tabuleiro com espessura, laterais, mureta
+  // com faixa de luz em cima e pilares com capitel
   const elevado = rota.pts.filter((p) => p.y > 0.01);
+  // tráfego: luzinhas andando pela rodovia, uma faixa em cada sentido
+  const pista = new THREE.CurvePath();
+  for (let k = 1; k < elevado.length; k++) pista.add(new THREE.LineCurve3(elevado[k - 1], elevado[k]));
+  trafego = { malha: new THREE.InstancedMesh(new THREE.BoxGeometry(0.06, 0.04, 0.22), new THREE.MeshBasicMaterial({ color: 0xffffff }), 24), pista };
+  for (let i = 0; i < 24; i++) trafego.malha.setColorAt(i, c.setHex(i % 2 ? 0xfcee0a : 0x00f0ff));
+  cena.add(trafego.malha);
   if (elevado.length > 1) {
-    const matTab = new THREE.MeshLambertMaterial({ color: 0x24123f, side: THREE.DoubleSide });
-    const matBorda = new THREE.MeshBasicMaterial({ color: 0xff2a6d, side: THREE.DoubleSide });
-    cena.add(fita(elevado, 0.9, -0.01, matTab));
-    cena.add(fita(elevado, 0.05, 0.005, matBorda, 0.44), fita(elevado, 0.05, 0.005, matBorda, -0.44));
-    cena.add(fita(elevado, 0.02, 0.006, new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.35, side: THREE.DoubleSide }), 0.22));
-    const geoPilarRod = new THREE.BoxGeometry(0.14, 1, 0.14); geoPilarRod.translate(0, 0.5, 0);
-    for (let k = 0; k < elevado.length; k += 14) {
+    const LARG = 0.95, ESP = 0.14, MURETA = 0.09;
+    const matTab = new THREE.MeshLambertMaterial({ color: 0x2c1748, side: THREE.DoubleSide });
+    const matLado = new THREE.MeshLambertMaterial({ color: 0x1a0d2e, side: THREE.DoubleSide });
+    const matLuz = new THREE.MeshBasicMaterial({ color: 0xff2a6d, side: THREE.DoubleSide });
+    const tampo = fita(elevado, LARG, -0.01, matTab); tampo.geometry.computeVertexNormals();
+    cena.add(tampo, fita(elevado, LARG, -0.01 - ESP, matLado));
+    for (const lado of [LARG / 2, -LARG / 2]) {
+      cena.add(parede(elevado, lado, -0.01 - ESP, MURETA, matLado));
+      cena.add(fita(elevado, 0.03, MURETA + 0.002, matLuz, lado));
+    }
+    const geoPilar = new THREE.BoxGeometry(0.22, 1, 0.22); geoPilar.translate(0, 0.5, 0);
+    const geoCapitel = new THREE.BoxGeometry(LARG * 0.8, 0.06, 0.3);
+    for (let k = 7; k < elevado.length; k += 16) {
       const p = elevado[k];
-      if (p.y < 0.25) continue;
-      const pilar = new THREE.Mesh(geoPilarRod, matTab);
-      pilar.scale.y = p.y - 0.01; pilar.position.set(p.x, 0, p.z);
-      cena.add(pilar);
+      if (p.y < 0.3) continue;
+      const d = elevado[Math.min(elevado.length - 1, k + 1)].clone().sub(elevado[k - 1]);
+      const pilar = new THREE.Mesh(geoPilar, matLado);
+      pilar.scale.y = p.y - ESP - 0.04; pilar.position.set(p.x, 0, p.z);
+      const capitel = new THREE.Mesh(geoCapitel, matLado);
+      capitel.position.set(p.x, p.y - ESP - 0.04, p.z);
+      capitel.rotation.y = Math.atan2(d.x, d.z) + Math.PI / 2;
+      cena.add(pilar, capitel);
     }
   }
 
@@ -997,11 +1023,15 @@ function quadro(agora) {
   }
   setas.malha.instanceMatrix.needsUpdate = true;
 
-  // tráfego no elevado (duas faixas, sentidos opostos)
-  for (let i = 0; i < trafego.malha.count; i++) {
+  // tráfego na rodovia (duas faixas, sentidos opostos)
+  const nT = trafego.malha.count;
+  for (let i = 0; i < nT; i++) {
     const sentido = i % 2 ? 1 : -1;
-    const x = (((t * 1.6 * sentido + i * 1.37) % trafego.tam) + trafego.tam) % trafego.tam - trafego.tam / 2;
-    m4.makeTranslation(x, 0.63, trafego.z + sentido * 0.08);
+    const f = (((t * 0.06 * sentido + i / nT) % 1) + 1) % 1;
+    const p = trafego.pista.getPointAt(f), d = trafego.pista.getTangentAt(f);
+    q4.setFromUnitVectors(frente, d);
+    v.set(p.x - d.z * 0.22 * sentido, p.y + 0.03, p.z + d.x * 0.22 * sentido);
+    m4.compose(v, q4, um);
     trafego.malha.setMatrixAt(i, m4);
   }
   trafego.malha.instanceMatrix.needsUpdate = true;
