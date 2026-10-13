@@ -178,3 +178,75 @@ body[data-tela='habilidades'] .habilidades { display: block; }
 }
 .hab_no--com-arte .hab_icone { display: none; }
 .hab_no--raiz .hab_arte { inset: 16%; }
+
+/* ---------- liberar nós (js/habilidades.js) ----------
+ * travado: o pai ainda não foi liberado, apagado
+ * disponivel: dá para liberar, a moldura pulsa
+ * liberado: aceso (o visual padrão do nó, acima) */
+.hab_no::after { z-index: 0; }
+.hab_no--travado { --cor: #2e4a66; --fundo-no: #070d1c; filter: none; }
+.hab_no--travado.hab_no--meta { --cor: #5a1d3d; }
+.hab_no--travado:hover, .hab_no--travado:focus-visible { transform: none; --cor: #3d6688; }
+.hab_no--disponivel:not(.hab_no--meta) { --cor: #3f88c4; filter: drop-shadow(0 0 4px rgba(90, 184, 255, 0.35)); }
+.hab_no--disponivel::before { animation: hab-pulsa 1.4s ease-in-out infinite; }
+@keyframes hab-pulsa { 50% { opacity: 0.45; } }
+.hab_no--disponivel:not(.hab_no--meta) { cursor: grab; }
+.hab_no--enchendo { cursor: grabbing; transform: scale(0.97); }
+.hab_no--enchendo::before { animation: none; }
+/* a moldura enche de baixo para cima enquanto segura */
+.hab_enche {
+  position: absolute;
+  z-index: 1;
+  inset: 3px;
+  pointer-events: none;
+  clip-path: polygon(29% 0, 71% 0, 100% 29%, 100% 71%, 71% 100%, 29% 100%, 0 71%, 0 29%);
+  background: linear-gradient(to top, color-mix(in srgb, var(--relic) 55%, transparent) calc(var(--enche, 0) * 100%), transparent calc(var(--enche, 0) * 100%));
+}
+/* acabou de liberar: um clarão e assenta */
+.hab_no--acendeu { animation: hab-acende 0.55s ease-out; }
+@keyframes hab-acende {
+  0% { filter: brightness(2.4) drop-shadow(0 0 22px var(--relic)); transform: scale(1.12); }
+  100% { transform: none; }
+}
+.hab_no--liberado .hab_nome { color: color-mix(in srgb, var(--cor) 75%, white); }
+.hab_no--travado .hab_nome { color: #4d6a86; }
+
+/* trilhos conforme o nó de destino */
+.hab_galho--disponivel .hab_trilho--faixa { stroke: var(--relic); opacity: 0.32; }
+.hab_galho--disponivel .hab_trilho--brilho { stroke: var(--relic); opacity: 0.05; }
+.hab_galho--travado .hab_trilho--faixa { stroke: #2e4a66; opacity: 0.35; }
+.hab_galho--travado .hab_trilho--brilho { opacity: 0; }
+.hab_galho--liberado .hab_trilho--faixa { stroke: var(--relic); opacity: 0.8; }
+.hab_galho--liberado .hab_trilho--brilho { stroke: var(--relic); opacity: 0.16; }
+.hab_galho--meta .hab_trilho--faixa { stroke: var(--meta); opacity: 0.5; }
+.hab_galho--meta .hab_trilho--brilho { stroke: var(--meta); opacity: 0.16; }
+.hab_trilho--faixa, .hab_trilho--brilho { transition: opacity 0.4s, stroke 0.4s; }
+.hab_trilho--carga { stroke: #c8f1ff; stroke-width: 5; opacity: 0; filter: drop-shadow(0 0 6px #5ab8ff); }
+
+/* pontos que faltam e ações */
+.hab_pontos_livres { position: absolute; left: calc(50% - 540px); top: 172px; display: flex; align-items: center; gap: 10px; color: var(--relic); }
+.hab_pontos_livres b { font-size: 40px; font-weight: 500; line-height: 1; text-shadow: 0 0 12px rgba(90, 184, 255, 0.6); }
+.hab_pontos_livres span { font-size: 13px; line-height: 1.15; letter-spacing: 0.08em; color: #7fb4dc; }
+.habilidades--completa .hab_pontos_livres b { color: var(--amarelo); text-shadow: 0 0 12px rgba(252, 238, 10, 0.5); }
+.hab_acoes { position: absolute; left: 50%; bottom: 64px; transform: translateX(-50%); display: flex; align-items: center; gap: 10px; }
+.hab_acoes_dica { margin-right: 8px; font-size: 13px; letter-spacing: 0.1em; color: #7fb4dc; }
+.habilidades--completa .hab_acoes_dica { visibility: hidden; }
+.hab_acao {
+  padding: 6px 14px;
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  color: var(--relic);
+  border: 1px solid rgba(90, 184, 255, 0.55);
+  background: rgba(90, 184, 255, 0.07);
+  clip-path: polygon(0 0, 100% 0, 100% 70%, calc(100% - 8px) 100%, 0 100%);
+}
+.hab_acao:hover, .hab_acao:focus-visible { outline: none; color: var(--amarelo); border-color: var(--amarelo); }
+.hab_acao--zerar { color: var(--vermelho); border-color: var(--vermelho-borda); background: rgba(255, 42, 140, 0.06); }
+
+/* dica no card: o que fazer com este nó */
+.hab_card_dica { display: block; margin-top: 10px; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; color: #7fb4dc; }
+.hab_card_dica[data-estado='disponivel'] { color: var(--amarelo); }
+.hab_card_dica[data-estado='liberado'] { color: var(--relic); }
+@media (prefers-reduced-motion: reduce) { .hab_no--disponivel::before, .hab_no--acendeu { animation: none; } }
+/* no celular, segurar o dedo não pode abrir seleção nem menu do navegador */
+.hab_no { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; touch-action: none; }
