@@ -101,11 +101,17 @@ function layoutColuna(partes, lado) {
 const app = document.getElementById('app');
 // A altura manda (900 de desenho) e a largura acompanha a janela; abaixo de
 // LARGURA_MIN tudo encolhe junto para os lados não invadirem o centro.
-const LARGURA_MIN = 1520;
+// Cada tela precisa de uma largura mínima diferente: o conteúdo do centro da
+// Cibernética e da árvore cabe em ~1180; Projetos tem a miniatura à direita.
+const LARGURA_MIN = { cibernetica: 1180, habilidades: 1180, historia: 1180, contato: 1100, projetos: 1180 };
 function escalar() {
-  const k = Math.min(app.clientHeight / H, app.clientWidth / LARGURA_MIN);
+  const min = LARGURA_MIN[document.body.dataset.tela] || 1520;
+  const k = Math.min(app.clientHeight / H, app.clientWidth / min);
   palco.style.setProperty('--escala', k);
-  palco.style.width = app.clientWidth / k + 'px';
+  const largura = app.clientWidth / k;
+  palco.style.width = largura + 'px';
+  // janela estreita: medidores mais perto da borda
+  palco.classList.toggle('palco--estreito', largura < 1500);
 }
 addEventListener('resize', escalar);
 escalar();
