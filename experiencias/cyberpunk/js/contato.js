@@ -1,6 +1,6 @@
 /*
- * Tela Contato: ao abrir, aparece o "digitando...", toca o som de mensagem
- * nova e o texto é digitado no balão. Depois, as formas de contato viram
+ * Tela Contato: ao abrir, toca o som de mensagem nova com o "digitando..."
+ * na tela e, quando ele acaba, o texto é digitado no balão. Depois, as formas de contato viram
  * opções de resposta, como os diálogos do jogo.
  */
 import { PERFIL } from './dados.js';
@@ -35,17 +35,19 @@ async function receber() {
   const minha = ++rodada;
   conversa.replaceChildren();
   respostas.hidden = true;
+  // o som de mensagem nova toca sozinho primeiro; as teclas só começam
+  // depois que ele acaba (o "digitando..." fica na tela enquanto isso)
+  const somMsg = tocar('mensagem');
   for (const [i, frase] of MENSAGEM.entries()) {
     if (!calmo) {
       const dig = document.createElement('div');
       dig.className = 'msg_digitando';
       dig.innerHTML = '<i></i><i></i><i></i>';
       conversa.append(dig);
-      await espera(i === 0 ? 700 : 450);
+      await espera(i === 0 ? Math.max(700, somMsg * 1000 + 120) : 450);
       if (minha !== rodada) return;
       dig.remove();
     }
-    if (i === 0) tocar('mensagem');
     const balao = document.createElement('p');
     balao.className = 'msg_balao';
     conversa.append(balao);

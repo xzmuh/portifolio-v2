@@ -93,15 +93,17 @@ function variar(nome) {
   return escolhido;
 }
 
+// devolve quanto o som dura (em segundos), ou 0 se não tocou
 export function tocar(nome) {
   nome = variar(nome);
-  if (mudo || !ctx || ctx.state !== 'running' || !buffers[nome]) return;
+  if (mudo || !ctx || ctx.state !== 'running' || !buffers[nome]) return 0;
   const src = ctx.createBufferSource();
   const gain = ctx.createGain();
   src.buffer = buffers[nome];
   gain.gain.value = VOLUME[nome];
   src.connect(gain).connect(ctx.destination);
   src.start();
+  return src.buffer.duration;
 }
 
 // tecla de teclado mecânico, sintetizada (sem arquivo): um estalo curto de
