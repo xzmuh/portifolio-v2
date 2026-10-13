@@ -55,7 +55,7 @@ let sel = 0;
 const cam = { alvo: new THREE.Vector3(), alvoDe: new THREE.Vector3(), t: 1, dur: 1.1, ang: 0.5, dist: 11, alt: 17 };
 const marcadores = [];
 let setas, trafego, agua, fade, cenaFade, cameraFade;
-const sandy = { ativo: false, ini: 0, dur: 3.0 };
+const sandy = { ativo: false, ini: 0, dur: 2.4 };
 // Sandy como no anime: o mundo perde a cor (verde-acinzentado) e só o
 // corredor e os ecos dele continuam coloridos. O corredor fica na camada 1
 // e é desenhado numa segunda passada, sem o material cinza.
@@ -446,13 +446,23 @@ function carregarCorredor() {
     // VRM 0.x olha para -Z: gira para olhar para +Z, como o Xbot
     const personagem = vrm.scene;
     personagem.rotation.y = Math.PI;
+    // inclinado para frente, postura de sprint
+    const inclinacao = new THREE.Group();
+    inclinacao.rotation.x = 0.22;
+    inclinacao.add(personagem);
     const m = new THREE.Group();
-    m.add(personagem);
+    m.add(inclinacao);
     m.traverse((o) => {
       if (!o.isMesh) return;
       o.frustumCulled = false;
       // material sem luz (anime): só a textura, igual ao VRoid
-      for (const mat of [].concat(o.material)) { mat.fog = false; }
+      // o VRoid exporta cor por vértice zerada: ligada, ela apaga o corpo (só sobrava o cabelo)
+      for (const mat of [].concat(o.material)) {
+        mat.fog = false;
+        mat.vertexColors = false;
+        // cabelo preto: escurece a textura (o brilho dela continua aparecendo)
+        if (/HAIR/i.test(mat.name)) mat.color.setRGB(0.16, 0.16, 0.2);
+      }
     });
     // pares de ossos para passar a corrida
     const humanos = vrm.parser.json.extensions.VRM.humanoid.humanBones;
@@ -643,7 +653,7 @@ function quadro(agora) {
     let ritmo = 1;
     if (sandy.ativo && corredor.caminho) {
       const velocidade = corredor.caminho.getLength() / sandy.dur / (1 - 0.06); // unidades por segundo
-      ritmo = Math.min(3.2, Math.max(2.2, velocidade / PASSADA)); // nunca abaixo de corrida forte, mesmo em trecho curto
+      ritmo = Math.min(4, Math.max(3.2, velocidade / PASSADA)); // sempre em sprint, mesmo em trecho curto
     }
     corredor.mixer.update(dt * ritmo);
     if (sandy.ativo && corredor.caminho) {
