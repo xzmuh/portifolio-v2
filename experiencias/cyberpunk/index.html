@@ -256,11 +256,11 @@
     </footer>
   </main>
   <div class="scan" aria-hidden="true"></div>
-  <!-- faixas de glitch que passam na troca de tela (js/menu.js) -->
-  <div class="troca_fx" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
   <!-- o navegador só toca som depois de um gesto; este botão mostra o estado e liga/desliga (M) -->
   <button class="som" type="button" data-som><i aria-hidden="true"></i><span data-som-texto>Som desligado · ligar</span><span class="tecla">M</span></button>
   </div>
+  <!-- faixas de glitch da troca de tela (js/menu.js); fora do #app, que é recortado pelo glitch -->
+  <div class="troca_fx" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
 
   <script type="module" src="js/tela.js"></script>
   <script type="module" src="js/habilidades.js"></script>

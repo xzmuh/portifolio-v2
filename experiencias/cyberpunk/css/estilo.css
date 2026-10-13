@@ -465,26 +465,21 @@ body[data-tela='nenhuma'] .breve { display: flex; }
 }
 .breve_texto { font-size: 18px; color: var(--vermelho); text-transform: none; display: flex; gap: 6px; align-items: center; }
 
-/* ---------- passagem entre telas: corte digital ----------
- * A tela que sai se parte em fatias com separação de cor e fecha no meio;
- * a que entra abre do meio, ainda tremida, e assenta. Sem tela preta. */
-.sai { animation: sai 0.2s steps(5) both; }
-.entra { animation: entra 0.42s steps(9) both; }
-@keyframes sai {
-  0% { clip-path: inset(0 0 0 0); filter: none; }
-  30% { clip-path: inset(6% 0 18% 0); filter: drop-shadow(10px 0 rgba(255, 42, 109, 0.95)) drop-shadow(-10px 0 rgba(0, 240, 255, 0.95)) brightness(1.4); }
-  65% { clip-path: inset(32% 0 38% 0); filter: drop-shadow(-16px 0 rgba(255, 42, 109, 0.95)) drop-shadow(16px 0 rgba(0, 240, 255, 0.95)) brightness(2); }
-  100% { clip-path: inset(49.5% 0 49.5% 0); filter: brightness(3); }
-}
-@keyframes entra {
-  0% { clip-path: inset(49.5% 0 49.5% 0); filter: brightness(3); }
-  25% { clip-path: inset(24% 0 30% 0); filter: drop-shadow(-14px 0 rgba(255, 42, 109, 0.9)) drop-shadow(14px 0 rgba(0, 240, 255, 0.9)) brightness(1.6); }
-  55% { clip-path: inset(0 0 8% 0); filter: drop-shadow(8px 0 rgba(255, 42, 109, 0.8)) drop-shadow(-8px 0 rgba(0, 240, 255, 0.8)); }
-  80% { clip-path: inset(0 0 0 0); filter: drop-shadow(3px 0 rgba(255, 42, 109, 0.6)) drop-shadow(-3px 0 rgba(0, 240, 255, 0.6)); }
-  100% { clip-path: inset(0 0 0 0); filter: none; }
+/* ---------- passagem entre telas: glitch que revela ----------
+ * A tela nova já entra no lugar e vai aparecendo em faixas que tremem para
+ * os lados, com a cor separada, até assentar. Rápido e sem fechar a tela.
+ * (translate, e não transform: no celular em pé o #app já usa transform para girar) */
+.revela { animation: revela 0.45s steps(10) both; }
+@keyframes revela {
+  0% { clip-path: polygon(0 48%, 100% 48%, 100% 49%, 0 49%, 0 49%, 100% 49%, 100% 50%, 0 50%, 0 50%, 100% 50%, 100% 51%, 0 51%); translate: -10px 0; filter: drop-shadow(12px 0 rgba(255, 42, 109, 0.95)) drop-shadow(-12px 0 rgba(0, 240, 255, 0.95)) brightness(1.7); }
+  18% { clip-path: polygon(0 8%, 100% 8%, 100% 15%, 0 15%, 0 38%, 100% 38%, 100% 47%, 0 47%, 0 72%, 100% 72%, 100% 79%, 0 79%); translate: 14px 0; filter: drop-shadow(-12px 0 rgba(255, 42, 109, 0.9)) drop-shadow(12px 0 rgba(0, 240, 255, 0.9)) brightness(1.5); }
+  40% { clip-path: polygon(0 0%, 100% 0%, 100% 22%, 0 22%, 0 30%, 100% 30%, 100% 58%, 0 58%, 0 66%, 100% 66%, 100% 88%, 0 88%); translate: -8px 0; filter: drop-shadow(8px 0 rgba(255, 42, 109, 0.85)) drop-shadow(-8px 0 rgba(0, 240, 255, 0.85)) brightness(1.25); }
+  65% { clip-path: polygon(0 0%, 100% 0%, 100% 44%, 0 44%, 0 47%, 100% 47%, 100% 80%, 0 80%, 0 83%, 100% 83%, 100% 100%, 0 100%); translate: 5px 0; filter: drop-shadow(-4px 0 rgba(255, 42, 109, 0.7)) drop-shadow(4px 0 rgba(0, 240, 255, 0.7)); }
+  85% { clip-path: polygon(0 0%, 100% 0%, 100% 60%, 0 60%, 0 60%, 100% 60%, 100% 61%, 0 61%, 0 61%, 100% 61%, 100% 100%, 0 100%); translate: -2px 0; filter: drop-shadow(2px 0 rgba(255, 42, 109, 0.5)) drop-shadow(-2px 0 rgba(0, 240, 255, 0.5)); }
+  100% { clip-path: polygon(0 0%, 100% 0%, 100% 60%, 0 60%, 0 60%, 100% 60%, 100% 61%, 0 61%, 0 61%, 100% 61%, 100% 100%, 0 100%); translate: 0 0; filter: none; }
 }
 /* faixas de glitch coloridas varrendo a tela durante a troca */
-.troca_fx { position: absolute; inset: 0; z-index: 7600; pointer-events: none; display: none; }
+.troca_fx { position: fixed; inset: 0; z-index: 7600; pointer-events: none; display: none; }
 .troca_fx--on { display: block; }
 .troca_fx i {
   position: absolute;
@@ -493,7 +488,7 @@ body[data-tela='nenhuma'] .breve { display: flex; }
   height: 4%;
   mix-blend-mode: screen;
   background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.85) 20%, rgba(255, 42, 109, 0.85) 60%, rgba(252, 238, 10, 0.7) 85%, transparent);
-  animation: faixa-glitch 0.6s steps(6) both;
+  animation: faixa-glitch 0.45s steps(6) both;
 }
 .troca_fx i:nth-child(1) { top: 12%; animation-delay: 0s; }
 .troca_fx i:nth-child(2) { top: 31%; height: 2%; animation-delay: 0.05s; }
