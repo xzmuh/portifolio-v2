@@ -13,8 +13,8 @@
        sem o flash branco/preto; o resto da página fica invisível até lá -->
   <style>html,body{background:#0d0805;height:100%;margin:0;overflow:hidden}.sem-css body>:not(#carregando),.sem-css #carregando>*{visibility:hidden}#carregando{z-index:30;background:radial-gradient(at 50% 42%,#2a1709 0%,#120a05 45%,#0d0805 80%);position:fixed;inset:0}</style>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@600;700&family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=UnifrakturMaguntia&family=Pinyon+Script&display=swap" rel="stylesheet" />
-  <script type="module" crossorigin src="./assets/index-DInmaG0e.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-cxDCo5Ed.css">
+  <script type="module" crossorigin src="./assets/index-p7fEbvyl.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-DHCeVYiV.css">
 </head>
 <body>
   <div id="palco" aria-label="Tabuleiro de RPG sobre uma mesa de taverna"></div>
@@ -54,7 +54,7 @@
     <div class="abertura-topo">
       <p class="cap">um currículo em cinco capítulos</p>
       <h1>Crônicas de Murilo</h1>
-      <p>O currículo de um desenvolvedor full stack, contado numa mesa de RPG. Role o dado, siga o herói pela trilha e vire as cartas na mesa para ver os projetos.</p>
+      <p>O currículo de um desenvolvedor full stack, contado numa mesa de RPG. Siga o herói pela trilha e vire as cartas na mesa para ver os projetos.</p>
     </div>
     <div class="abertura-base">
       <div class="abertura-botoes">
@@ -129,8 +129,8 @@
       <button type="button" class="aj aj-som" id="som" aria-pressed="true" title="Som"><svg class="ic-ligado"><use href="#i-som" /></svg><svg class="ic-mudo"><use href="#i-mudo" /></svg></button>
       <button type="button" class="aj aj-andar" id="andar" aria-pressed="false" title="Passeio em primeira pessoa (V)"><svg><use href="#i-andar" /></svg></button>
       <span class="aj-sep" aria-hidden="true"></span>
-      <button type="button" class="aj aj-onde" id="ajOnde" aria-expanded="false" aria-controls="popOnde" title="Como jogar"><svg><use href="#i-info" /></svg></button>
-      <a class="aj aj-sobre" id="ajSobre" href="sobre/" target="_blank" rel="noopener" title="Sobre o projeto (como foi feito)"><svg><use href="#i-livro" /></svg></a>
+      <button type="button" class="aj aj-onde" id="ajOnde" aria-expanded="false" aria-controls="popOnde" title="Como jogar"><svg><use href="#i-info" /></svg><span class="nivel-selo" id="nivelSelo" title="Seu nível">1</span></button>
+      <a class="aj aj-sobre" id="ajSobre" href="sobre/index.html" target="_blank" rel="noopener" title="Sobre o projeto (como foi feito)"><svg><use href="#i-livro" /></svg></a>
     </div>
     <p class="fps" id="fps" title="quadros por segundo (tecla F liga e desliga)"></p>
     <div class="aj-pop" id="popGraficos" hidden>
@@ -146,32 +146,65 @@
     <!-- o pergaminho de instruções (o botão "i"): como mexer, o que é clicável, as cartas e a jornada -->
     <div class="aj-pop aj-onde-pop tutorial" id="popOnde" hidden>
       <p class="aj-tit">Como jogar</p>
+      <div class="tut-abas" role="tablist">
+        <button type="button" role="tab" data-aba="lugares" aria-selected="true">O que fazer</button>
+        <button type="button" role="tab" data-aba="desafios" aria-selected="false">Desafios <span id="desafiosConta"></span></button>
+      </div>
+      <div class="tut-aba" data-aba="lugares">
       <p class="tut-sec">Mexer na mesa</p>
       <p class="tut-txt">Arraste para girar, role para aproximar. </p>
       <p class="tut-sec">A jornada do herói</p>
-      <p class="tut-txt">Cada parada da trilha é um capítulo da minha vida. Role o <b>d20</b> para o herói andar até o próximo e contar a história.</p>
+      <p class="tut-txt">Cada parada da trilha é um capítulo da minha vida. Clique em <b>Seguir viagem</b> para o herói andar até o próximo e contar a história.</p>
       <p class="tut-sec">As cartas</p>
       <p class="tut-txt">São os projetos. Clique numa carta e ela vira na sua frente.</p>
       <p class="tut-sec">O que dá para clicar</p>
       <ul class="onde">
-        <li style="--i:0"><i style="--cor:#e8b94a"></i><b>Dados, caneca e moedas</b>segure e arraste para jogar; um clique dá um peteleco</li>
-        <li style="--i:1"><i style="--cor:#8dff5a"></i><b>Caldeirão da bruxa</b>na clareira da floresta: misture as poções</li>
-        <li style="--i:2"><i style="--cor:#ff9a4a"></i><b>Acampamento</b>no vale: jogue comidas no caldeirão e cozinhe</li>
-        <li style="--i:3"><i style="--cor:#e9b44c"></i><b>Campo de treino</b>arco e flecha na vila do moinho</li>
-        <li style="--i:4"><i style="--cor:#d24a2a"></i><b>Vagonete</b>na boca da mina</li>
-        <li style="--i:5"><i style="--cor:#5fa8e8"></i><b>Água</b>um toque faz ondinha</li>
-        <li style="--i:6"><i style="--cor:#f3e4c3"></i><b>Ficha</b>o pergaminho do herói</li>
-        <li style="--i:7"><i style="--cor:#4fb3d9"></i><b>Píer do farol</b>pescar: clique quando a boia afundar</li>
-        <li style="--i:8"><i style="--cor:#ffc46a"></i><b>Praça do sol</b>de noite, solte uma lanterna</li>
-        <li style="--i:9"><i style="--cor:#f2c14e"></i><b>Fonte do castelo</b>jogue uma moeda e faça um desejo</li>
+        <li style="--i:0"><i style="--cor:#e8b94a"></i><b>Dados, caneca e moedas</b>segure e arraste para jogar</li>
+        <li style="--i:1"><i style="--cor:#f3e4c3"></i><b>Ficha</b>o pergaminho do herói</li>
+        <li style="--i:2"><i style="--cor:#c98a4a"></i><b>Baú e velas da mesa</b>mexa no baú; sopre ou acenda as velas</li>
+        <li style="--i:3"><i style="--cor:#ff3b55"></i><b>Poções da mesa</b>beba: vida, mana, foco… e a preta</li>
+        <li style="--i:4"><i style="--cor:#8dff5a"></i><b>Caldeirão da bruxa</b>misture as poções na clareira</li>
+        <li style="--i:5"><i style="--cor:#ff9a4a"></i><b>Acampamento</b>cozinhe três comidas no caldeirão</li>
+        <li style="--i:6"><i style="--cor:#e9b44c"></i><b>Campo de treino</b>arco e flecha na vila do moinho</li>
+        <li style="--i:7"><i style="--cor:#ff7a3a"></i><b>Forja</b>martele no ritmo e forje uma espada</li>
+        <li style="--i:8"><i style="--cor:#d24a2a"></i><b>Vagonete</b>veja o que ele traz da mina</li>
+        <li style="--i:9"><i style="--cor:#4fb3d9"></i><b>Píer do farol</b>pesque: puxe quando a boia afundar</li>
+        <li style="--i:10"><i style="--cor:#fff1a8"></i><b>Farol</b>de noite, guie a luz pelo mar</li>
+        <li style="--i:11"><i style="--cor:#ffc46a"></i><b>Praça do sol</b>solte lanternas no céu</li>
+        <li style="--i:12"><i style="--cor:#f2c14e"></i><b>Fonte do castelo</b>jogue uma moeda e faça um desejo</li>
+        <li style="--i:13"><i style="--cor:#8fd14f"></i><b>Horta</b>colha os legumes</li>
+        <li style="--i:14"><i style="--cor:#e8d7a8"></i><b>O herói</b>clique nele para voltar ao capítulo</li>
+        <li style="--i:15"><i style="--cor:#cfe0ff"></i><b>Pico nevado</b>de noite, ligue as constelações</li>
+        <li style="--i:17"><i style="--cor:#bfe0ff"></i><b>Passeio</b>o bonequinho lá em cima: ande pelo mapa</li>
       </ul>
       <p class="aj-dica">Fique livre para explorar: tem muita coisa te esperando.</p>
+      </div>
+      <div class="tut-aba" data-aba="desafios" hidden>
+        <p class="tut-txt">Cada coisa que você descobre na mesa dá experiência. Faça tudo e chegue ao nível máximo.</p>
+        <div class="nivel-cab" id="nivelCab"></div>
+        <ul class="desafios" id="listaDesafios"></ul>
+      </div>
+      <button type="button" class="tut-fechar" id="tutFechar">Entendi</button>
     </div>
   </aside>
 
   <div id="hud" hidden>
+    <!-- (07/10) o nível e a experiência no jeito do HUD do Elden Ring (nivel.js): a barra fina no alto
+         à esquerda e o contador de XP, como o de runas, embaixo à direita -->
+    <div class="xp" id="xp">
+      <p class="xp-nivel">Nível <b id="xpNivel">1</b><span id="xpTxt"></span></p>
+      <div class="xp-barra"><i class="xp-ganho" id="xpGanho"></i><i class="xp-cheio" id="xpCheio"></i></div>
+    </div>
+    <div class="runas" id="runas" title="XP: os desafios estão no Como jogar">
+      <span class="runas-mais" id="runasMais"></span>
+      <svg class="runas-ic" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13"/><path d="M16 5v22M16 11l-6-4M16 11l6-4M16 18l-5 5M16 18l5 5M11 14h10"/></svg>
+      <b id="runasNum">0</b>
+    </div>
+  </div>
+    </div>
   </div>
 
+  <div class="marcas-tut" id="marcasTut" aria-hidden="true" hidden></div>
   <div class="titulo-cap" id="tituloCap" aria-live="polite" hidden>
     <p class="tc-cap"></p>
     <h2 class="tc-lugar"></h2>
@@ -187,11 +220,10 @@
     <p>Escolha um frasco e derrame no caldeirão</p>
     <button type="button" id="sairAlquimia">Voltar à mesa</button>
   </div>
+  <div class="barra-luta" id="barraLuta" hidden><span class="faixa"></span><span class="agulha"></span></div>
   <div class="alquimia-hud" id="pertoHud" hidden>
-    <div class="barra-forca" id="barraForca" hidden><i></i></div>
-    <div class="barra-luta" id="barraLuta" hidden><span class="faixa"></span><span class="agulha"></span></div>
     <p id="pertoDica"></p>
-    <button type="button" id="sairPerto">Voltar à mesa</button>
+    <button type="button" id="sairPerto">Voltar à mesa (Esc)</button>
   </div>
   <div class="alquimia-hud" id="cozinhaHud" hidden>
     <button type="button" id="sairCozinha">Voltar à mesa</button>
@@ -206,7 +238,7 @@
       <p id="arcoFrase"></p>
       <button type="button" id="arcoDeNovo">Atirar de novo</button>
     </div>
-    <button type="button" id="sairArco">Voltar à mesa</button>
+    <button type="button" id="sairArco">Voltar à mesa (Esc)</button>
   </div>
   <div class="aventura-hud" id="aventuraHud" hidden>
     <i class="aventura-mira" aria-hidden="true"></i>
