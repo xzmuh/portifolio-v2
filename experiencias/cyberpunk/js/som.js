@@ -2,7 +2,7 @@
  * Sons (Web Audio, para o hover não atrasar nem cortar o anterior).
  * O navegador só libera áudio depois do primeiro clique ou tecla, então o
  * ambiente começa aí. Cada tela tem o seu ambiente em loop: o do menu
- * principal e o das telas internas, trocados com fade. M liga e desliga tudo.
+ * principal, o do mapa (História) e o das outras telas, trocados com fade. M liga e desliga tudo.
  */
 const ARQUIVOS = {
   hover: 'sons/hover.mp3',
@@ -16,15 +16,20 @@ const ARQUIVOS = {
   'sandy-entra': 'sons/sandy-entra.mp3', // Sandevistan ligando (mapa da História)
   'sandy-sai': 'sons/sandy-sai.mp3',
   'menu-ambiente': 'sons/menu-ambiente.wav', // wav: mp3 tem silêncio no começo e o loop "pula"
+  mapa: 'sons/mapa.mp3', // ambiente do mapa da História
 };
-const VOLUME = { hover: 0.35, abrir: 0.6, ambiente: 0.18, 'menu-ambiente': 0.3, glitch: 0.7, instalar: 0.7, 'instalar-2': 0.7, 'instalar-3': 0.6, mensagem: 0.3, 'sandy-entra': 0.6, 'sandy-sai': 0.5 };
+// trecho que repete no loop (s): pula o silêncio do começo e o fim que some,
+// senão a emenda dá um buraco
+const TRECHO_LOOP = { mapa: [0.17, 22.0] };
+const VOLUME = { hover: 0.35, abrir: 0.6, ambiente: 0.18, 'menu-ambiente': 0.3, glitch: 0.7, instalar: 0.7, 'instalar-2': 0.7, 'instalar-3': 0.6, mensagem: 0.3, 'sandy-entra': 0.6, 'sandy-sai': 0.5, mapa: 0.6 };
 
 let ctx = null;
 let mudo = false;
 let ambiente = null; // { nome, src, gain }
 const buffers = {};
 
-const ambienteDaTela = () => (document.body.dataset.tela === 'menu' ? 'menu-ambiente' : 'ambiente');
+const AMBIENTE_DA_TELA = { menu: 'menu-ambiente', historia: 'mapa' };
+const ambienteDaTela = () => AMBIENTE_DA_TELA[document.body.dataset.tela] || 'ambiente';
 
 let iniciouEm = 0;
 /* O áudio é criado já na abertura e os sons já são baixados. Se o navegador
@@ -75,10 +80,11 @@ function trocarAmbiente() {
   const gain = ctx.createGain();
   src.buffer = buffers[nome];
   src.loop = true;
+  if (TRECHO_LOOP[nome]) [src.loopStart, src.loopEnd] = TRECHO_LOOP[nome];
   gain.gain.setValueAtTime(0, ctx.currentTime);
   gain.gain.linearRampToValueAtTime(VOLUME[nome], ctx.currentTime + 1.2);
   src.connect(gain).connect(ctx.destination);
-  src.start();
+  src.start(0, TRECHO_LOOP[nome]?.[0] || 0);
   ambiente = { nome, src, gain };
 }
 
