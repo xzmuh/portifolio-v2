@@ -10,7 +10,7 @@
 export const EMPRESAS = [
   {
     id: 'isinc', nome: 'I-SINC', cargo: 'Full Stack Developer', local: 'Agudos, SP',
-    periodo: 'Mai 2019 — Fev 2026', duracao: '6 anos e 10 meses', bairro: 'Distrito Agudos',
+    periodo: 'Mai 2021 — Fev 2026', duracao: '4 anos e 10 meses', bairro: 'Distrito Agudos',
     marca: { cor: 0x7b3cff, cor2: 0x2f6bff, logo: 'isinc.png', forma: 'anel' },
     lote: [-9, 9],
     resumo: 'Sistemas web com foco em ERP, back-end, front-end, banco de dados, integrações e regras de negócio, usados em operação real.',

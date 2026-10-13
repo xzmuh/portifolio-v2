@@ -73,7 +73,7 @@ export const PARTES = [
     area: 'O que me sustenta',
     opcoes: [
       { id: 'chassi-fullstack', nome: 'Coluna Full Stack', sub: 'Aguenta do banco até a tela', nivel: 5, armadura: 8, builds: ['back', 'front', 'produto'],
-        texto: 'Aguenta o peso do banco de dados até a tela, sem trincar no meio.', prova: ['6 anos em sistemas reais'] },
+        texto: 'Aguenta o peso do banco de dados até a tela, sem trincar no meio.', prova: ['5 anos em sistemas reais'] },
     ],
   },
   {
