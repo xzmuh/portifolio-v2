@@ -129,3 +129,8 @@ body[data-tela='projetos'] .projetos { display: block; }
 .proj_detalhe--troca, .proj_mini--troca { animation: proj-troca 0.3s steps(4) both; }
 @keyframes proj-troca { from { opacity: 0; transform: translateX(10px); filter: brightness(1.8); } to { opacity: 1; transform: none; filter: none; } }
 @media (prefers-reduced-motion: reduce) { .proj_detalhe--troca, .proj_mini--troca, .proj_item--entra { animation: none; } .proj_itens { transition: none; } }
+
+/* janela estreita: as três colunas se apertam dentro dos 1180 visíveis */
+.palco--estreito .proj_lista { left: 220px; width: 380px; }
+.palco--estreito .proj_detalhe { left: 630px; width: 490px; }
+.palco--estreito .proj_mini { left: 1140px; width: 240px; }

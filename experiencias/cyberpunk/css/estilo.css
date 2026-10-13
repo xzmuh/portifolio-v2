@@ -750,3 +750,19 @@ html.glitch-intro-ativo .som { display: none; }
 }
 .coluna--esq .parte_legenda { text-align: right; align-items: flex-end; }
 .parte_legenda span::before { content: '▸ '; color: var(--amarelo); }
+
+/* janela estreita: os medidores chegam perto da borda e liberam o centro */
+.palco--estreito .medidor--esq { left: 64px; }
+.palco--estreito .medidor--dir { right: 64px; }
+/* barra de cima mais enxuta: contatos só com ícone, números mais juntos */
+.palco--estreito .contatos { gap: 14px; }
+.palco--estreito .contatos a { font-size: 0; gap: 0; }
+.palco--estreito .contatos img { width: 22px; height: 22px; }
+.palco--estreito .topo_stats { gap: 26px; }
+.palco--estreito .stat > span { font-size: 16px; }
+.palco--estreito .stat b { font-size: 28px; }
+.palco--estreito .topo_abas { gap: 4px; }
+.palco--estreito .aba { padding: 4px 7px 6px; }
+.palco--estreito .aba small { white-space: nowrap; }
+.palco--estreito .medidor_valor { left: -66px; }
+.palco--estreito .medidor--dir .medidor_delta { left: -66px; }
