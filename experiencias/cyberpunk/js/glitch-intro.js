@@ -470,6 +470,7 @@
     ultimoFrame = agora;
 
     var fase = 'entrega', ini = 0, fim = FIM, i;
+    var fundo = 1;   // quanto do preto do cartão ainda cobre o menu
     for (i = 0; i < FASES.length; i++) {
       if (t < FASES[i][1]) {
         fase = FASES[i][0]; ini = i ? FASES[i - 1][1] : 0; fim = FASES[i][1]; break;
@@ -532,6 +533,11 @@
         fotoAlpha = 1; fotoAmp = L * 0.05 * (1 - k); fotoSplit = L * 0.006 * (1 - k);
         fotoTalhos = Math.round(3 * (1 - k));
         brilhoCostura = Math.sin(Math.min(1, k * 1.6) * Math.PI);
+        /* O menu surge enquanto o nome viaja até o logo, e não depois dele
+           chegar num fundo preto. O logo de verdade segue escondido até a
+           entrega, senão o nome aparece em dobro. */
+        fundo = 1 - suave(k);
+        hero.style.opacity = String(suave(k));
         break;
       default: /* entrega */
         corpo = AZUL; fantasma = INDIGO;
@@ -542,8 +548,10 @@
         alphaHud = 1 - k; alphaSub = 1;
         fotoAlpha = 1; fotoAmp = L * 0.05 * espasmo; fotoSplit = L * 0.005 * espasmo;
         fotoTalhos = espasmo ? 2 : 0;
-        /* Cross-fade: o hero de verdade surge por baixo. */
-        hero.style.opacity = String(suave(Math.min(1, k * 1.4)));
+        /* Cross-fade: o nome do canvas dá lugar ao logo de verdade. */
+        fundo = 0;
+        hero.style.opacity = '1';
+        logoVisivel(true);
         raiz.style.opacity = String(1 - suave(Math.max(0, (k - 0.35) / 0.65)));
         break;
     }
@@ -588,7 +596,9 @@
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, L, A);
     ctx.fillStyle = '#05080b';
+    ctx.globalAlpha = fundo;
     ctx.fillRect(0, 0, L, A);
+    ctx.globalAlpha = 1;
     // Circuitos discretos e halo local deixam espaço negativo ao redor da marca.
     ctx.save();
     ctx.globalAlpha = (1 - abre) * 0.12;
@@ -698,9 +708,14 @@
     montarMarcas();
   }
 
+  function logoVisivel(sim) {
+    elNome.style.visibility = elSub.style.visibility = sim ? '' : 'hidden';
+  }
+
   function encerrar() {
     if (saindo) return;
     saindo = true;
+    logoVisivel(true);
     rodando = false;
     clearTimeout(window.glitchIntroFallback);
     hero.style.opacity = '1';
@@ -728,6 +743,8 @@
   function comecar() {
     if (congelado !== null) clearTimeout(window.glitchIntroFallback);
     dimensionar();
+    logoVisivel(false);
+    raiz.style.background = 'transparent';   // o preto agora é pintado no canvas, e some na abertura
     window.addEventListener('resize', dimensionar);
     document.addEventListener('keydown', pular);
     raiz.addEventListener('click', pular);
