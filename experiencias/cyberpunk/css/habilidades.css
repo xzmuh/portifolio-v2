@@ -125,7 +125,7 @@ body[data-tela='habilidades'] .habilidades { display: block; }
   color: color-mix(in srgb, var(--cor) 75%, white);
   pointer-events: none;
 }
-.hab_no:hover, .hab_no:focus-visible { outline: none; transform: scale(1.06); --cor: var(--amarelo); }
+.hab_no:hover, .hab_no:focus-visible { outline: none; transform: scale(1.06); --cor: var(--ciano); }
 @keyframes no-entra {
   0% { opacity: 0; }
   60% { opacity: 1; }
@@ -229,8 +229,6 @@ body[data-tela='habilidades'] .habilidades { display: block; }
 .hab_pontos_livres span { font-size: 13px; line-height: 1.15; letter-spacing: 0.08em; color: #7fb4dc; }
 .habilidades--completa .hab_pontos_livres b { color: var(--amarelo); text-shadow: 0 0 12px rgba(252, 238, 10, 0.5); }
 .hab_acoes { position: absolute; left: 50%; bottom: 64px; transform: translateX(-50%); display: flex; align-items: center; gap: 10px; }
-.hab_acoes_dica { margin-right: 8px; font-size: 13px; letter-spacing: 0.1em; color: #7fb4dc; }
-.habilidades--completa .hab_acoes_dica { visibility: hidden; }
 .hab_acao {
   padding: 6px 14px;
   font-size: 14px;
@@ -245,8 +243,19 @@ body[data-tela='habilidades'] .habilidades { display: block; }
 
 /* dica no card: o que fazer com este nó */
 .hab_card_dica { display: block; margin-top: 10px; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; color: #7fb4dc; }
-.hab_card_dica[data-estado='disponivel'] { color: var(--amarelo); }
-.hab_card_dica[data-estado='liberado'] { color: var(--relic); }
+.hab_card_dica[data-estado='disponivel'] { color: var(--ciano); }
+.hab_card_dica[data-estado='liberado'] { color: var(--amarelo); }
 @media (prefers-reduced-motion: reduce) { .hab_no--disponivel::before, .hab_no--acendeu { animation: none; } }
 /* no celular, segurar o dedo não pode abrir seleção nem menu do navegador */
 .hab_no { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; touch-action: none; }
+
+/* liberado fica amarelo: nó, trilho e a energia que corre nele */
+.habilidades { --liberado: #fcee0a; }
+.hab_no--liberado:not(.hab_no--meta):not(:hover):not(:focus-visible) { --cor: var(--liberado); --fundo-no: #1f1a04; }
+.hab_galho--liberado .hab_trilho--faixa, .hab_galho--liberado .hab_trilho--brilho { stroke: var(--liberado); }
+.hab_trilho--carga { stroke: #fff9c4; filter: drop-shadow(0 0 6px var(--liberado)); }
+.hab_enche { background: linear-gradient(to top, color-mix(in srgb, var(--liberado) 55%, transparent) calc(var(--enche, 0) * 100%), transparent calc(var(--enche, 0) * 100%)); }
+@keyframes hab-acende {
+  0% { filter: brightness(2.4) drop-shadow(0 0 22px var(--liberado)); transform: scale(1.12); }
+  100% { transform: none; }
+}
