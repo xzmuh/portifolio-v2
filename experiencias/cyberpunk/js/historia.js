@@ -70,7 +70,6 @@ const ESCALA_CORREDOR = 0.62;
 const PASSADA = 2.9;
 // a rota amarela: pontos em ordem e o índice de cada empresa nela
 const rota = { pts: [], indice: [] };
-const BORDA_MARCO = 1.7; // o corredor para na borda do prédio-marco, não dentro dele
 
 /* ---------- textura do painel com o logo ---------- */
 function painelLogo(e) {
@@ -400,32 +399,23 @@ function carregarCorredor() {
     corredor.mixer = new THREE.AnimationMixer(m);
     for (const clip of gltf.animations) corredor.acoes[clip.name] = corredor.mixer.clipAction(clip);
     corredor.acoes.idle?.play();
-    m.position.copy(pontoDeEspera(sel));
+    m.position.copy(ponto(EMPRESAS[sel].lote));
+    m.visible = false; // está dentro do prédio da empresa atual
     cena.add(m);
   });
 }
 // caminho do corredor: os pontos da rota amarela entre as duas empresas
-// (passando pelas do meio), cortando a ponta dentro de cada prédio-marco
+// (passando pelas do meio), de centro a centro: ele sai de dentro de um
+// prédio e entra no outro
 function caminhoEntre(i, j) {
   const a = rota.indice[i], b = rota.indice[j];
   let pts = rota.pts.slice(Math.min(a, b), Math.max(a, b) + 1).map((p) => p.clone());
   if (b < a) pts.reverse();
   pts = pts.filter((p, k) => k === 0 || p.distanceTo(pts[k - 1]) > 0.01);
-  // tira BORDA_MARCO do começo e do fim
-  const encurtar = (de, para) => { const d = para.clone().sub(de); const len = d.length(); if (len > BORDA_MARCO * 1.5) de.add(d.multiplyScalar(BORDA_MARCO / len)); };
-  if (pts.length > 1) { encurtar(pts[0], pts[1]); encurtar(pts[pts.length - 1], pts[pts.length - 2]); }
   const c = new THREE.CurvePath();
   for (let k = 1; k < pts.length; k++) c.add(new THREE.LineCurve3(pts[k - 1], pts[k]));
   return c;
 }
-// onde o corredor espera parado: na rota, na borda do prédio da empresa
-function pontoDeEspera(i) {
-  const k = rota.indice[i];
-  const viz = rota.pts[k + 1] || rota.pts[k - 1];
-  const p = rota.pts[k].clone();
-  return p.add(viz.clone().sub(p).setLength(BORDA_MARCO));
-}
-
 // cópia congelada do corredor na pose deste instante, tingida e sumindo
 function soltarFantasma(cor) {
   const m = corredor.modelo;
@@ -500,14 +490,11 @@ function ligarSandy(de, para) {
   tocar('sandy-entra');
   if (corredor.modelo) {
     corredor.caminho = caminhoEntre(de, para);
-    // sai de onde ele está: se não está no começo do caminho, anda até lá antes
-    const inicio = corredor.caminho.getPoint(0);
-    if (corredor.modelo.position.distanceTo(inicio) > 0.05) {
-      const c = new THREE.CurvePath();
-      c.add(new THREE.LineCurve3(corredor.modelo.position.clone().setY(0), inicio));
-      corredor.caminho.curves.forEach((curva) => c.add(curva));
-      corredor.caminho = c;
-    }
+    // sai de dentro do prédio: aparece no centro e já corre
+    corredor.entrando = null;
+    corredor.modelo.visible = true;
+    corredor.modelo.scale.setScalar(ESCALA_CORREDOR);
+    corredor.modelo.position.copy(corredor.caminho.getPoint(0));
     corredor.acoes.idle?.fadeOut(0.15);
     corredor.acoes.run?.reset().fadeIn(0.15).play();
   }
@@ -525,10 +512,7 @@ function ligarSandy(de, para) {
     cam.dur = 0.8;
     document.body.classList.remove('sandy');
     tocar('sandy-sai');
-    if (corredor.modelo) {
-      corredor.acoes.run?.fadeOut(0.25);
-      corredor.acoes.idle?.reset().fadeIn(0.25).play();
-    }
+    if (corredor.modelo) corredor.entrando = performance.now(); // entra no prédio
   }, sandy.dur * 1000);
 }
 // curva do Sandy: velocidade constante, só acelera na saída e freia na
@@ -601,6 +585,13 @@ function quadro(agora) {
         const fase = (agora - sandy.ini) / (sandy.dur * 1000);
         soltarFantasma(new THREE.Color().setHSL((0.33 + fase * 0.75) % 1, 1, 0.55));
       }
+    }
+    // entrando no prédio: encolhe e some com um brilho
+    if (corredor.entrando) {
+      const f = Math.min(1, (agora - corredor.entrando) / 380);
+      corredor.modelo.scale.setScalar(ESCALA_CORREDOR * (1 - f) + 0.0001);
+      corredor.modelo.position.y = f * 0.5;
+      if (f >= 1) { corredor.modelo.visible = false; corredor.entrando = null; corredor.acoes.run?.stop(); }
     }
     for (const g of corredor.fantasmas) {
       g.vida += dt;
