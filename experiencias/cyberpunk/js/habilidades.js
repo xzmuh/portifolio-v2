@@ -2,7 +2,7 @@
  * Tela Habilidades: árvore de competências no molde da árvore de perks do
  * Cyberpunk 2077 2.0: principais grandes, satélites presos dos
  * lados, trilhos grossos. Abas de categoria (Q/E), card ao passar o mouse
- * mostrando onde cada coisa foi usada, e o resumo de lugares da categoria.
+ * dizendo o que é cada tecnologia.
  */
 import { CATEGORIAS } from './dados-habilidades.js';
 import { tocar } from './som.js';
@@ -160,15 +160,15 @@ function mostrarCategoria(i) {
         classe: 'hab_no hab_no--sat hab_no--dominado',
         x: s.x, y: s.y, tam: TAM.sat, icone: s.icone,
         rotulo: s.nome,
-        ver: () => mostrarCard(s.x, s.y, TAM.sat, { nome: s.nome, texto: `Ferramenta de ${n.nome}.`, onde: n.onde }),
+        ver: () => mostrarCard(s.x, s.y, TAM.sat, { nome: s.nome, texto: `Ferramenta de ${n.nome}.` }),
       }));
     }
     const tam = TAM.principal;
     const no = criarNo({
       classe: 'hab_no hab_no--principal hab_no--dominado',
-      x, y, tam, icone: n.icone, arte: `img/perks/${cat.id}-${n.id}.webp`,
-      rotulo: `${n.nome}, usado em ${n.onde.join(', ')}`,
-      ver: () => mostrarCard(x, y, tam, { nome: n.nome, texto: n.texto, onde: n.onde }),
+      x, y, tam, icone: n.icone, arte: n.arte && `img/perks/${n.arte}.webp`,
+      rotulo: n.nome,
+      ver: () => mostrarCard(x, y, tam, { nome: n.nome, texto: n.texto }),
     });
     const nome = document.createElement('span');
     nome.className = 'hab_nome';
@@ -179,19 +179,12 @@ function mostrarCategoria(i) {
   }
   arvoreEl.replaceChildren(...nos);
 
-  // resumo: todos os lugares (empresas e projetos) onde a categoria foi usada
-  const lugares = [...new Set(cat.nos.flatMap((n) => n.onde))];
-  $('[data-hab-prog-nome]').textContent = lugares.length === 1 ? 'lugar' : 'lugares';
-  $('[data-hab-prog-num]').textContent = lugares.length;
-  $('[data-hab-prog-lista]').replaceChildren(...lugares.map((l) => Object.assign(document.createElement('li'), { textContent: l })));
-  $('[data-hab-pontos]').textContent = cat.nos.length;
 }
 
 function mostrarCard(x, y, tam, d) {
   card.className = 'hab_card';
   $('[data-hab-cnome]').textContent = d.nome;
   $('[data-hab-ctexto]').textContent = d.texto;
-  $('[data-hab-conde]').replaceChildren(...d.onde.map((o) => { const li = document.createElement('li'); li.textContent = o; return li; }));
   card.hidden = false;
   const direita = x + tam / 2 + 18 + card.offsetWidth < 1570;
   card.style.left = (direita ? x + tam / 2 + 18 : x - tam / 2 - 18 - card.offsetWidth) + 'px';
