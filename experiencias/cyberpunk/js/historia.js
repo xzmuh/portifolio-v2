@@ -66,7 +66,7 @@ const CAMADA_CORREDOR = 1;
 // o corredor: personagem anime (Sakurada Fumiriya, modelo de exemplo do
 // VRoid, uso livre) correndo pela rota com o Sandevistan, deixando cópias.
 // A corrida vem do Xbot (three.js) e é passada para o esqueleto dele
-const corredor = { modelo: null, mixer: null, acoes: {}, de: 0, para: 0, caminho: null, fantasmas: [], ultimoFantasma: 0 };
+const corredor = { modelo: null, mixer: null, acoes: {}, de: 0, para: 0, caminho: null, pool: [], ossos: [], ultimoFantasma: 0 };
 let ESCALA_CORREDOR = 0.62; // recalculada para o personagem ter a altura que o Xbot tinha
 // quanto o corredor anda por segundo com a animação de corrida em velocidade normal
 const PASSADA = 2.9;
@@ -462,6 +462,8 @@ function carregarCorredor() {
         mat.vertexColors = false;
         // cabelo preto: escurece a textura (o brilho dela continua aparecendo)
         if (/HAIR/i.test(mat.name)) mat.color.setRGB(0.16, 0.16, 0.2);
+        // roupa toda preta; a pele do corpo (braços e mãos) também, como manga longa e luva
+        if (/CLOTH|Body_00_SKIN/i.test(mat.name)) mat.color.setRGB(0.1, 0.1, 0.13);
       }
     });
     // pares de ossos para passar a corrida
@@ -490,15 +492,14 @@ function carregarCorredor() {
     corredor.acoes.idle?.play();
     m.position.copy(ponto(EMPRESAS[sel].lote));
     cena.add(m);
-    // aquece a GPU: sem isso o primeiro Sandy travava compilando o personagem e os ecos
-    soltarFantasma(0x00f0ff);
+    montarFantasmas();
+    // aquece a GPU: compila personagem e ecos e sobe as texturas agora, não no clique
+    corredor.pool.forEach((g) => { g.f.visible = true; });
     camera.layers.enableAll();
     renderer.compile(cena, camera);
     camera.layers.set(0);
+    corredor.pool.forEach((g) => { g.f.visible = false; });
     m.traverse((o) => { if (o.isMesh) for (const mat of [].concat(o.material)) if (mat.map) renderer.initTexture(mat.map); });
-    // o eco de aquecimento fica guardado e invisível: descartar o material jogaria fora o shader compilado
-    for (const g of corredor.fantasmas) g.f.visible = false;
-    corredor.fantasmas = [];
     m.visible = false; // está dentro do prédio da empresa atual
   });
 }
@@ -514,21 +515,41 @@ function caminhoEntre(i, j) {
   for (let k = 1; k < pts.length; k++) c.add(new THREE.LineCurve3(pts[k - 1], pts[k]));
   return c;
 }
-// cópia congelada do corredor na pose deste instante, tingida e sumindo
+// ecos do Sandy: um estoque de cópias montado uma vez na carga. Clonar o
+// personagem inteiro a cada eco travava a corrida; aqui só se copia a pose
+const ECOS = 18;
+function montarFantasmas() {
+  const m = corredor.modelo;
+  const ossos = [];
+  m.traverse((o) => { if (o.isBone) ossos.push(o); });
+  corredor.ossos = ossos;
+  corredor.pool = [];
+  for (let i = 0; i < ECOS; i++) {
+    const f = clonarEsqueleto(m);
+    const mat = new THREE.MeshBasicMaterial({ color: 0x00f0ff, transparent: true, opacity: 0.75, depthWrite: false });
+    const meus = [];
+    f.traverse((o) => {
+      if (o.isBone) meus.push(o);
+      if (o.isMesh) o.material = mat;
+    });
+    f.visible = false;
+    cena.add(f);
+    corredor.pool.push({ f, mat, ossos: meus, vida: 0, livre: true });
+  }
+}
+// solta um eco na pose deste instante, tingido e sumindo
 function soltarFantasma(cor) {
   const m = corredor.modelo;
-  const f = clonarEsqueleto(m);
-  const ossos = {};
-  m.traverse((o) => { if (o.isBone) ossos[o.name] = o; });
-  f.traverse((o) => {
-    if (o.isBone && ossos[o.name]) { o.position.copy(ossos[o.name].position); o.quaternion.copy(ossos[o.name].quaternion); }
-    if (o.isMesh) o.material = new THREE.MeshBasicMaterial({ color: cor, transparent: true, opacity: 0.75, depthWrite: false });
-  });
-  f.position.copy(m.position);
-  f.rotation.copy(m.rotation);
-  f.scale.copy(m.scale);
-  cena.add(f);
-  corredor.fantasmas.push({ f, vida: 0 });
+  const g = corredor.pool.find((x) => x.livre) || corredor.pool.reduce((a, b) => (a.vida > b.vida ? a : b));
+  corredor.ossos.forEach((o, i) => { g.ossos[i].position.copy(o.position); g.ossos[i].quaternion.copy(o.quaternion); });
+  g.f.position.copy(m.position);
+  g.f.rotation.copy(m.rotation);
+  g.f.scale.copy(m.scale);
+  g.mat.color.set(cor);
+  g.mat.opacity = 0.75;
+  g.vida = 0;
+  g.livre = false;
+  g.f.visible = true;
 }
 
 function redimensionar() {
@@ -614,11 +635,10 @@ function ligarSandy(de, para) {
     if (corredor.modelo) corredor.entrando = performance.now(); // entra no prédio
   }, sandy.dur * 1000);
 }
-// curva do Sandy: sai já correndo mas devagar, acelera cada vez mais e
-// chega no prédio no pico da velocidade, como se fosse teleportado.
-// Posição = 0.3t + 0.7t^4; velocidade vai de 0.3x a 3.1x a média
-const curvaSandy = (t) => 0.3 * t + 0.7 * t ** 4;
-const velocidadeSandy = (t) => 0.3 + 2.8 * t ** 3;
+// curva do Sandy: larga já em disparada e ainda acelera até entrar no
+// prédio. Posição = 0.8t + 0.2t^4; velocidade vai de 0.8x a 1.6x a média
+const curvaSandy = (t) => 0.8 * t + 0.2 * t ** 4;
+const velocidadeSandy = (t) => 0.8 + 0.8 * t ** 3;
 const suave = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
 /* ---------- quadro ---------- */
@@ -663,7 +683,7 @@ function quadro(agora) {
     if (sandy.ativo && corredor.caminho) {
       // as pernas acompanham a aceleração: começa em corrida e termina em disparada
       const velocidade = (corredor.caminho.getLength() / sandy.dur) * velocidadeSandy(cam.t); // unidades por segundo
-      ritmo = Math.min(5, Math.max(2.6, velocidade / PASSADA));
+      ritmo = Math.min(5, Math.max(3.2, velocidade / PASSADA));
     }
     corredor.mixer.update(dt * ritmo);
     if (sandy.ativo && corredor.caminho) {
@@ -692,16 +712,12 @@ function quadro(agora) {
       corredor.modelo.position.y = f * 0.5;
       if (f >= 1) { corredor.modelo.visible = false; corredor.entrando = null; corredor.acoes.run?.stop(); }
     }
-    for (const g of corredor.fantasmas) {
+    for (const g of corredor.pool) {
+      if (g.livre) continue;
       g.vida += dt;
-      g.f.traverse((o) => { if (o.isMesh) o.material.opacity = Math.max(0, 0.75 - g.vida * 0.55); });
+      g.mat.opacity = Math.max(0, 0.75 - g.vida * 0.55);
+      if (g.vida >= 1.4) { g.livre = true; g.f.visible = false; }
     }
-    corredor.fantasmas = corredor.fantasmas.filter((g) => {
-      if (g.vida < 1.4) return true;
-      cena.remove(g.f);
-      g.f.traverse((o) => { if (o.isMesh) o.material.dispose(); });
-      return false;
-    });
   }
 
   // prédios-marco e rótulos
