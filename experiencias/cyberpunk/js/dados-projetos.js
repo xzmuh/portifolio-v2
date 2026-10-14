@@ -8,6 +8,7 @@
  *   objetivos    o que o projeto tem (lista simples)
  *   imagem       img/projetos/<arquivo>
  *   url          link do site, quando é público
+ *   stack        tecnologias usadas (opcional; aparece no scan quando tiver)
  */
 export const GRUPOS = [
   { id: 'sistemas', nome: 'Trabalhos principais' },

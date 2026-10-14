@@ -81,7 +81,7 @@ body[data-tela='projetos'] .projetos { display: block; }
 .proj_tipo { font-size: 11px; padding: 1px 6px; border: 1px solid currentColor; opacity: 0.85; }
 
 /* detalhe */
-.proj_detalhe { position: absolute; left: 720px; top: 120px; width: 580px; bottom: 90px; display: flex; flex-direction: column; }
+.proj_detalhe { position: absolute; left: 720px; top: 120px; width: 560px; bottom: 90px; display: flex; flex-direction: column; }
 .proj_titulo { font-size: 30px; font-weight: 600; color: var(--vermelho); padding-bottom: 12px; border-bottom: 1px solid var(--linha); }
 .proj_objetivos { margin-top: 14px; display: flex; flex-direction: column; gap: 10px; padding-bottom: 14px; border-bottom: 1px solid var(--linha-fraca); }
 .proj_objetivos li { position: relative; padding-left: 20px; font-size: 17px; color: var(--ciano); text-transform: none; line-height: 1.25; }
@@ -111,7 +111,7 @@ body[data-tela='projetos'] .projetos { display: block; }
 .proj_texto::-webkit-scrollbar-track { background: rgba(255, 42, 140, 0.12); }
 
 /* miniatura no canto, com o link do site */
-.proj_mini { position: absolute; left: 1310px; top: 120px; width: 300px; }
+.proj_mini { position: absolute; left: 1300px; top: 120px; width: 280px; } /* termina em 1580: a mira (10px) não corta na borda */
 .proj_mini img {
   display: block;
   width: 100%;
@@ -137,3 +137,89 @@ body[data-tela='projetos'] .projetos { display: block; }
 .palco--estreito .proj_lista { left: 220px; width: 380px; }
 .palco--estreito .proj_detalhe { left: 630px; width: 490px; }
 .palco--estreito .proj_mini { left: 1140px; width: 240px; }
+
+/* ---------- scanner (segurar Espaço) ---------- */
+.proj_scan_botao {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 6px 12px 6px 8px;
+  font-size: 15px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--amarelo);
+  border: 1px solid rgba(252, 238, 10, 0.5);
+  background: rgba(252, 238, 10, 0.06);
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  touch-action: none;
+}
+.proj_scan_botao .tecla { border-color: var(--amarelo); color: var(--amarelo); font-size: 11px; padding: 0 5px; }
+.proj_scan_botao:hover, .projetos--escaneando .proj_scan_botao { background: rgba(252, 238, 10, 0.16); }
+
+/* a tela tinge de amarelo e o resto apaga, como o scanner do jogo */
+.projetos::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+  background:
+    repeating-linear-gradient(0deg, rgba(252, 238, 10, 0.05) 0 1px, transparent 1px 4px),
+    radial-gradient(ellipse at 70% 40%, rgba(252, 238, 10, 0.06), rgba(10, 8, 0, 0.55) 80%);
+}
+.projetos--escaneando::after { opacity: 1; }
+.projetos--escaneando .proj_lista, .projetos--escaneando .proj_marcas { filter: grayscale(1) brightness(0.5); transition: filter 0.2s; }
+.projetos--escaneando .proj_detalhe { visibility: hidden; } /* opacity não: a animação de troca prende ela em 1 */
+.projetos--escaneando .proj_mini img { filter: sepia(1) saturate(3) hue-rotate(5deg) brightness(0.9) contrast(1.15); }
+
+/* mira: quatro cantos, e uma linha que varre a miniatura */
+.proj_mira { position: absolute; left: -10px; right: -10px; top: -10px; aspect-ratio: 16 / 10; width: calc(100% + 20px); pointer-events: none; opacity: 0; transition: opacity 0.15s; }
+.projetos--escaneando .proj_mira { opacity: 1; }
+.proj_mira i { position: absolute; width: 22px; height: 22px; border: 2px solid var(--amarelo); filter: drop-shadow(0 0 4px rgba(252, 238, 10, 0.7)); }
+.proj_mira i:nth-child(1) { left: 0; top: 0; border-right: 0; border-bottom: 0; }
+.proj_mira i:nth-child(2) { right: 0; top: 0; border-left: 0; border-bottom: 0; }
+.proj_mira i:nth-child(3) { left: 0; bottom: 0; border-right: 0; border-top: 0; }
+.proj_mira i:nth-child(4) { right: 0; bottom: 0; border-left: 0; border-top: 0; }
+.projetos--escaneando .proj_mira i { animation: mira-fecha 0.35s cubic-bezier(0.2, 0.7, 0.2, 1); }
+@keyframes mira-fecha { from { transform: scale(1.4); opacity: 0; } }
+.proj_mira b {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  height: 2px;
+  top: calc(10px + var(--scan, 0) * (100% - 22px));
+  background: var(--amarelo);
+  box-shadow: 0 0 12px 2px rgba(252, 238, 10, 0.7);
+}
+.projetos--escaneado .proj_mira b { animation: varre-mira 1.4s linear infinite; }
+@keyframes varre-mira { 0% { top: 10px; } 50% { top: calc(100% - 12px); } 100% { top: 10px; } }
+
+/* painel com o resultado, no lugar do detalhe */
+.proj_scan { position: absolute; left: 720px; top: 120px; width: 560px; }
+.proj_scan[hidden] { display: none; }
+.proj_scan_topo { display: flex; align-items: baseline; gap: 14px; padding-bottom: 10px; border-bottom: 1px solid rgba(252, 238, 10, 0.5); }
+.proj_scan_topo span { font-size: 14px; letter-spacing: 0.3em; color: rgba(252, 238, 10, 0.75); }
+.proj_scan_topo b { font-size: 30px; font-weight: 600; color: var(--amarelo); text-shadow: 3px 0 rgba(255, 42, 109, 0.6), -3px 0 rgba(0, 240, 255, 0.5); }
+.proj_scan_carga { position: relative; margin-top: 14px; height: 22px; border: 1px solid rgba(252, 238, 10, 0.5); }
+.proj_scan_carga i { position: absolute; left: 0; top: 0; bottom: 0; width: calc(var(--scan, 0) * 100%); background: repeating-linear-gradient(90deg, rgba(252, 238, 10, 0.75) 0 6px, transparent 6px 9px); }
+.proj_scan_carga span { position: absolute; left: 10px; top: 1px; font-size: 13px; letter-spacing: 0.25em; text-transform: uppercase; color: #fff8b0; mix-blend-mode: difference; }
+.projetos--escaneado .proj_scan_carga { display: none; }
+.proj_scan_dados { margin-top: 14px; display: grid; gap: 4px; }
+.proj_scan_linha { display: grid; grid-template-columns: 170px 1fr; gap: 16px; padding: 8px 0; border-bottom: 1px solid rgba(252, 238, 10, 0.14); animation: scan-linha 0.3s steps(3) backwards; }
+@keyframes scan-linha { from { opacity: 0; transform: translateX(-10px); filter: brightness(2); } }
+.proj_scan_linha dt { font-size: 14px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(252, 238, 10, 0.7); padding-top: 3px; }
+.proj_scan_linha dd { margin: 0; font-size: 19px; color: #fff6c2; text-transform: none; }
+.proj_scan_linha ul { display: grid; gap: 3px; }
+.proj_scan_linha li { font-size: 16px; color: #e8f9ff; }
+.proj_scan_linha li::before { content: '› '; color: var(--ciano); }
+.proj_scan_nivel { display: inline-flex; gap: 4px; margin-left: 10px; vertical-align: middle; }
+.proj_scan_nivel i { width: 18px; height: 8px; border: 1px solid var(--vermelho-forte); transform: skewX(-20deg); }
+.proj_scan_nivel i.on { background: var(--vermelho-forte); box-shadow: 0 0 6px rgba(255, 42, 109, 0.7); }
+@media (prefers-reduced-motion: reduce) { .proj_scan_linha, .proj_mira i, .projetos--escaneado .proj_mira b { animation: none; } }
+/* o tom do scanner fica por baixo da mira e do painel */
+.projetos::after { z-index: 1; }
+.proj_scan, .projetos--escaneando .proj_mini { z-index: 2; }

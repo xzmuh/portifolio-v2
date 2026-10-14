@@ -62,6 +62,7 @@ for (const g of GRUPOS) {
 
 function escolher(i, som = true) {
   if (som && i !== sel) tocar('abrir');
+  desligarScan();
   sel = i;
   const p = PROJETOS[i];
   botoes.forEach((b, k) => b.classList.toggle('proj_item--sel', k === i));
@@ -87,8 +88,84 @@ function escolher(i, som = true) {
   }
 }
 
+/* ---------- scanner (como o do jogo) ----------
+ * Segurar Espaço (ou o botão, no celular) liga o scan: a tela tinge, a mira
+ * varre a miniatura e a barra enche; cheia, os dados do projeto aparecem um
+ * a um no lugar do detalhe. Soltou, fecha. Só mostra o que está nos dados. */
+const painel = $('[data-proj-scan-painel]');
+const botaoScan = $('[data-proj-scan]');
+const CARGA_SCAN = 700; // ms
+const AMEACA = { Baixa: 1, Moderada: 2, Alta: 3 };
+let scan = null; // { ini, quadro, mostrou }
+
+function dadosScan(p) {
+  const nivel = AMEACA[p.complexidade] || 1;
+  const campos = [
+    ['Classificação', p.tipo],
+    ['Nível de ameaça', `${p.complexidade} <span class="proj_scan_nivel">${'<i class="on"></i>'.repeat(nivel)}${'<i></i>'.repeat(3 - nivel)}</span>`],
+    ['Contrato', GRUPOS.find((g) => g.id === p.grupo)?.nome || '—'],
+    ['Acesso', p.url ? `Público · ${new URL(p.url).hostname.replace(/^www\./, '')}` : 'Interno'],
+  ];
+  if (p.stack?.length) campos.push(['Stack', p.stack.join(' · ')]);
+  campos.push(['Módulos', `<ul>${p.objetivos.map((o) => `<li>${o.texto}</li>`).join('')}</ul>`]);
+  campos.push(['Assinatura', 'Murilo Gonzales · full stack']);
+  return campos;
+}
+
+function ligarScan() {
+  if (scan) return;
+  scan = { ini: performance.now(), mostrou: false };
+  const p = PROJETOS[sel];
+  $('[data-scan-nome]').textContent = p.nome;
+  $('[data-scan-dados]').replaceChildren();
+  painel.hidden = false;
+  raiz.classList.add('projetos--escaneando');
+  raiz.classList.remove('projetos--escaneado');
+  tocar('hover');
+  const passo = (agora) => {
+    if (!scan) return;
+    const k = Math.min(1, (agora - scan.ini) / CARGA_SCAN);
+    raiz.style.setProperty('--scan', k.toFixed(3));
+    if (k < 1) { scan.quadro = requestAnimationFrame(passo); return; }
+    mostrarScan(p);
+  };
+  scan.quadro = requestAnimationFrame(passo);
+}
+
+function mostrarScan(p) {
+  scan.mostrou = true;
+  raiz.classList.add('projetos--escaneado');
+  tocar('instalar-3', true);
+  const dl = $('[data-scan-dados]');
+  dadosScan(p).forEach(([rotulo, valor], k) => {
+    const linha = document.createElement('div');
+    linha.className = 'proj_scan_linha';
+    linha.style.animationDelay = k * 90 + 'ms';
+    linha.innerHTML = `<dt></dt><dd>${valor}</dd>`;
+    linha.querySelector('dt').textContent = rotulo;
+    dl.append(linha);
+  });
+}
+
+function desligarScan() {
+  if (!scan) return;
+  cancelAnimationFrame(scan.quadro);
+  scan = null;
+  painel.hidden = true;
+  raiz.classList.remove('projetos--escaneando', 'projetos--escaneado');
+  raiz.style.setProperty('--scan', '0');
+}
+
+botaoScan.addEventListener('pointerdown', (e) => { e.preventDefault(); ligarScan(); });
+for (const ev of ['pointerup', 'pointerleave', 'pointercancel']) botaoScan.addEventListener(ev, desligarScan);
+botaoScan.addEventListener('contextmenu', (e) => e.preventDefault());
+addEventListener('keyup', (e) => { if (e.code === 'Space') desligarScan(); });
+addEventListener('blur', desligarScan);
+addEventListener('tela', desligarScan);
+
 addEventListener('keydown', (e) => {
   if (telaAtual() !== 'projetos') return;
+  if (e.code === 'Space') { e.preventDefault(); if (!e.repeat) ligarScan(); return; }
   const k = e.key.toLowerCase();
   if (k === 's' || k === 'arrowdown') { e.preventDefault(); escolher((sel + 1) % PROJETOS.length); }
   else if (k === 'w' || k === 'arrowup') { e.preventDefault(); escolher((sel - 1 + PROJETOS.length) % PROJETOS.length); }
