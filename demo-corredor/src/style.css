@@ -42,6 +42,8 @@ html.livre .mira { display: block; }
 .dica.muda { animation: muda .6s; }
 @keyframes muda { 30% { transform: translateX(-50%) scale(1.12) rotate(-2deg); } 60% { transform: translateX(-50%) scale(.97) rotate(1deg); } }
 html.livre .dica { bottom: auto; top: 14px; }
+/* no celular o botão "voltar ao passeio" fica no topo: o card desce para não cobrir */
+@media (max-width: 600px) { html.livre .dica { top: 64px; } }
 .setas { display: grid; justify-items: center; margin-top: 4px; }
 .setas[hidden] { display: none; }
 .setas i { width: 16px; height: 16px; margin-top: -6px; border-right: 3px solid var(--tinta); border-bottom: 3px solid var(--tinta); transform: rotate(45deg); animation: seta 1.4s infinite; opacity: 0; }

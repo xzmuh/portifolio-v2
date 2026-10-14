@@ -1056,7 +1056,7 @@ function atualizaTitulo() {
   const n = visitadas.size;
   const [nome, sub] = estado.modo === 'fachada'
     ? ['EXPLORADOR', toque ? 'toque na porta para entrar' : 'clique na porta para entrar']
-    : n === 0 ? ['ANDARILHO', toque ? 'arraste para explorar o corredor' : 'role para explorar o corredor']
+    : n === 0 ? ['ANDARILHO', estado.modo === 'livre' ? 'ande até uma porta' : toque ? 'arraste para explorar o corredor' : 'role para explorar o corredor']
       : n < SALAS.length ? ['CURIOSO', `${n} de ${SALAS.length} portas abertas`]
         : ['VETERANO', 'você abriu todas as portas!'];
   ui.tituloNome.textContent = nome;
@@ -1077,7 +1077,7 @@ function poseFachada(pos, olhar) {
   olhar.set(estado.mx * 1.4, 1.75 - estado.my * 0.5, 0);
 }
 
-function entrarNaCasa() {
+function entrarNaCasa(depois) {
   if (estado.modo !== 'fachada') return;
   estado.modo = 'entrando';
   estado.dentro = true;   // só agora o corredor começa a se desenhar
@@ -1098,6 +1098,7 @@ function entrarNaCasa() {
       estado.alvo = estado.t = 0;
       lerRolagem();
       atualizaTitulo();
+      depois?.();
     });
   });
 }
@@ -1526,6 +1527,8 @@ function entrarLivre() {
   ui.modo.textContent = toque ? 'voltar ao passeio' : '[G] voltar ao passeio';
   ui.dicasLivre.hidden = false;
   ui.joystick.hidden = !toque;
+  ui.setas.hidden = true;
+  atualizaTitulo();
   if (!toque) renderer.domElement.requestPointerLock?.()?.catch?.(() => {});
 }
 
@@ -1548,7 +1551,7 @@ function voltarPasseio() {
   for (const p of portas) { p.alvo = 0; p.travada = null; }
   const volta = pose();
   poseCorredor(estado.t, volta.pos, volta.olhar);
-  anima(cam, volta, 1.3, () => { estado.modo = 'corredor'; });
+  anima(cam, volta, 1.3, () => { estado.modo = 'corredor'; atualizaTitulo(); });
   document.documentElement.classList.remove('livre');
   ui.modo.textContent = toque ? 'andar livre' : '[WASD] andar livre';
   ui.dicasLivre.hidden = true;
@@ -1575,7 +1578,13 @@ addEventListener('keydown', (e) => {
 });
 addEventListener('keyup', (e) => teclas.delete(e.key.toLowerCase()));
 addEventListener('blur', () => teclas.clear());
-ui.modo.addEventListener('click', () => (estado.modo === 'livre' ? voltarPasseio() : entrarLivre()));
+// na fachada, "andar livre" entra na casa e já liga o modo livre (no celular,
+// com o joystick); antes o toque ali não fazia nada
+ui.modo.addEventListener('click', () => {
+  if (estado.modo === 'livre') voltarPasseio();
+  else if (estado.modo === 'fachada') entrarNaCasa(entrarLivre);
+  else entrarLivre();
+});
 
 // joystick: arrastar a partir do círculo
 let dedoJoy = null;
