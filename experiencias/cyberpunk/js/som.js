@@ -17,11 +17,12 @@ const ARQUIVOS = {
   'sandy-sai': 'sons/sandy-sai.mp3',
   'menu-ambiente': 'sons/menu-ambiente.wav', // wav: mp3 tem silêncio no começo e o loop "pula"
   mapa: 'sons/mapa.mp3', // ambiente do mapa da História
+  boot: 'sons/boot.mp3', // alarme em loop da tela de boot (antes do clique de acesso)
 };
 // trecho que repete no loop (s): pula o silêncio do começo e o fim que some,
 // senão a emenda dá um buraco
 const TRECHO_LOOP = { mapa: [0.17, 22.0] };
-const VOLUME = { hover: 0.35, abrir: 0.6, ambiente: 0.18, 'menu-ambiente': 0.3, glitch: 0.7, instalar: 0.7, 'instalar-2': 0.7, 'instalar-3': 0.6, mensagem: 0.3, 'sandy-entra': 0.6, 'sandy-sai': 0.5, mapa: 0.6 };
+const VOLUME = { hover: 0.35, abrir: 0.6, ambiente: 0.18, 'menu-ambiente': 0.3, glitch: 0.7, instalar: 0.7, 'instalar-2': 0.7, 'instalar-3': 0.6, mensagem: 0.3, 'sandy-entra': 0.6, 'sandy-sai': 0.5, mapa: 0.6, boot: 0.45 };
 
 let ctx = null;
 let mudo = false;
@@ -29,7 +30,10 @@ let ambiente = null; // { nome, src, gain }
 const buffers = {};
 
 const AMBIENTE_DA_TELA = { menu: 'menu-ambiente', historia: 'mapa' };
-const ambienteDaTela = () => AMBIENTE_DA_TELA[document.body.dataset.tela] || 'ambiente';
+// enquanto a tela de boot está no ar, o "ambiente" é o alarme dela. Só toca
+// se o navegador deixar som sem clique; no clique ela sai e entra o do menu
+const noBoot = () => !!document.querySelector('.acesso:not(.acesso--saindo)');
+const ambienteDaTela = () => (noBoot() ? 'boot' : AMBIENTE_DA_TELA[document.body.dataset.tela] || 'ambiente');
 
 let iniciouEm = 0;
 /* O áudio é criado já na abertura e os sons já são baixados. Se o navegador
@@ -175,3 +179,4 @@ criar();
 for (const ev of ['pointerdown', 'keydown', 'touchend']) addEventListener(ev, iniciar, { once: true });
 // trocou de tela: troca o ambiente se for outro
 addEventListener('tela', trocarAmbiente);
+addEventListener('acessar', trocarAmbiente);
