@@ -819,12 +819,12 @@ html.glitch-intro-ativo .som { display: none; }
 /* desligado: só o botão de ligar; o HUD só existe (e anima) depois do clique */
 .acesso:not(.acesso--ligado) .hud { display: none; }
 .acesso--ligado .acesso_ligar { display: none; }
-.acesso_ligar { display: grid; justify-items: center; gap: 14px; font-family: var(--fonte); text-transform: uppercase; color: var(--vermelho); }
-.acesso_power { position: relative; width: 64px; height: 64px; border: 3px solid var(--vermelho-forte); border-top-color: transparent; border-radius: 50%; box-shadow: 0 0 14px rgba(255, 42, 140, 0.5), inset 0 0 10px rgba(255, 42, 140, 0.3); animation: power-respira 2s ease-in-out infinite; }
-.acesso_power::before { content: ''; position: absolute; left: 50%; top: -12px; width: 3px; height: 34px; margin-left: -1.5px; background: var(--vermelho-forte); box-shadow: 0 0 8px var(--vermelho-forte); }
-.acesso_ligar_texto { font-size: 22px; font-weight: 700; letter-spacing: 0.4em; margin-right: -0.4em; color: #ffd2e6; }
-.acesso_ligar_dica { font-size: 12px; letter-spacing: 0.22em; color: rgba(0, 240, 255, 0.7); }
-.acesso:not(.acesso--ligado):hover .acesso_power { border-color: var(--ciano); border-top-color: transparent; box-shadow: 0 0 18px rgba(0, 240, 255, 0.6); }
-.acesso:not(.acesso--ligado):hover .acesso_power::before { background: var(--ciano); }
-@keyframes power-respira { 50% { opacity: 0.55; } }
-@media (prefers-reduced-motion: reduce) { .hud, .hud *, .acesso_power { animation: none !important; stroke-dashoffset: 0; } .hud_prompt, .hud_dica { opacity: 1; } }
+.acesso_ligar { display: grid; justify-items: center; gap: 12px; font-family: var(--fonte); text-transform: uppercase; filter: drop-shadow(0 0 4px rgba(255, 42, 140, 0.5)); }
+.acesso_ligar_rotulo { font-size: 12px; font-weight: 600; letter-spacing: 0.2em; color: #ff2a8c; }
+/* mesma caixa do prompt do boot: amarela, fina, canto cortado */
+.acesso_ligar_caixa { display: flex; align-items: center; padding: 12px 30px; font-size: clamp(18px, 2.2vw, 26px); font-weight: 700; letter-spacing: 0.16em; color: var(--amarelo); background: rgba(252, 238, 10, 0.1); border: 2px solid var(--amarelo); clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%); animation: hud-pisca 1.3s ease-in-out infinite; }
+.acesso_ligar_caixa i { width: 0.5em; height: 1em; margin-left: 8px; background: var(--ciano); box-shadow: 0 0 8px var(--ciano); animation: acesso-cursor 0.9s steps(1) infinite; }
+.acesso_ligar_dica { font-size: 11px; letter-spacing: 0.22em; color: var(--ciano); }
+.acesso:not(.acesso--ligado):hover .acesso_ligar_caixa { background: rgba(252, 238, 10, 0.24); }
+@keyframes acesso-cursor { 50% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .hud, .hud *, .acesso_ligar_caixa, .acesso_ligar_caixa i { animation: none !important; stroke-dashoffset: 0; } .hud_prompt, .hud_dica { opacity: 1; } }
