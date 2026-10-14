@@ -32,8 +32,10 @@ const buffers = {};
 const AMBIENTE_DA_TELA = { menu: 'menu-ambiente', historia: 'mapa' };
 // enquanto a tela de boot está no ar, o "ambiente" é o alarme dela. Só toca
 // se o navegador deixar som sem clique; no clique ela sai e entra o do menu
-const noBoot = () => !!document.querySelector('.acesso:not(.acesso--saindo)');
-const ambienteDaTela = () => (noBoot() ? 'boot' : AMBIENTE_DA_TELA[document.body.dataset.tela] || 'ambiente');
+const noBoot = () => !!document.querySelector('.acesso--ligado:not(.acesso--saindo)');
+const desligado = () => !!document.querySelector('.acesso:not(.acesso--ligado)');
+// antes de ligar: silêncio (sem nome, trocarAmbiente não toca nada)
+const ambienteDaTela = () => (desligado() ? null : noBoot() ? 'boot' : AMBIENTE_DA_TELA[document.body.dataset.tela] || 'ambiente');
 
 let iniciouEm = 0;
 /* O áudio é criado já na abertura e os sons já são baixados. Se o navegador
@@ -180,3 +182,5 @@ for (const ev of ['pointerdown', 'keydown', 'touchend']) addEventListener(ev, in
 // trocou de tela: troca o ambiente se for outro
 addEventListener('tela', trocarAmbiente);
 addEventListener('acessar', trocarAmbiente);
+// ligou o boot: o clique acabou de liberar o áudio; toca o alarme assim que ele estiver rodando
+addEventListener('boot-ligou', () => { iniciar(); if (ctx.state === 'running') trocarAmbiente(); else ctx.resume().then(trocarAmbiente); });

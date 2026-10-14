@@ -46,6 +46,8 @@
   <div id="app">
   <!-- tela de acesso: o clique libera o som (o navegador exige um gesto) e só então começa o glitch -->
   <div class="acesso" data-acesso>
+    <!-- desligado: só o botão de ligar. O navegador só toca som depois de um clique -->
+    <div class="acesso_ligar"><span class="acesso_power" aria-hidden="true"></span><span class="acesso_ligar_texto">Ligar</span><span class="acesso_ligar_dica">clique ou aperte qualquer tecla</span></div>
     <!-- boot no jeito do jogo (ref. print de 14/10): painéis vermelhos se desenham, os logs são digitados e o prompt aparece -->
     <svg class="hud" viewBox="0 0 1160 600" aria-hidden="true">
       <path class="hud_traco hud_arco" pathLength="1" style="--d:0.00s" d="M50 60 Q580 92 1110 58"/>
@@ -96,8 +98,8 @@
       <g class="hud_caixa" style="--d:2.28s"><rect x="490" y="447" width="124" height="34"/><text x="498" y="461">DIAGNÓSTICO</text><text x="498" y="474">CIBERNÉTICO</text></g>
       <g class="hud_caixa" style="--d:2.47s"><rect x="619" y="447" width="124" height="34"/><text x="627" y="461">SISTEMAS DE</text><text x="627" y="474">SEGURANÇA</text></g>
       <g class="hud_caixa" style="--d:2.66s"><rect x="619" y="486" width="124" height="34"/><text x="627" y="500">REDE</text><text x="627" y="513">NEURAL</text></g>
-      <g class="hud_prompt" style="--d:3.42s"><rect x="452" y="540" width="256" height="34"/><text x="580" y="562" text-anchor="middle">&gt; INICIAR LINK NEURAL</text></g>
-      <text class="hud_dica" x="580" y="590" text-anchor="middle" style="--d:3.80s">CLIQUE OU APERTE QUALQUER TECLA</text>
+      <g class="hud_prompt" style="--d:3.42s"><rect x="452" y="540" width="256" height="34"/><text x="580" y="562" text-anchor="middle">&gt; CONECTANDO</text></g>
+      <text class="hud_dica" x="580" y="590" text-anchor="middle" style="--d:3.80s">CLIQUE PARA PULAR</text>
     </svg>
   </div>
   <div id="glitch-intro" aria-hidden="true"><canvas class="glitch-intro_canvas"></canvas></div>
@@ -338,62 +340,72 @@
 
   <script>
     (function () {
+      // 1º clique (ou tecla) liga: libera o som e começa o boot com o alarme.
+      // No fim do boot segue sozinho para o glitch do nome; clicar de novo pula
       var acesso = document.querySelector('[data-acesso]');
+      var ligado = false, t0 = 0;
       function entrar() {
         if (!acesso || acesso.classList.contains('acesso--saindo')) return;
         acesso.classList.add('acesso--saindo');
-        removeEventListener('keydown', entrar);
+        removeEventListener('keydown', tecla);
         window.dispatchEvent(new Event('acessar'));
         setTimeout(function () { acesso.remove(); }, 400);
       }
-      acesso.addEventListener('click', entrar);
-      // status no meio: inicializa a óptica, calibra (a mira passeia) e libera o prompt
-      var status = acesso.querySelector('[data-hud-status]');
-      var ETAPAS = [[1200, 'INICIALIZANDO ÓPTICA KIROSHI'], [3500, 'CALIBRANDO RETINA'], [5200, 'DIAGNÓSTICO OK · SISTEMA PRONTO']];
-      ETAPAS.forEach(function (e, k) {
-        setTimeout(function () {
-          status.textContent = e[1];
-          if (k === 1) acesso.classList.add('acesso--calibrando');
-          if (k === 2) { acesso.classList.remove('acesso--calibrando'); acesso.classList.add('acesso--pronto'); }
-        }, e[0]);
-      });
-      var pct = 0, t = setInterval(function () {
-        if (performance.now() < 1200) return;
-        pct = Math.min(100, pct + 3);
-        if (status.textContent.indexOf('INICIALIZANDO') === 0) status.textContent = 'INICIALIZANDO ÓPTICA KIROSHI · ' + pct + '%';
-        if (pct >= 100) clearInterval(t);
-      }, 65);
-      // glitches: de tempos em tempos umas peças do HUD tremem com a cor
-      // separada, e às vezes a tela inteira dá um rasgo
-      var pecas = acesso.querySelectorAll('.hud_traco, .hud_log, .hud_caixa, .hud_rotulo, .hud_mira, .hud_hachura, .hud_status');
-      var CORES = ['drop-shadow(4px 0 #00f0ff) drop-shadow(-4px 0 #ff2a8c)', 'drop-shadow(-3px 0 #fcee0a) drop-shadow(3px 0 #00f0ff)'];
-      function tremer(el, forca) {
-        var passos = [[forca, 0], [-forca * 0.7, 1], [forca * 0.4, -1], null];
-        passos.forEach(function (p, k) {
-          setTimeout(function () {
-            el.style.translate = p ? p[0] + 'px ' + p[1] + 'px' : '';
-            el.style.filter = p ? CORES[k % 2] : '';
-            el.style.opacity = p && k === 1 ? '0.55' : '';
-          }, k * 55);
+      function tecla() { ligado ? entrar() : ligar(); }
+      acesso.addEventListener('click', tecla);
+      addEventListener('keydown', tecla);
+      var depois = function (ms, fn) { setTimeout(fn, ms); };
+      function ligar() {
+        ligado = true;
+        t0 = performance.now();
+        acesso.classList.add('acesso--ligado');
+        window.dispatchEvent(new Event('boot-ligou')); // o som do boot (js/som.js)
+        // status no meio: inicializa a óptica, calibra (a mira passeia) e fica pronto
+        var status = acesso.querySelector('[data-hud-status]');
+        var ETAPAS = [[1200, 'INICIALIZANDO ÓPTICA KIROSHI'], [3500, 'CALIBRANDO RETINA'], [5200, 'DIAGNÓSTICO OK · LINK NEURAL ESTABELECIDO']];
+        ETAPAS.forEach(function (e, k) {
+          depois(e[0], function () {
+            status.textContent = e[1];
+            if (k === 1) acesso.classList.add('acesso--calibrando');
+            if (k === 2) { acesso.classList.remove('acesso--calibrando'); acesso.classList.add('acesso--pronto'); }
+          });
+        });
+        depois(6600, entrar); // segue sozinho para o glitch
+        var pct = 0, t = setInterval(function () {
+          if (performance.now() - t0 < 1200) return;
+          pct = Math.min(100, pct + 3);
+          if (status.textContent.indexOf('INICIALIZANDO') === 0) status.textContent = 'INICIALIZANDO ÓPTICA KIROSHI · ' + pct + '%';
+          if (pct >= 100) clearInterval(t);
+        }, 65);
+        // glitches: de tempos em tempos umas peças do HUD tremem com a cor
+        // separada, e às vezes o HUD inteiro dá um tranco
+        var pecas = acesso.querySelectorAll('.hud_traco, .hud_log, .hud_caixa, .hud_rotulo, .hud_mira, .hud_hachura, .hud_status');
+        var CORES = ['drop-shadow(4px 0 #00f0ff) drop-shadow(-4px 0 #ff2a8c)', 'drop-shadow(-3px 0 #fcee0a) drop-shadow(3px 0 #00f0ff)'];
+        function tremer(el, forca) {
+          [[forca, 0], [-forca * 0.7, 1], [forca * 0.4, -1], null].forEach(function (p, k) {
+            depois(k * 55, function () {
+              el.style.translate = p ? p[0] + 'px ' + p[1] + 'px' : '';
+              el.style.filter = p ? CORES[k % 2] : '';
+              el.style.opacity = p && k === 1 ? '0.55' : '';
+            });
+          });
+        }
+        var hud = acesso.querySelector('.hud');
+        var glitches = setInterval(function () {
+          if (!document.body.contains(acesso)) return clearInterval(glitches);
+          for (var n = 1 + Math.floor(Math.random() * 3); n > 0; n--) tremer(pecas[Math.floor(Math.random() * pecas.length)], 4 + Math.random() * 8);
+          if (Math.random() < 0.18 && performance.now() - t0 > 3000) tremer(hud, 10);
+        }, 420);
+        // logs: cada linha é digitada depois do seu atraso (--d)
+        acesso.querySelectorAll('.hud_log').forEach(function (el) {
+          var texto = el.getAttribute('data-texto'), i = 0;
+          depois(parseFloat(el.style.getPropertyValue('--d')) * 1000, function passo() {
+            i += 2;
+            el.textContent = texto.slice(0, i);
+            if (i < texto.length) depois(28, passo);
+          });
         });
       }
-      var hud = acesso.querySelector('.hud');
-      var glitches = setInterval(function () {
-        if (!document.body.contains(acesso)) return clearInterval(glitches);
-        for (var n = 1 + Math.floor(Math.random() * 3); n > 0; n--) tremer(pecas[Math.floor(Math.random() * pecas.length)], 4 + Math.random() * 8);
-        if (Math.random() < 0.18 && performance.now() > 3000) tremer(hud, 10);
-      }, 420);
-      // logs do boot: cada linha é digitada depois do seu atraso (--d)
-      acesso.querySelectorAll('.hud_log').forEach(function (el) {
-        var texto = el.getAttribute('data-texto'), atraso = parseFloat(el.style.getPropertyValue('--d')) * 1000, i = 0;
-        setTimeout(function passo() {
-          i += 2;
-          el.textContent = texto.slice(0, i);
-          if (i < texto.length) setTimeout(passo, 28);
-        }, atraso);
-      });
-      // o canto é texto de ambiente, não lista de controles
-      addEventListener('keydown', entrar);
     })();
   </script>
   <script type="module" src="js/tela.js"></script>
