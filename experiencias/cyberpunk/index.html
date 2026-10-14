@@ -46,8 +46,6 @@
   <div id="app">
   <!-- tela de acesso: o clique libera o som (o navegador exige um gesto) e só então começa o glitch -->
   <div class="acesso" data-acesso>
-    <!-- pálpebras: a visão abre piscando, como o boot das ópticas Kiroshi no jogo -->
-    <i class="acesso_palpebra acesso_palpebra--cima" aria-hidden="true"></i><i class="acesso_palpebra acesso_palpebra--baixo" aria-hidden="true"></i>
     <!-- boot no jeito do jogo (ref. print de 14/10): painéis vermelhos se desenham, os logs são digitados e o prompt aparece -->
     <svg class="hud" viewBox="0 0 1160 600" aria-hidden="true">
       <path class="hud_traco hud_arco" pathLength="1" style="--d:0.00s" d="M50 60 Q580 92 1110 58"/>
@@ -72,22 +70,22 @@
       <text class="hud_rotulo" x="246" y="460" text-anchor="end" style="--d:1.71s">69546</text>
       <text class="hud_rotulo" x="310" y="460" text-anchor="end" style="--d:1.80s">552-95</text>
       <rect class="hud_traco" pathLength="1" style="--d:0.38s" x="948" y="66" width="160" height="282"/>
-      <text class="hud_log" x="956" y="82.0" data-texto="0x52E6  4D CA 18 25 30 BB" style="--d:0.95s"></text>
-      <text class="hud_log" x="956" y="97.5" data-texto="0x9531  1D 6D 13 2C DE D6" style="--d:1.12s"></text>
-      <text class="hud_log" x="956" y="113.0" data-texto="0x11E2  7B 2E D9 1E 3F 72" style="--d:1.29s"></text>
-      <text class="hud_log" x="956" y="128.5" data-texto="0xA170  1F CB 19 71 17 44" style="--d:1.46s"></text>
-      <text class="hud_log" x="956" y="144.0" data-texto="0x4A23  D6 49 3C 9D 5C 34" style="--d:1.63s"></text>
-      <text class="hud_log" x="956" y="159.5" data-texto="0x94E3  60 BE 31 20 1E 69" style="--d:1.80s"></text>
-      <text class="hud_log" x="956" y="175.0" data-texto="0x7F15  DA A0 EE E8 B9 99" style="--d:1.98s"></text>
-      <text class="hud_log" x="956" y="190.5" data-texto="0x3F98  5C 7C 29 99 FD AF" style="--d:2.15s"></text>
-      <text class="hud_log" x="956" y="206.0" data-texto="0xBABC  E5 93 25 3C D6 54" style="--d:2.32s"></text>
-      <text class="hud_log" x="956" y="221.5" data-texto="-- checksum ok --" style="--d:2.49s"></text>
-      <text class="hud_log" x="956" y="237.0" data-texto="0xC1D3  AF 4D FA D7 14 27" style="--d:2.66s"></text>
-      <text class="hud_log" x="956" y="252.5" data-texto="0xC3BA  A0 AE B3 FE E9 23" style="--d:2.83s"></text>
-      <text class="hud_log" x="956" y="268.0" data-texto="0xD708  2F 8A F2 21 1F 9E" style="--d:3.00s"></text>
-      <text class="hud_log" x="956" y="283.5" data-texto="0xA5AA  E4 91 C5 B1 0B EC" style="--d:3.17s"></text>
-      <text class="hud_log" x="956" y="299.0" data-texto="0x5AFF  56 3B FC 1E 6F 93" style="--d:3.34s"></text>
-      <text class="hud_log" x="956" y="314.5" data-texto="link pronto" style="--d:3.52s"></text>
+      <text class="hud_log hud_log--ciano" x="956" y="82.0" data-texto="0x52E6  4D CA 18 25 30 BB" style="--d:0.95s"></text>
+      <text class="hud_log hud_log--ciano" x="956" y="97.5" data-texto="0x9531  1D 6D 13 2C DE D6" style="--d:1.12s"></text>
+      <text class="hud_log hud_log--ciano" x="956" y="113.0" data-texto="0x11E2  7B 2E D9 1E 3F 72" style="--d:1.29s"></text>
+      <text class="hud_log hud_log--ciano" x="956" y="128.5" data-texto="0xA170  1F CB 19 71 17 44" style="--d:1.46s"></text>
+      <text class="hud_log hud_log--ciano" x="956" y="144.0" data-texto="0x4A23  D6 49 3C 9D 5C 34" style="--d:1.63s"></text>
+      <text class="hud_log hud_log--ciano" x="956" y="159.5" data-texto="0x94E3  60 BE 31 20 1E 69" style="--d:1.80s"></text>
+      <text class="hud_log hud_log--ciano" x="956" y="175.0" data-texto="0x7F15  DA A0 EE E8 B9 99" style="--d:1.98s"></text>
+      <text class="hud_log hud_log--ciano" x="956" y="190.5" data-texto="0x3F98  5C 7C 29 99 FD AF" style="--d:2.15s"></text>
+      <text class="hud_log hud_log--ciano" x="956" y="206.0" data-texto="0xBABC  E5 93 25 3C D6 54" style="--d:2.32s"></text>
+      <text class="hud_log hud_log--ciano" x="956" y="221.5" data-texto="-- checksum ok --" style="--d:2.49s"></text>
+      <text class="hud_log hud_log--ciano" x="956" y="237.0" data-texto="0xC1D3  AF 4D FA D7 14 27" style="--d:2.66s"></text>
+      <text class="hud_log hud_log--ciano" x="956" y="252.5" data-texto="0xC3BA  A0 AE B3 FE E9 23" style="--d:2.83s"></text>
+      <text class="hud_log hud_log--ciano" x="956" y="268.0" data-texto="0xD708  2F 8A F2 21 1F 9E" style="--d:3.00s"></text>
+      <text class="hud_log hud_log--ciano" x="956" y="283.5" data-texto="0xA5AA  E4 91 C5 B1 0B EC" style="--d:3.17s"></text>
+      <text class="hud_log hud_log--ciano" x="956" y="299.0" data-texto="0x5AFF  56 3B FC 1E 6F 93" style="--d:3.34s"></text>
+      <text class="hud_log hud_log--ciano" x="956" y="314.5" data-texto="link pronto" style="--d:3.52s"></text>
       <path class="hud_traco" pathLength="1" style="--d:0.85s" d="M948 360 V352 H956 M1100 352 H1108 V360 M948 446 V456 H1108 V446"/>
       <g class="hud_hachura" style="--d:1.71s"><path d="M1006 362l4 4"/><path d="M1013 362l4 4"/><path d="M1020 362l4 4"/><path d="M1027 362l4 4"/><path d="M1034 362l4 4"/><path d="M1041 362l4 4"/><path d="M1048 362l4 4"/><path d="M1055 362l4 4"/><path d="M1062 362l4 4"/><path d="M1069 362l4 4"/><path d="M1076 362l4 4"/><path d="M1083 362l4 4"/><path d="M1090 362l4 4"/><path d="M1097 362l4 4"/><path d="M1006 368l4 4"/><path d="M1013 368l4 4"/><path d="M1020 368l4 4"/><path d="M1027 368l4 4"/><path d="M1034 368l4 4"/><path d="M1041 368l4 4"/><path d="M1048 368l4 4"/><path d="M1055 368l4 4"/><path d="M1062 368l4 4"/><path d="M1069 368l4 4"/><path d="M1076 368l4 4"/><path d="M1083 368l4 4"/><path d="M1090 368l4 4"/><path d="M1097 368l4 4"/><path d="M1006 374l4 4"/><path d="M1013 374l4 4"/><path d="M1020 374l4 4"/><path d="M1027 374l4 4"/><path d="M1034 374l4 4"/><path d="M1041 374l4 4"/><path d="M1048 374l4 4"/><path d="M1055 374l4 4"/><path d="M1062 374l4 4"/><path d="M1069 374l4 4"/><path d="M1076 374l4 4"/><path d="M1083 374l4 4"/><path d="M1090 374l4 4"/><path d="M1097 374l4 4"/><path d="M1006 380l4 4"/><path d="M1013 380l4 4"/><path d="M1020 380l4 4"/><path d="M1027 380l4 4"/><path d="M1034 380l4 4"/><path d="M1041 380l4 4"/><path d="M1048 380l4 4"/><path d="M1055 380l4 4"/><path d="M1062 380l4 4"/><path d="M1069 380l4 4"/><path d="M1076 380l4 4"/><path d="M1083 380l4 4"/><path d="M1090 380l4 4"/><path d="M1097 380l4 4"/><path d="M1006 386l4 4"/><path d="M1013 386l4 4"/><path d="M1020 386l4 4"/><path d="M1027 386l4 4"/><path d="M1034 386l4 4"/><path d="M1041 386l4 4"/><path d="M1048 386l4 4"/><path d="M1055 386l4 4"/><path d="M1062 386l4 4"/><path d="M1069 386l4 4"/><path d="M1076 386l4 4"/><path d="M1083 386l4 4"/><path d="M1090 386l4 4"/><path d="M1097 386l4 4"/><path d="M1006 392l4 4"/><path d="M1013 392l4 4"/><path d="M1020 392l4 4"/><path d="M1027 392l4 4"/><path d="M1034 392l4 4"/><path d="M1041 392l4 4"/><path d="M1048 392l4 4"/><path d="M1055 392l4 4"/><path d="M1062 392l4 4"/><path d="M1069 392l4 4"/><path d="M1076 392l4 4"/><path d="M1083 392l4 4"/><path d="M1090 392l4 4"/><path d="M1097 392l4 4"/><path d="M1006 398l4 4"/><path d="M1013 398l4 4"/><path d="M1020 398l4 4"/><path d="M1027 398l4 4"/><path d="M1034 398l4 4"/><path d="M1041 398l4 4"/><path d="M1048 398l4 4"/><path d="M1055 398l4 4"/><path d="M1062 398l4 4"/><path d="M1069 398l4 4"/><path d="M1076 398l4 4"/><path d="M1083 398l4 4"/><path d="M1090 398l4 4"/><path d="M1097 398l4 4"/><path d="M1006 404l4 4"/><path d="M1013 404l4 4"/><path d="M1020 404l4 4"/><path d="M1027 404l4 4"/><path d="M1034 404l4 4"/><path d="M1041 404l4 4"/><path d="M1048 404l4 4"/><path d="M1055 404l4 4"/><path d="M1062 404l4 4"/><path d="M1069 404l4 4"/><path d="M1076 404l4 4"/><path d="M1083 404l4 4"/><path d="M1090 404l4 4"/><path d="M1097 404l4 4"/><path d="M1006 410l4 4"/><path d="M1013 410l4 4"/><path d="M1020 410l4 4"/><path d="M1027 410l4 4"/><path d="M1034 410l4 4"/><path d="M1041 410l4 4"/><path d="M1048 410l4 4"/><path d="M1055 410l4 4"/><path d="M1062 410l4 4"/><path d="M1069 410l4 4"/><path d="M1076 410l4 4"/><path d="M1083 410l4 4"/><path d="M1090 410l4 4"/><path d="M1097 410l4 4"/><path d="M1006 416l4 4"/><path d="M1013 416l4 4"/><path d="M1020 416l4 4"/><path d="M1027 416l4 4"/><path d="M1034 416l4 4"/><path d="M1041 416l4 4"/><path d="M1048 416l4 4"/><path d="M1055 416l4 4"/><path d="M1062 416l4 4"/><path d="M1069 416l4 4"/><path d="M1076 416l4 4"/><path d="M1083 416l4 4"/><path d="M1090 416l4 4"/><path d="M1097 416l4 4"/><path d="M1006 422l4 4"/><path d="M1013 422l4 4"/><path d="M1020 422l4 4"/><path d="M1027 422l4 4"/><path d="M1034 422l4 4"/><path d="M1041 422l4 4"/><path d="M1048 422l4 4"/><path d="M1055 422l4 4"/><path d="M1062 422l4 4"/><path d="M1069 422l4 4"/><path d="M1076 422l4 4"/><path d="M1083 422l4 4"/><path d="M1090 422l4 4"/><path d="M1097 422l4 4"/><path d="M1006 428l4 4"/><path d="M1013 428l4 4"/><path d="M1020 428l4 4"/><path d="M1027 428l4 4"/><path d="M1034 428l4 4"/><path d="M1041 428l4 4"/><path d="M1048 428l4 4"/><path d="M1055 428l4 4"/><path d="M1062 428l4 4"/><path d="M1069 428l4 4"/><path d="M1076 428l4 4"/><path d="M1083 428l4 4"/><path d="M1090 428l4 4"/><path d="M1097 428l4 4"/><path d="M1006 434l4 4"/><path d="M1013 434l4 4"/><path d="M1020 434l4 4"/><path d="M1027 434l4 4"/><path d="M1034 434l4 4"/><path d="M1041 434l4 4"/><path d="M1048 434l4 4"/><path d="M1055 434l4 4"/><path d="M1062 434l4 4"/><path d="M1069 434l4 4"/><path d="M1076 434l4 4"/><path d="M1083 434l4 4"/><path d="M1090 434l4 4"/><path d="M1097 434l4 4"/><path d="M1006 440l4 4"/><path d="M1013 440l4 4"/><path d="M1020 440l4 4"/><path d="M1027 440l4 4"/><path d="M1034 440l4 4"/><path d="M1041 440l4 4"/><path d="M1048 440l4 4"/><path d="M1055 440l4 4"/><path d="M1062 440l4 4"/><path d="M1069 440l4 4"/><path d="M1076 440l4 4"/><path d="M1083 440l4 4"/><path d="M1090 440l4 4"/><path d="M1097 440l4 4"/></g>
       <text class="hud_rotulo" x="956" y="426" style="--d:1.90s">W 4035</text>
@@ -365,6 +363,26 @@
         if (status.textContent.indexOf('INICIALIZANDO') === 0) status.textContent = 'INICIALIZANDO ÓPTICA KIROSHI · ' + pct + '%';
         if (pct >= 100) clearInterval(t);
       }, 65);
+      // glitches: de tempos em tempos umas peças do HUD tremem com a cor
+      // separada, e às vezes a tela inteira dá um rasgo
+      var pecas = acesso.querySelectorAll('.hud_traco, .hud_log, .hud_caixa, .hud_rotulo, .hud_mira, .hud_hachura, .hud_status');
+      var CORES = ['drop-shadow(4px 0 #00f0ff) drop-shadow(-4px 0 #ff2a8c)', 'drop-shadow(-3px 0 #fcee0a) drop-shadow(3px 0 #00f0ff)'];
+      function tremer(el, forca) {
+        var passos = [[forca, 0], [-forca * 0.7, 1], [forca * 0.4, -1], null];
+        passos.forEach(function (p, k) {
+          setTimeout(function () {
+            el.style.translate = p ? p[0] + 'px ' + p[1] + 'px' : '';
+            el.style.filter = p ? CORES[k % 2] : '';
+            el.style.opacity = p && k === 1 ? '0.55' : '';
+          }, k * 55);
+        });
+      }
+      var hud = acesso.querySelector('.hud');
+      var glitches = setInterval(function () {
+        if (!document.body.contains(acesso)) return clearInterval(glitches);
+        for (var n = 1 + Math.floor(Math.random() * 3); n > 0; n--) tremer(pecas[Math.floor(Math.random() * pecas.length)], 4 + Math.random() * 8);
+        if (Math.random() < 0.18 && performance.now() > 3000) tremer(hud, 10);
+      }, 420);
       // logs do boot: cada linha é digitada depois do seu atraso (--d)
       acesso.querySelectorAll('.hud_log').forEach(function (el) {
         var texto = el.getAttribute('data-texto'), atraso = parseFloat(el.style.getPropertyValue('--d')) * 1000, i = 0;

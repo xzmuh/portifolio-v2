@@ -779,46 +779,41 @@ html.glitch-intro-ativo .som { display: none; }
 .palco--estreito .medidor--dir .medidor_delta { left: -66px; }
 
 /* ---------- tela de acesso (boot) ----------
- * Primeira coisa que aparece, no jeito das telas de boot do jogo: painéis
- * vermelhos que se desenham, logs digitados, a mira no meio e as caixas de
- * sistema; por último o prompt. O clique libera o som e dispara o glitch. */
-.acesso { position: fixed; inset: 0; z-index: 10000; display: grid; place-items: center; cursor: pointer; background: radial-gradient(ellipse at 50% 40%, #1d0608, #070203 75%); transition: opacity 0.3s ease; --hud: #ff3b3b; }
-.acesso::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(255, 59, 59, 0.05) 0 1px, transparent 1px 3px); }
+ * Primeira coisa que aparece, no jeito do boot das ópticas do jogo, nas
+ * cores do site: painéis magenta que se desenham, logs digitados, códigos e
+ * status em ciano, glitches pelas peças e o prompt amarelo no fim.
+ * O clique libera o som e dispara o glitch do nome. */
+.acesso { position: fixed; inset: 0; z-index: 10000; display: grid; place-items: center; cursor: pointer; background: radial-gradient(ellipse at 50% 40%, #1a0d3a, var(--fundo) 75%); transition: opacity 0.3s ease; --hud: #ff2a8c; }
+.acesso::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(255, 42, 140, 0.05) 0 1px, transparent 1px 3px); }
 .acesso--saindo { opacity: 0; pointer-events: none; }
-.hud { width: min(100vw, 178vh); height: auto; max-height: 100vh; font-family: var(--fonte); filter: drop-shadow(0 0 4px rgba(255, 59, 59, 0.55)); }
+.hud { width: min(100vw, 178vh); height: auto; max-height: 100vh; font-family: var(--fonte); filter: drop-shadow(0 0 4px rgba(255, 42, 140, 0.5)); animation: visao 2.8s ease-out both; }
 .hud text { fill: var(--hud); }
 .hud_traco { fill: none; stroke: var(--hud); stroke-width: 2; stroke-dasharray: 1; stroke-dashoffset: 1; animation: hud-desenha 1.2s cubic-bezier(0.6, 0, 0.3, 1) var(--d) both; }
 .hud_arco { stroke-width: 7; }
 .hud_rotulo { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; animation: hud-acende 0.4s steps(4) var(--d) both; }
 .hud_mini { font-size: 6px; letter-spacing: 0.12em; animation: hud-acende 0.4s steps(4) var(--d) both; }
-.hud_log { font-family: ui-monospace, 'DejaVu Sans Mono', monospace; font-size: 7px; opacity: 0.85; }
-.hud_hachura { fill: none; stroke: var(--hud); stroke-width: 1.4; animation: hud-acende 0.5s steps(5) var(--d) both; }
-.hud_ponto { fill: none; stroke: var(--hud); stroke-width: 1.2; animation: hud-acende 0.3s steps(3) var(--d) both; }
-.hud_ponto .hud_cheio { fill: var(--hud); stroke: none; }
+.hud_log { font-family: ui-monospace, 'DejaVu Sans Mono', monospace; font-size: 7px; opacity: 0.9; }
+.hud .hud_log--ciano { fill: var(--ciano); }
+.hud_hachura { fill: none; stroke: var(--ciano); stroke-width: 1.4; animation: hud-acende 0.5s steps(5) var(--d) both; }
+.hud_ponto { fill: none; stroke: var(--ciano); stroke-width: 1.2; animation: hud-acende 0.3s steps(3) var(--d) both; }
+.hud_ponto .hud_cheio { fill: var(--ciano); stroke: none; }
 .hud_caixa { animation: hud-acende 0.35s steps(4) var(--d) both; }
-.hud_caixa rect { fill: rgba(255, 59, 59, 0.06); stroke: var(--hud); stroke-width: 1.5; }
+.hud_caixa rect { fill: rgba(255, 42, 140, 0.08); stroke: var(--hud); stroke-width: 1.5; }
 .hud_caixa text { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; }
 .hud_prompt, .hud_dica { opacity: 0; }
 .acesso--pronto .hud_prompt { animation: hud-acende 0.35s steps(4) both, hud-pisca 1.3s ease-in-out 0.4s infinite; }
 .acesso--pronto .hud_dica { animation: hud-acende 0.4s steps(4) 0.2s both; }
-.hud_prompt rect { fill: rgba(255, 59, 59, 0.18); stroke: var(--hud); stroke-width: 2; }
-.hud_prompt text { font-size: 15px; font-weight: 700; letter-spacing: 0.16em; fill: #ffd9d9; }
-.hud_dica { font-size: 8px; letter-spacing: 0.22em; }
-.acesso:hover .hud_prompt rect { fill: rgba(255, 59, 59, 0.32); }
-/* status e calibração: a mira segue o "dedo" do ripperdoc */
-.hud_status { font-size: 10px; font-weight: 600; letter-spacing: 0.2em; }
-.hud_mira { transform-box: view-box; }
+.hud_prompt rect { fill: rgba(252, 238, 10, 0.12); stroke: var(--amarelo); stroke-width: 2; }
+.hud .hud_prompt text { font-size: 15px; font-weight: 700; letter-spacing: 0.16em; fill: var(--amarelo); }
+.hud .hud_dica { font-size: 8px; letter-spacing: 0.22em; fill: var(--ciano); }
+.acesso:hover .hud_prompt rect { fill: rgba(252, 238, 10, 0.25); }
+.hud .hud_status { font-size: 10px; font-weight: 600; letter-spacing: 0.2em; fill: var(--ciano); }
+/* calibração: a mira segue o "dedo" do ripperdoc */
 .acesso--calibrando .hud_mira { animation: hud-calibra 1.6s ease-in-out both; }
 @keyframes hud-calibra { 0% { transform: translate(0, 0); } 25% { transform: translate(-40px, -14px); } 50% { transform: translate(36px, 10px); } 75% { transform: translate(-12px, 18px); } 100% { transform: translate(0, 0); } }
-/* pálpebras: abrem, piscam uma vez e abrem de vez */
-.acesso_palpebra { position: absolute; left: 0; right: 0; height: 50%; z-index: 2; background: #000; pointer-events: none; animation: palpebra 2s ease-in-out both; }
-.acesso_palpebra--cima { top: 0; transform-origin: top; border-radius: 0 0 50% 50% / 0 0 18% 18%; }
-.acesso_palpebra--baixo { bottom: 0; transform-origin: bottom; border-radius: 50% 50% 0 0 / 18% 18% 0 0; }
-@keyframes palpebra { 0% { transform: scaleY(1); } 30% { transform: scaleY(0.35); } 45% { transform: scaleY(0.9); } 70% { transform: scaleY(0.2); } 100% { transform: scaleY(0); } }
-/* a visão vem vermelha e tremida até assentar */
-.hud { animation: visao 2.8s ease-out both; }
-@keyframes visao { 0% { filter: blur(3px) brightness(1.8) drop-shadow(0 0 4px rgba(255, 59, 59, 0.55)); } 40% { filter: blur(1px) drop-shadow(0 0 4px rgba(255, 59, 59, 0.55)); } 100% { filter: drop-shadow(0 0 4px rgba(255, 59, 59, 0.55)); } }
+/* a visão chega tremida e estourada até assentar */
+@keyframes visao { 0% { filter: blur(3px) brightness(1.8) drop-shadow(0 0 4px rgba(255, 42, 140, 0.5)); } 40% { filter: blur(1px) drop-shadow(0 0 4px rgba(255, 42, 140, 0.5)); } 100% { filter: drop-shadow(0 0 4px rgba(255, 42, 140, 0.5)); } }
 @keyframes hud-desenha { to { stroke-dashoffset: 0; } }
 @keyframes hud-acende { 0% { opacity: 0; } 50% { opacity: 0.3; } 75% { opacity: 0.9; } 100% { opacity: 1; } }
 @keyframes hud-pisca { 50% { opacity: 0.55; } }
-@media (prefers-reduced-motion: reduce) { .hud, .hud *, .acesso_palpebra { animation: none !important; stroke-dashoffset: 0; } .acesso_palpebra { display: none; } .hud_prompt, .hud_dica { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .hud, .hud * { animation: none !important; stroke-dashoffset: 0; } .hud_prompt, .hud_dica { opacity: 1; } }
