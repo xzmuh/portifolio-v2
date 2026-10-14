@@ -3179,39 +3179,23 @@ body::-webkit-scrollbar {
     max-width: 22rem;
   }
 
-  /* no celular as versões viram um carrossel de lado, com setinhas (js/tema.js); o palco grande
-     some porque cada card já tem a própria imagem */
+  /* no celular as versões viram uma grade 2x2: as quatro aparecem de uma vez,
+     sem carrossel escondendo as outras; o palco grande some porque cada card
+     já tem a própria imagem */
   .curriculo_foto {
     display: none;
   }
 
   .curriculo_lista {
-    display: flex;
-    gap: 1rem;
-    margin-inline: -1.25rem;
-    padding: 0 1.25rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: .75rem;
     border-top: 0;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scroll-padding-inline: 1.25rem;
-    scrollbar-width: none;
-    overscroll-behavior-x: contain;
-    /* o arrasto de lado é feito no js/tema.js: assim o gesto não desce a página junto */
-    touch-action: pan-y;
-  }
-
-  .curriculo_lista.arrastando {
-    scroll-snap-type: none;
-  }
-
-  .curriculo_lista::-webkit-scrollbar {
-    display: none;
   }
 
   .curriculo_lista li {
-    flex: 0 0 84%;
     border: 1px solid rgba(255, 255, 255, .14);
-    scroll-snap-align: start;
+    min-width: 0;
   }
 
   .curriculo_item {
@@ -3220,70 +3204,23 @@ body::-webkit-scrollbar {
       "thumb thumb"
       "nome nome"
       "num ir";
-    gap: 1rem;
+    align-content: start;
+    gap: .6rem;
     height: 100%;
-    padding: 1rem;
+    padding: .75rem;
   }
 
-  .curriculo_thumb { grid-area: thumb; filter: none; }
+  .curriculo_thumb { grid-area: thumb; filter: none; width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; }
   .curriculo_nome { grid-area: nome; }
-  .curriculo_num { grid-area: num; }
-  .curriculo_ir { grid-area: ir; }
-
-  .curriculo_setas {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 1.25rem;
-  }
-}
-
-.curriculo_setas {
-  display: none;
-}
-
-.curriculo_contagem {
-  font-size: .85rem;
-  font-weight: 500;
-  color: #8a8a8a;
-  font-variant-numeric: tabular-nums;
-}
-
-.curriculo_contagem b {
-  color: var(--laranja);
-  font-weight: 500;
-}
-
-.curriculo_setas_botoes {
-  display: flex;
-  gap: .6rem;
-}
-
-.curriculo_seta {
-  --corte: 8px;
-  display: grid;
-  place-items: center;
-  width: 3rem;
-  height: 3rem;
-  padding: 0;
-  border: 0;
-  background: var(--laranja);
-  color: var(--tinta);
-  clip-path: polygon(var(--corte) 0, calc(100% - var(--corte)) 0, 100% var(--corte), 100% calc(100% - var(--corte)), calc(100% - var(--corte)) 100%, var(--corte) 100%, 0 calc(100% - var(--corte)), 0 var(--corte));
-}
-
-.curriculo_seta:disabled {
-  background: #2a2a2a;
-  color: #6a6a6a;
-}
-
-.curriculo_seta svg {
-  width: 1.2rem;
-  height: 1.2rem;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2.2;
-  stroke-linecap: square;
+  .curriculo_nome i { font-size: .62rem; }
+  .curriculo_nome b { font-size: 1rem; line-height: 1.15; }
+  .curriculo_nome small { display: none; }
+  .curriculo_num { grid-area: num; font-size: 1rem; }
+  .curriculo_ir { grid-area: ir; font-size: .85rem; }
+  .curriculo_thumb, .curriculo_thumb--aqui { box-sizing: border-box; min-width: 0; }
+  /* "você está aqui" não cabe ao lado do número na meia largura: desce */
+  .curriculo_item--aqui { grid-template-areas: "thumb thumb" "nome nome" "num num" "ir ir"; }
+  .curriculo_ir--aqui { font-size: .62rem; }
 }
 
 /* sem espaço dos lados do título: o botão desce para o pé do topo */

@@ -194,66 +194,6 @@
     });
   }
 
-  // Versões do currículo no celular: a lista vira carrossel de lado; as setinhas passam um card
-  var carrossel = document.querySelector('.curriculo_lista');
-  if (carrossel) {
-    var cartoes = carrossel.children;
-    var setasCarrossel = document.createElement('div');
-    setasCarrossel.className = 'curriculo_setas';
-    var svgSetaCarrossel = function (d) { return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + d + '" /></svg>'; };
-    setasCarrossel.innerHTML = '<span class="curriculo_contagem"><b>1</b> / ' + cartoes.length + '</span>' +
-      '<span class="curriculo_setas_botoes">' +
-      '<button class="curriculo_seta" type="button" aria-label="Versão anterior">' + svgSetaCarrossel('M20 12H5M11 6l-6 6 6 6') + '</button>' +
-      '<button class="curriculo_seta" type="button" aria-label="Próxima versão">' + svgSetaCarrossel('M4 12h15M13 6l6 6-6 6') + '</button></span>';
-    carrossel.parentNode.insertBefore(setasCarrossel, carrossel.nextSibling);
-    var botoesCarrossel = setasCarrossel.querySelectorAll('button'), contagemCarrossel = setasCarrossel.querySelector('b');
-    var cartaoAtual = function () {
-      var passo = cartoes[1] ? cartoes[1].offsetLeft - cartoes[0].offsetLeft : 1;
-      return Math.round(carrossel.scrollLeft / Math.max(1, passo));
-    };
-    var marcaCarrossel = function () {
-      var i = Math.min(cartoes.length - 1, cartaoAtual());
-      contagemCarrossel.textContent = i + 1;
-      botoesCarrossel[0].disabled = i <= 0;
-      botoesCarrossel[1].disabled = carrossel.scrollLeft >= carrossel.scrollWidth - carrossel.clientWidth - 2;
-    };
-    var passaCartao = function (d) {
-      var i = Math.max(0, Math.min(cartoes.length - 1, cartaoAtual() + d));
-      carrossel.scrollTo({ left: cartoes[i].offsetLeft - cartoes[0].offsetLeft, behavior: 'smooth' });
-    };
-    botoesCarrossel[0].addEventListener('click', function () { passaCartao(-1); });
-    botoesCarrossel[1].addEventListener('click', function () { passaCartao(1); });
-    carrossel.addEventListener('scroll', marcaCarrossel, { passive: true });
-    // arrastar de lado: o navegador só cuida da rolagem vertical (touch-action: pan-y no css), então
-    // um gesto de lado não desce a página; aqui o card segue o dedo e, ao soltar, encaixa no vizinho
-    var toque = null;
-    carrossel.addEventListener('touchstart', function (e) {
-      var t = e.touches[0];
-      toque = { x: t.clientX, y: t.clientY, left: carrossel.scrollLeft, eixo: null, i: cartaoAtual() };
-    }, { passive: true });
-    carrossel.addEventListener('touchmove', function (e) {
-      if (!toque) return;
-      var t = e.touches[0], dx = t.clientX - toque.x, dy = t.clientY - toque.y;
-      if (!toque.eixo && Math.abs(dx) + Math.abs(dy) > 6) toque.eixo = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
-      if (toque.eixo !== 'x') return;
-      carrossel.classList.add('arrastando');
-      carrossel.scrollLeft = toque.left - dx;
-    }, { passive: true });
-    carrossel.addEventListener('touchend', function (e) {
-      if (!toque) return;
-      var foi = toque.eixo === 'x', dx = e.changedTouches[0].clientX - toque.x, i = toque.i;
-      toque = null;
-      if (!foi) return;
-      carrossel.classList.remove('arrastando');
-      var alvo = Math.abs(dx) > 40 ? i + (dx < 0 ? 1 : -1) : i;
-      alvo = Math.max(0, Math.min(cartoes.length - 1, alvo));
-      carrossel.scrollTo({ left: cartoes[alvo].offsetLeft - cartoes[0].offsetLeft, behavior: 'smooth' });
-    });
-    carrossel.addEventListener('touchcancel', function () { toque = null; carrossel.classList.remove('arrastando'); });
-    window.addEventListener('resize', marcaCarrossel);
-    marcaCarrossel();
-  }
-
   // Projetos no celular: mostra 5 e o resto fica atrás do "Ver mais projetos" (css/tema.css)
   var projetos = document.querySelectorAll('.flow-grid > .project_item');
   if (projetos.length > 5) {
