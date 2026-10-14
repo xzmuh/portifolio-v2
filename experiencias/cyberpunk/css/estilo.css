@@ -787,7 +787,7 @@ html.glitch-intro-ativo .som { display: none; }
 .acesso--saindo { opacity: 0; pointer-events: none; }
 .hud { width: min(100vw, 178vh); height: auto; max-height: 100vh; font-family: var(--fonte); filter: drop-shadow(0 0 4px rgba(255, 59, 59, 0.55)); }
 .hud text { fill: var(--hud); }
-.hud_traco { fill: none; stroke: var(--hud); stroke-width: 2; stroke-dasharray: 1; stroke-dashoffset: 1; animation: hud-desenha 0.7s cubic-bezier(0.6, 0, 0.3, 1) var(--d) both; }
+.hud_traco { fill: none; stroke: var(--hud); stroke-width: 2; stroke-dasharray: 1; stroke-dashoffset: 1; animation: hud-desenha 1.2s cubic-bezier(0.6, 0, 0.3, 1) var(--d) both; }
 .hud_arco { stroke-width: 7; }
 .hud_rotulo { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; animation: hud-acende 0.4s steps(4) var(--d) both; }
 .hud_mini { font-size: 6px; letter-spacing: 0.12em; animation: hud-acende 0.4s steps(4) var(--d) both; }
@@ -808,15 +808,15 @@ html.glitch-intro-ativo .som { display: none; }
 /* status e calibração: a mira segue o "dedo" do ripperdoc */
 .hud_status { font-size: 10px; font-weight: 600; letter-spacing: 0.2em; }
 .hud_mira { transform-box: view-box; }
-.acesso--calibrando .hud_mira { animation: hud-calibra 1s ease-in-out both; }
+.acesso--calibrando .hud_mira { animation: hud-calibra 1.6s ease-in-out both; }
 @keyframes hud-calibra { 0% { transform: translate(0, 0); } 25% { transform: translate(-40px, -14px); } 50% { transform: translate(36px, 10px); } 75% { transform: translate(-12px, 18px); } 100% { transform: translate(0, 0); } }
 /* pálpebras: abrem, piscam uma vez e abrem de vez */
-.acesso_palpebra { position: absolute; left: 0; right: 0; height: 50%; z-index: 2; background: #000; pointer-events: none; animation: palpebra 1.1s ease-in-out both; }
+.acesso_palpebra { position: absolute; left: 0; right: 0; height: 50%; z-index: 2; background: #000; pointer-events: none; animation: palpebra 2s ease-in-out both; }
 .acesso_palpebra--cima { top: 0; transform-origin: top; border-radius: 0 0 50% 50% / 0 0 18% 18%; }
 .acesso_palpebra--baixo { bottom: 0; transform-origin: bottom; border-radius: 50% 50% 0 0 / 18% 18% 0 0; }
 @keyframes palpebra { 0% { transform: scaleY(1); } 30% { transform: scaleY(0.35); } 45% { transform: scaleY(0.9); } 70% { transform: scaleY(0.2); } 100% { transform: scaleY(0); } }
 /* a visão vem vermelha e tremida até assentar */
-.hud { animation: visao 1.6s ease-out both; }
+.hud { animation: visao 2.8s ease-out both; }
 @keyframes visao { 0% { filter: blur(3px) brightness(1.8) drop-shadow(0 0 4px rgba(255, 59, 59, 0.55)); } 40% { filter: blur(1px) drop-shadow(0 0 4px rgba(255, 59, 59, 0.55)); } 100% { filter: drop-shadow(0 0 4px rgba(255, 59, 59, 0.55)); } }
 @keyframes hud-desenha { to { stroke-dashoffset: 0; } }
 @keyframes hud-acende { 0% { opacity: 0; } 50% { opacity: 0.3; } 75% { opacity: 0.9; } 100% { opacity: 1; } }
