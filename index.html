@@ -32,7 +32,7 @@
   <link href="css/footer.css?v=20261008" rel="stylesheet" type="text/css" />
   <link href="css/xreveal.css?v=20261008w" rel="stylesheet" type="text/css" />
   <link href="css/pixel-seam.css" rel="stylesheet" type="text/css" />
-  <link href="css/tema.css?v=20261026c" rel="stylesheet" type="text/css" />
+  <link href="css/tema.css?v=20261026d" rel="stylesheet" type="text/css" />
   <link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com" rel="preconnect" />
   <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin="anonymous" />
@@ -762,31 +762,35 @@
           </ol>
         </div>
       </section>
-      <!-- jogos: card do jogo com a fita de "em desenvolvimento" -->
-      <section id="jogos" class="jogos" aria-labelledby="jogos-titulo">
-        <div class="container">
-          <div class="jogos_topo surge">
-            <div>
-              <p class="curriculo_pre">Feitos por mim</p>
-              <h2 id="jogos-titulo" class="curriculo_titulo">Meus <span>jogos</span></h2>
-            </div>
-            <p class="jogos_sub">Jogos que rodam direto no navegador, construídos em público: dá para jogar
-              enquanto ainda estão sendo feitos.</p>
+      <!-- jogos: a mesma ideia das versões do currículo, espelhada (lista, palco, texto) e com a fita de obra -->
+      <section id="jogos" class="curriculo curriculo--jogos" aria-labelledby="jogos-titulo">
+        <div class="container curriculo_inner">
+          <div class="curriculo_texto surge">
+            <p class="curriculo_pre">Feitos por mim</p>
+            <h2 id="jogos-titulo" class="curriculo_titulo">Meus <span>jogos</span></h2>
+            <p class="curriculo_sub">Jogos que rodam direto no navegador, construídos em público: dá para jogar
+              <b>enquanto ainda estão sendo feitos</b>.</p>
+            <p class="curriculo_aviso">Em desenvolvimento · pode mudar a cada atualização</p>
           </div>
-          <article class="jogo surge">
-            <a class="jogo_capa" href="https://alphereon.pages.dev/" target="_blank" rel="noopener">
-              <img src="img/tema/jogo-alphereon.webp" alt="Alphereon: naves de voxel no espaço" loading="lazy" />
+          <a class="curriculo_foto surge" href="https://alphereon.pages.dev/" target="_blank" rel="noopener" aria-label="Jogar Alphereon (alpha)">
+            <span class="curriculo_bloco curriculo_bloco--cima" aria-hidden="true"></span>
+            <span class="curriculo_bloco curriculo_bloco--baixo" aria-hidden="true"></span>
+            <span class="curriculo_moldura">
+              <img class="curriculo_eu" src="img/tema/jogo-alphereon.webp" alt="" loading="lazy" />
               <!-- a fita corre sozinha; o texto se repete para emendar sem pulo -->
               <span class="jogo_fita" aria-hidden="true"><span>Em desenvolvimento · Build alpha · Em desenvolvimento · Build alpha · Em desenvolvimento · Build alpha · Em desenvolvimento · Build alpha · </span></span>
-            </a>
-            <div class="jogo_info">
-              <p class="jogo_status"><i></i>Em desenvolvimento · alpha jogável</p>
-              <h3 class="jogo_nome">Alphereon</h3>
-              <p class="jogo_texto">Combate espacial com naves de voxel, roguelike no espaço e cooperativo para até 3 pilotos, direto no navegador.</p>
-              <a class="botao-linha" href="https://alphereon.pages.dev/" target="_blank" rel="noopener">Jogar a versão alpha <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6" /></svg></a>
-              <p class="curriculo_aviso">Pode mudar (e quebrar) a cada atualização</p>
-            </div>
-          </article>
+            </span>
+            <span class="curriculo_selo"><i class="jogo_luz"></i>Em desenvolvimento</span>
+            <span class="curriculo_script" aria-hidden="true"><span>build</span><span>test</span><span>repeat</span></span>
+          </a>
+          <ol class="curriculo_lista">
+              <li class="surge"><a class="curriculo_item" href="https://alphereon.pages.dev/" target="_blank" rel="noopener">
+                <span class="curriculo_num">01</span>
+                <img class="curriculo_thumb" src="img/tema/jogo-alphereon.webp" alt="" loading="lazy" />
+                <span class="curriculo_nome"><i>Alpha · em desenvolvimento</i><b>Alphereon</b><small>Combate espacial com naves de voxel e cooperativo para até 3 pilotos.</small></span>
+                <span class="curriculo_ir">Jogar <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6" /></svg></span>
+              </a></li>
+          </ol>
         </div>
       </section>
       <section id="works" class="section projects">

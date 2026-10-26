@@ -3154,73 +3154,103 @@ body::-webkit-scrollbar {
   border: 1px solid currentColor;
 }
 
-/* ---------- meus jogos (escuro, logo depois das versões do currículo) ---------- */
+/* ---------- meus jogos: as versões do currículo espelhadas (lista | palco | texto), palco deitado,
+   blocos laranja nas laterais e a fita de obra atravessando a capa ---------- */
 
-.jogos {
-  position: relative;
-  padding: 0 0 8rem;
-  background: var(--preto);
-  color: var(--cinza-claro);
-  overflow: hidden;
+.curriculo--jogos {
+  padding-top: 0;
 }
 
-.jogos_topo {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 2rem;
-  margin-bottom: 3rem;
+.curriculo--jogos .curriculo_inner {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr) minmax(0, 1fr);
 }
 
-.jogos_sub {
-  max-width: 24em;
-  margin: 0;
-  font-size: clamp(.95rem, 1.1vw, 1.2rem);
-  line-height: 1.5;
-  color: #bdbdbd;
-}
+.curriculo--jogos .curriculo_lista { order: 1; }
+.curriculo--jogos .curriculo_foto { order: 2; }
+.curriculo--jogos .curriculo_texto { order: 3; text-align: right; }
+.curriculo--jogos .curriculo_sub { margin-left: auto; }
+.curriculo--jogos .curriculo_aviso { justify-content: flex-end; }
 
-.jogo {
-  display: grid;
-  grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
-  border: 1px solid rgba(255, 255, 255, .14);
-}
-
-.jogo_capa {
-  position: relative;
+.curriculo--jogos .curriculo_foto {
   display: block;
-  overflow: hidden;
-  border-right: 1px solid rgba(255, 255, 255, .14);
+  padding: 2.4rem 0;
+  color: inherit;
+  text-decoration: none;
 }
 
-.jogo_capa img {
+.curriculo--jogos .curriculo_moldura {
   display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 1.2s var(--suave), filter .6s;
+  aspect-ratio: 16 / 10;
 }
 
-.jogo_capa:hover img {
+.curriculo--jogos .curriculo_moldura img {
+  transition: transform 1.2s var(--suave);
+}
+
+.curriculo--jogos .curriculo_foto:hover .curriculo_moldura img {
   transform: scale(1.04);
+}
+
+/* os blocos saem das laterais em vez de cima e baixo */
+.curriculo--jogos .curriculo_bloco {
+  transform: scaleX(0);
+}
+
+.curriculo--jogos .curriculo_foto.on .curriculo_bloco {
+  transform: none;
+}
+
+.curriculo--jogos .curriculo_bloco--cima {
+  top: 8%;
+  left: -1.6rem;
+  width: 1.6rem;
+  height: 38%;
+  transform-origin: 100% 50%;
+}
+
+.curriculo--jogos .curriculo_bloco--baixo {
+  top: auto;
+  bottom: 14%;
+  left: auto;
+  right: -2.4rem;
+  width: 2.4rem;
+  height: 30%;
+  transform-origin: 0 50%;
+}
+
+.curriculo--jogos .curriculo_selo {
+  left: auto;
+  right: 0;
+  bottom: 2.4rem;
+  display: flex;
+  align-items: center;
+  gap: .7em;
+}
+
+.curriculo--jogos .curriculo_script {
+  right: auto;
+  left: -12%;
+  top: auto;
+  bottom: -1.2rem;
 }
 
 /* a fita de obra laranja atravessando a capa */
 .jogo_fita {
   position: absolute;
+  z-index: 1;
   left: -10%;
   right: -10%;
-  bottom: 14%;
-  padding: .55rem 0;
+  top: 58%;
+  padding: .45rem 0;
   background: var(--laranja);
   color: var(--tinta);
-  font-size: .8rem;
+  font-size: .72rem;
   font-weight: 700;
   letter-spacing: .22em;
   text-transform: uppercase;
   white-space: nowrap;
-  transform: rotate(-4deg);
-  box-shadow: 0 0 0 4px var(--tinta), 0 0 0 5px var(--laranja);
+  transform: rotate(-5deg);
+  box-shadow: 0 0 0 3px var(--tinta), 0 0 0 4px var(--laranja);
 }
 
 .jogo_fita span {
@@ -3232,29 +3262,7 @@ body::-webkit-scrollbar {
   to { transform: translateX(-50%); }
 }
 
-.jogo_info {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 1.1rem;
-  padding: clamp(1.5rem, 3vw, 3rem);
-}
-
-.jogo_status {
-  display: flex;
-  align-items: center;
-  gap: .7em;
-  margin: 0;
-  padding: .45em .8em;
-  border: 1px solid var(--laranja);
-  color: var(--laranja);
-  font-size: .72rem;
-  font-weight: 600;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-}
-
-.jogo_status i {
+.jogo_luz {
   width: .55em;
   height: .55em;
   background: var(--laranja);
@@ -3265,26 +3273,9 @@ body::-webkit-scrollbar {
   50% { opacity: .15; }
 }
 
-.jogo_nome {
-  margin: 0;
-  font-size: clamp(2.4rem, 4vw, 4.4rem);
-  font-weight: 800;
-  line-height: .95;
-  letter-spacing: -.04em;
-  text-transform: uppercase;
-  color: #f3efe8;
-}
-
-.jogo_texto {
-  margin: 0;
-  font-size: 1rem;
-  line-height: 1.5;
-  color: #bdbdbd;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .jogo_fita span,
-  .jogo_status i {
+  .jogo_luz {
     animation: none;
   }
 }
@@ -3296,14 +3287,16 @@ body::-webkit-scrollbar {
     grid-template-columns: minmax(0, 1fr) minmax(0, .8fr);
   }
 
-  .jogo {
-    grid-template-columns: 1fr;
+  /* abaixo de 1200 volta à ordem normal: texto e palco em cima, lista embaixo */
+  .curriculo--jogos .curriculo_inner {
+    grid-template-columns: minmax(0, 1fr) minmax(0, .9fr);
   }
 
-  .jogo_capa {
-    border-right: 0;
-    border-bottom: 1px solid rgba(255, 255, 255, .14);
-  }
+  .curriculo--jogos .curriculo_texto { order: 0; text-align: left; }
+  .curriculo--jogos .curriculo_sub { margin-left: 0; }
+  .curriculo--jogos .curriculo_aviso { justify-content: flex-start; }
+  .curriculo--jogos .curriculo_foto { order: 0; }
+  .curriculo--jogos .curriculo_lista { order: 0; }
 
   .curriculo_lista {
     grid-column: 1 / -1;
@@ -3319,12 +3312,31 @@ body::-webkit-scrollbar {
     grid-template-columns: 1fr;
   }
 
-  .jogos_topo {
-    display: block;
+  /* no celular os jogos mantêm o palco (é ele que mostra a fita) e a lista vira uma linha só */
+  .curriculo--jogos .curriculo_inner {
+    grid-template-columns: 1fr;
   }
 
-  .jogos_sub {
-    margin-top: 1.2rem;
+  .curriculo--jogos .curriculo_foto {
+    display: block;
+    max-width: none;
+    margin: 0 1.6rem;
+  }
+
+  .curriculo--jogos .curriculo_script {
+    display: none;
+  }
+
+  .curriculo--jogos .curriculo_lista {
+    grid-template-columns: 1fr;
+  }
+
+  .curriculo--jogos .curriculo_thumb {
+    display: none;
+  }
+
+  .curriculo--jogos .curriculo_nome small {
+    display: block;
   }
 
 
