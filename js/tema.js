@@ -100,8 +100,9 @@
 
   // Outras versões do currículo: passando num item da lista, o palco do meio mostra aquela versão.
   // A troca: fecha as partes laranja, gira 90° (acumulando), troca a imagem escondida e abre.
-  var palco = document.querySelector('[data-foto-palco]');
-  if (palco) {
+  // (cada seção tem o seu palco: versões do currículo e jogos)
+  Array.prototype.forEach.call(document.querySelectorAll('[data-foto-palco]'), function (palco) {
+    var secao = palco.closest('section');
     var giro = palco.querySelector('[data-giro]'), img = palco.querySelector('.curriculo_eu');
     var selo = palco.querySelector('[data-selo]');
     var padrao = { src: img.getAttribute('src'), selo: selo.textContent };
@@ -123,7 +124,7 @@
         }, 250);
       }, 260);
     };
-    Array.prototype.forEach.call(document.querySelectorAll('[data-foto]'), function (item) {
+    Array.prototype.forEach.call(secao.querySelectorAll('[data-foto]'), function (item) {
       var mostra = function () { clearTimeout(solta); vai(item.getAttribute('data-foto'), item.getAttribute('data-selo')); };
       var volta = function () { solta = setTimeout(function () { vai(padrao.src, padrao.selo); }, 700); };
       item.addEventListener('pointerenter', mostra);
@@ -133,7 +134,7 @@
     });
     // clicar na foto abre, em outra aba, a versão que ela está mostrando
     var linkDaFoto = function () {
-      var item = document.querySelector('.curriculo_lista [data-foto="' + atual + '"]');
+      var item = secao.querySelector('.curriculo_lista [data-foto="' + atual + '"]');
       return item && item.getAttribute('href');
     };
     palco.addEventListener('click', function () {
@@ -143,8 +144,8 @@
     palco.addEventListener('pointerenter', function () { clearTimeout(solta); });
     palco.addEventListener('pointerleave', function () { solta = setTimeout(function () { vai(padrao.src, padrao.selo); }, 160); });
     // (pré-carrega as versões para a troca não piscar em branco)
-    Array.prototype.forEach.call(document.querySelectorAll('[data-foto]'), function (item) { new Image().src = item.getAttribute('data-foto'); });
-  }
+    Array.prototype.forEach.call(secao.querySelectorAll('[data-foto]'), function (item) { new Image().src = item.getAttribute('data-foto'); });
+  });
 
   // Projetos em destaque: cada card sobe e aparece conforme a posição real dele na tela (medida a cada
   // quadro, já com o parallax do card), na velocidade da rolagem. Depois de aparecer, não some mais.

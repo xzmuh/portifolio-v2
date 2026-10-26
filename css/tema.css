@@ -2236,6 +2236,11 @@ body::-webkit-scrollbar {
   overflow: hidden;
 }
 
+/* os jogos vêm logo depois das versões do currículo, no mesmo fundo */
+.curriculo--jogos {
+  padding-top: 0;
+}
+
 .curriculo_inner {
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr) minmax(0, 1.05fr);
