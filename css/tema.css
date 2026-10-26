@@ -3282,49 +3282,6 @@ body::-webkit-scrollbar {
   color: #bdbdbd;
 }
 
-/* diário: o que já está pronto e o que ainda está sendo feito */
-.jogo_diario {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: .55rem 1.4rem;
-  width: 100%;
-  margin: .2rem 0 .6rem;
-  padding: 1rem 0 0;
-  border-top: 1px solid rgba(255, 255, 255, .14);
-  list-style: none;
-  font-size: .88rem;
-}
-
-.jogo_diario li {
-  display: flex;
-  align-items: baseline;
-  gap: .6em;
-}
-
-.jogo_diario li:before {
-  flex: none;
-  font-family: ui-monospace, monospace;
-  font-size: .85em;
-}
-
-.jogo_diario .feito {
-  color: #e9e9e9;
-}
-
-.jogo_diario .feito:before {
-  content: "[x]";
-  color: var(--laranja);
-}
-
-.jogo_diario .andando {
-  color: #8a8a8a;
-}
-
-.jogo_diario .andando:before {
-  content: "[ ]";
-  color: #8a8a8a;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .jogo_fita span,
   .jogo_status i {
@@ -3370,9 +3327,6 @@ body::-webkit-scrollbar {
     margin-top: 1.2rem;
   }
 
-  .jogo_diario {
-    grid-template-columns: 1fr;
-  }
 
   .curriculo_foto {
     max-width: 22rem;
