@@ -32,7 +32,7 @@
   <link href="css/footer.css?v=20261008" rel="stylesheet" type="text/css" />
   <link href="css/xreveal.css?v=20261008w" rel="stylesheet" type="text/css" />
   <link href="css/pixel-seam.css" rel="stylesheet" type="text/css" />
-  <link href="css/tema.css?v=20261026a" rel="stylesheet" type="text/css" />
+  <link href="css/tema.css?v=20261026b" rel="stylesheet" type="text/css" />
   <link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com" rel="preconnect" />
   <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin="anonymous" />
@@ -762,41 +762,39 @@
           </ol>
         </div>
       </section>
-      <!-- jogos: mesmo palco das versões do currículo (js/tema.js) -->
-      <section id="jogos" class="curriculo curriculo--jogos" aria-labelledby="jogos-titulo">
-        <div class="container curriculo_inner">
-          <div class="curriculo_texto surge">
-            <p class="curriculo_pre">Feitos por mim</p>
-            <h2 id="jogos-titulo" class="curriculo_titulo">Meus <span>jogos</span></h2>
-            <p class="curriculo_sub">Jogos que rodam direto no navegador, sem instalar nada: <b>combate espacial com naves de voxel</b>,
-              cooperativo com os amigos.</p>
-            <p class="curriculo_aviso">Escolha um jogo · roda melhor no computador</p>
-          </div>
-          <figure class="curriculo_foto surge" data-foto-palco>
-            <div class="palco_giro" data-giro>
-              <span class="curriculo_bloco curriculo_bloco--cima" aria-hidden="true"></span>
-              <span class="curriculo_bloco curriculo_bloco--baixo" aria-hidden="true"></span>
-              <div class="curriculo_moldura">
-                <img class="curriculo_eu" src="img/tema/jogo-alphereon.webp" alt="" loading="lazy" />
-              </div>
+      <!-- jogos: card do jogo com a fita de "em desenvolvimento" e o diário do que já está pronto -->
+      <section id="jogos" class="jogos" aria-labelledby="jogos-titulo">
+        <div class="container">
+          <div class="jogos_topo surge">
+            <div>
+              <p class="curriculo_pre">Feitos por mim</p>
+              <h2 id="jogos-titulo" class="curriculo_titulo">Meus <span>jogos</span></h2>
             </div>
-            <span class="curriculo_selo" data-selo>Alphereon</span>
-            <figcaption class="curriculo_script" aria-hidden="true"><span>launch</span><span>fight</span><span>play</span></figcaption>
-          </figure>
-          <ol class="curriculo_lista">
-              <li class="surge"><a class="curriculo_item" href="https://alphereon.pages.dev/" target="_blank" rel="noopener" data-foto="img/tema/jogo-alphereon.webp" data-selo="Alphereon">
-                <span class="curriculo_num">01</span>
-                <img class="curriculo_thumb" src="img/tema/jogo-alphereon.webp" alt="" loading="lazy" />
-                <span class="curriculo_nome"><i>Combate espacial</i><b>Alphereon</b><small>Naves de voxel, roguelike no espaço e cooperativo para até 3 pilotos.</small></span>
-                <span class="curriculo_ir">Jogar <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6" /></svg></span>
-              </a></li>
-              <li class="surge"><div class="curriculo_item curriculo_item--aqui">
-                <span class="curriculo_num">02</span>
-                <span class="curriculo_thumb curriculo_thumb--aqui"><img src="images/mgt-icon.svg" alt="" /></span>
-                <span class="curriculo_nome"><i>Em produção</i><b>Próximo jogo</b><small>Já tem coisa nova sendo construída por aqui.</small></span>
-                <span class="curriculo_ir curriculo_ir--aqui">Em breve</span>
-              </div></li>
-          </ol>
+            <p class="jogos_sub">Jogos que rodam direto no navegador, construídos em público: dá para jogar
+              enquanto ainda estão sendo feitos.</p>
+          </div>
+          <article class="jogo surge">
+            <a class="jogo_capa" href="https://alphereon.pages.dev/" target="_blank" rel="noopener">
+              <img src="img/tema/jogo-alphereon.webp" alt="Alphereon: naves de voxel no espaço" loading="lazy" />
+              <!-- a fita corre sozinha; o texto se repete para emendar sem pulo -->
+              <span class="jogo_fita" aria-hidden="true"><span>Em desenvolvimento · Build alpha · Em desenvolvimento · Build alpha · Em desenvolvimento · Build alpha · Em desenvolvimento · Build alpha · </span></span>
+            </a>
+            <div class="jogo_info">
+              <p class="jogo_status"><i></i>Em desenvolvimento · alpha jogável</p>
+              <h3 class="jogo_nome">Alphereon</h3>
+              <p class="jogo_texto">Combate espacial com naves de voxel, roguelike no espaço e cooperativo para até 3 pilotos, direto no navegador.</p>
+              <ul class="jogo_diario">
+                <li class="feito">Combate espacial e IA das inimigas</li>
+                <li class="feito">Naves de voxel e hangar</li>
+                <li class="feito">Cooperativo para até 3 pilotos</li>
+                <li class="andando">Modo roguelike</li>
+                <li class="andando">Explosões e efeitos novos</li>
+                <li class="andando">Versão desktop em Rust (Bevy)</li>
+              </ul>
+              <a class="botao-linha" href="https://alphereon.pages.dev/" target="_blank" rel="noopener">Jogar a versão alpha <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6" /></svg></a>
+              <p class="curriculo_aviso">Pode mudar (e quebrar) a cada atualização</p>
+            </div>
+          </article>
         </div>
       </section>
       <section id="works" class="section projects">
@@ -1628,7 +1626,7 @@
 
   <script src="js/abstrato.js?v=20261008s"></script>
   <script src="js/onda.js?v=20261008"></script>
-  <script src="js/tema.js?v=20261026a"></script>
+  <script src="js/tema.js?v=20261026b"></script>
   <script src="js/oficio.js?v=20261008za"></script>
   <script src="js/rolagem.js?v=20261008u"></script>
 </body>
