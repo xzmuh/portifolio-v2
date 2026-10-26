@@ -3154,8 +3154,8 @@ body::-webkit-scrollbar {
   border: 1px solid currentColor;
 }
 
-/* ---------- meus jogos: as versões do currículo espelhadas (lista | palco | texto), palco deitado,
-   blocos laranja nas laterais e a fita de obra atravessando a capa ---------- */
+/* ---------- meus jogos: as versões do currículo espelhadas (lista | palco | texto), palco deitado e
+   blocos laranja nas laterais ---------- */
 
 .curriculo--jogos {
   padding-top: 0;
@@ -3234,34 +3234,6 @@ body::-webkit-scrollbar {
   bottom: -1.2rem;
 }
 
-/* a fita de obra laranja atravessando a capa */
-.jogo_fita {
-  position: absolute;
-  z-index: 1;
-  left: -10%;
-  right: -10%;
-  top: 58%;
-  padding: .45rem 0;
-  background: var(--laranja);
-  color: var(--tinta);
-  font-size: .72rem;
-  font-weight: 700;
-  letter-spacing: .22em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  transform: rotate(-5deg);
-  box-shadow: 0 0 0 3px var(--tinta), 0 0 0 4px var(--laranja);
-}
-
-.jogo_fita span {
-  display: inline-block;
-  animation: jogoFita 28s linear infinite;
-}
-
-@keyframes jogoFita {
-  to { transform: translateX(-50%); }
-}
-
 .jogo_luz {
   width: .55em;
   height: .55em;
@@ -3274,7 +3246,6 @@ body::-webkit-scrollbar {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .jogo_fita span,
   .jogo_luz {
     animation: none;
   }
@@ -3312,7 +3283,7 @@ body::-webkit-scrollbar {
     grid-template-columns: 1fr;
   }
 
-  /* no celular os jogos mantêm o palco (é ele que mostra a fita) e a lista vira uma linha só */
+  /* no celular os jogos mantêm o palco e a lista vira uma linha só */
   .curriculo--jogos .curriculo_inner {
     grid-template-columns: 1fr;
   }
