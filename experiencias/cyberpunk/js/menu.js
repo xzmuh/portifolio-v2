@@ -4,7 +4,7 @@
  */
 import { tocar } from './som.js';
 
-const SAIR = '../../index.html#experiencias';
+const SAIR = '../../#experiencias';
 
 const itens = [...document.querySelectorAll('.menu_item')];
 let sel = 0;
