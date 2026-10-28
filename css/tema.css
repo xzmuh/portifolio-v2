@@ -3491,3 +3491,36 @@ body::-webkit-scrollbar {
 .curriculo_foto * {
   cursor: pointer;
 }
+
+/* ---------- IA (Becca): layout das versões do currículo (texto | palco | lista), palco com vídeo da demo ---------- */
+
+.curriculo--ia {
+  padding-top: 0;
+}
+
+.curriculo--ia .curriculo_foto {
+  display: block;
+  padding: 2.4rem;
+}
+
+.curriculo--ia .curriculo_moldura {
+  display: block;
+}
+
+.curriculo--ia .curriculo_thumb--aqui svg {
+  width: 2rem;
+  height: 2rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.curriculo_moldura video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
