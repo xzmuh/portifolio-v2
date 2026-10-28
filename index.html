@@ -30,7 +30,7 @@
   <link href="css/about-laser.css?v=20261008zd" rel="stylesheet" type="text/css" />
   <link href="css/experience.css?v=20261008w" rel="stylesheet" type="text/css" />
   <link href="css/footer.css?v=20261008" rel="stylesheet" type="text/css" />
-  <link href="css/xreveal.css?v=20261008w" rel="stylesheet" type="text/css" />
+  <link href="css/xreveal.css?v=20261028" rel="stylesheet" type="text/css" />
   <link href="css/pixel-seam.css" rel="stylesheet" type="text/css" />
   <link href="css/tema.css?v=20261026e" rel="stylesheet" type="text/css" />
   <link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&display=swap" rel="stylesheet" />
@@ -828,7 +828,7 @@
             <div>
               <p class="becca_pre">Projeto pessoal · inspirado em</p>
               <span class="becca_letreiro" role="img" aria-label="Cyberpunk: Edgerunners"></span>
-              <h2 id="ia-titulo" class="becca_titulo">Uma IA com<br /><em class="hl">personalidade</em></h2>
+              <h2 id="ia-titulo" class="becca_titulo"><span class="becca_so-celular">Becca: </span>Uma IA com<br /><em class="hl">personalidade</em></h2>
             </div>
             <div class="becca_intro">
               <p>A Becca vive no meu desktop: um avatar 3D que <b>conversa comigo por voz</b>, lembra do que
@@ -1399,27 +1399,8 @@
     </section>
     <section class="xreveal" aria-label="Vamos construir algo juntos?">
       <div class="xreveal-pin">
-        <svg class="xreveal-svg" aria-hidden="true">
-          <defs>
-            <linearGradient id="xrevealGrad" class="xreveal-grad" gradientUnits="objectBoundingBox" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0" stop-color="#ffd2b8" />
-              <stop offset=".28" stop-color="#ff8a4f" />
-              <stop offset=".55" stop-color="#ff6a2b" />
-              <stop offset=".82" stop-color="#f2551a" />
-              <stop offset="1" stop-color="#d9d9d9" />
-            </linearGradient>
-            <mask id="xrevealMask" class="xreveal-mask" maskUnits="userSpaceOnUse" maskContentUnits="userSpaceOnUse">
-              <path class="xreveal-mpath" fill="none" stroke="#fff" stroke-width="13" stroke-linecap="square" stroke-linejoin="miter" stroke-miterlimit="10" />
-              <circle class="xreveal-xcircle" r="0" fill="#fff" />
-            </mask>
-          </defs>
-          <circle class="xreveal-ring" r="0" />
-          <circle class="xreveal-ring" r="0" />
-          <g mask="url(#xrevealMask)">
-            <rect class="xreveal-bg" fill="url(#xrevealGrad)" />
-            <text class="xreveal-text"></text>
-          </g>
-        </svg>
+        <!-- o M esmagado, a linha que gira e o texto: desenhados em canvas por js/xreveal.js -->
+        <canvas class="xreveal-svg" aria-hidden="true"></canvas>
       </div>
     </section>
     <footer id="contact" class="section contact site-footer">
@@ -1483,7 +1464,7 @@
   <script src="js/pixel-seam.js"></script>
   <script src="js/experience.js?v=20261008w"></script>
   <script src="js/footer-bulge.js?v=20261008q"></script>
-  <script src="js/xreveal.js?v=20261008zb"></script>
+  <script src="js/xreveal.js?v=20261028"></script>
   <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@0.2.28/bundled/lenis.js"></script>
   <!--
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.3/gsap.min.js"></script>

@@ -28,27 +28,11 @@
   pointer-events: none;
 }
 
+/* canvas da animação (js/xreveal.js) */
 .xreveal-svg {
-  /* troca precisão por velocidade: a máscara cobre a tela toda e é refeita a cada quadro */
-  shape-rendering: optimizeSpeed;
-  text-rendering: optimizeSpeed;
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   display: block;
-}
-
-.xreveal-ring {
-  fill: none;
-  stroke: rgba(230, 227, 220, .12);
-  stroke-width: 1;
-}
-
-.xreveal-text {
-  font-family: "Inter Tight", sans-serif;
-  font-weight: 400;
-  letter-spacing: -.02em;
-  text-transform: uppercase;
-  fill: #141414;
 }

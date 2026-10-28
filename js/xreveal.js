@@ -1,7 +1,9 @@
 /*
  * Transição Trajetória -> footer (referência: OFF+BRAND).
- * Tudo em um SVG no tamanho da tela (unidades = px): o M da logo (traço arredondado)
- * serve de máscara para o gradiente + texto. O ScrollTrigger fixa a seção e o
+ * Tudo num canvas do tamanho da tela (unidades = px): o M da logo (traço arredondado)
+ * recorta o gradiente + texto. Antes era uma máscara SVG, que o navegador refazia na CPU a
+ * cada quadro e travava em celular e PC fraco; aqui o gradiente e o texto são desenhados uma
+ * vez (a cada resize) e cada quadro só traça o M e recorta as camadas prontas (source-in/atop). O ScrollTrigger fixa a seção e o
  * progresso primeiro espreme o M até virar uma linha reta; depois a linha gira e
  * cresce até cobrir a tela, um círculo completa o preenchimento e os cantos de
  * baixo arredondam antes do painel subir.
@@ -10,14 +12,12 @@
   var section = document.querySelector('.xreveal');
   if (!section) return;
   var pin = section.querySelector('.xreveal-pin');
-  var svg = section.querySelector('.xreveal-svg');
-  var gradRect = section.querySelector('.xreveal-bg');
-  var grad = section.querySelector('.xreveal-grad');
-  var mask = section.querySelector('.xreveal-mask');
-  var mPath = section.querySelector('.xreveal-mpath');
-  var xCircle = section.querySelector('.xreveal-xcircle');
-  var rings = section.querySelectorAll('.xreveal-ring');
-  var text = section.querySelector('.xreveal-text');
+  var tela = section.querySelector('.xreveal-svg');
+  var ctx = tela.getContext('2d');
+  // camadas prontas: o gradiente (fixo) e o texto (desliza; desenhado centrado e deslocado no quadro)
+  var camadaGrad = document.createElement('canvas');
+  var camadaTexto = document.createElement('canvas');
+  var CORES = [[0, '#ffd2b8'], [.28, '#ff8a4f'], [.55, '#ff6a2b'], [.82, '#f2551a'], [1, '#d9d9d9']];
 
   // M da logo (images/mgt-icon.svg) centrado na origem: 50 de largura, 53 de altura,
   // traço de 13 com pontas redondas. Espremer = achatar os y até zero (vira "—").
@@ -36,7 +36,7 @@
   }
   var L = MW + STROKE / 2, H = (STROKE * (1 + FATTEN)) / 2;
 
-  var W = 0, HH = 0, lineLens = [], fontSize = 100, progress = 0;
+  var W = 0, HH = 0, DPR = 1, progress = 0;
 
   function lerp(from, to, t) { return from + (to - from) * t; }
   function clamp01(t) { return t < 0 ? 0 : t > 1 ? 1 : t; }
@@ -44,49 +44,54 @@
   function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
   function easeInOut(t) { return t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; }
 
-  function layoutText() {
-    var lines = W < 768
-      ? ['Vamos', 'construir algo', 'juntos?']
-      : ['Vamos construir algo juntos?'];
-    while (text.firstChild) text.removeChild(text.firstChild);
-    text.setAttribute('font-size', 100);
-    lineLens = lines.map(function (line, i) {
-      var t = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
-      t.textContent = line.toUpperCase();
-      t.setAttribute('x', 0);
-      t.setAttribute('dy', i === 0 ? 0 : '1em');
-      text.appendChild(t);
-      return t.getComputedTextLength();
-    });
-    var widest = Math.max.apply(null, lineLens);
-    fontSize = Math.min((W * (W < 768 ? 0.84 : 0.92)) / widest * 100, HH * 0.22);
-    text.setAttribute('font-size', fontSize);
-    text.setAttribute('text-anchor', 'middle');
-    // centraliza o bloco de linhas na vertical
-    var n = lines.length;
-    text.setAttribute('y', HH / 2 - ((n - 1) * fontSize) / 2 + fontSize * 0.35);
+  function prepara(c) {
+    c.width = Math.round(W * DPR);
+    c.height = Math.round(HH * DPR);
+    var x = c.getContext('2d');
+    x.setTransform(DPR, 0, 0, DPR, 0, 0);
+    return x;
+  }
+
+  function fonte(t, tam) {
+    t.font = '400 ' + tam + 'px "Inter Tight", sans-serif';
+    if ('letterSpacing' in t) t.letterSpacing = (-0.02 * tam) + 'px';
+  }
+
+  // texto "Vamos construir algo juntos?" centrado em W/2 (o quadro desloca a camada)
+  function desenhaTexto() {
+    var lines = (W < 768 ? ['Vamos', 'construir algo', 'juntos?'] : ['Vamos construir algo juntos?'])
+      .map(function (l) { return l.toUpperCase(); });
+    var t = prepara(camadaTexto);
+    fonte(t, 100);
+    var widest = Math.max.apply(null, lines.map(function (l) { return t.measureText(l).width; }));
+    var fontSize = Math.min((W * (W < 768 ? 0.84 : 0.92)) / widest * 100, HH * 0.22);
+    fonte(t, fontSize);
+    t.fillStyle = '#141414';
+    t.textAlign = 'center';
+    t.textBaseline = 'alphabetic';
+    var n = lines.length, y = HH / 2 - ((n - 1) * fontSize) / 2 + fontSize * 0.35;
+    lines.forEach(function (l, i) { t.fillText(l, W / 2, y + i * fontSize); });
   }
 
   function measure() {
     W = pin.clientWidth;
     HH = pin.clientHeight;
-    svg.setAttribute('width', W);
-    svg.setAttribute('height', HH);
-    gradRect.setAttribute('width', W);
-    gradRect.setAttribute('height', HH);
-    rings[0].setAttribute('cx', W / 2); rings[0].setAttribute('cy', HH / 2);
-    rings[1].setAttribute('cx', W / 2); rings[1].setAttribute('cy', HH / 2);
-    mask.setAttribute('x', 0); mask.setAttribute('y', 0);
-    mask.setAttribute('width', W); mask.setAttribute('height', HH);
-    xCircle.setAttribute('cx', W / 2); xCircle.setAttribute('cy', HH / 2);
-    // gradiente fixo (antes escorregava a cada quadro e obrigava a redesenhar a tela inteira)
-    grad.setAttribute('gradientTransform', 'translate(-0.08 0) scale(1.15 1)');
-    layoutText();
-    render(progress);
+    // resolução limitada: a forma é grande e lisa, 1.5x já fica nítido e pesa bem menos que 3x
+    DPR = Math.min(window.devicePixelRatio || 1, 1.5);
+    prepara(tela);
+    var g = prepara(camadaGrad);
+    // mesmo gradiente do SVG antigo (translate(-0.08) scale(1.15) na largura)
+    var lg = g.createLinearGradient(-0.08 * W, 0, 1.07 * W, 0);
+    CORES.forEach(function (c) { lg.addColorStop(c[0], c[1]); });
+    g.fillStyle = lg;
+    g.fillRect(0, 0, W, HH);
+    desenhaTexto();
+    desenha();
   }
 
-  function render(pScroll) {
-    progress = pScroll;
+  function desenha() {
+    if (!W || !HH) return;
+    var pScroll = progress;
     // a animação acaba junto com o pin: o laranja fecha a tela (p = .88) no fim exato da rolagem
     // fixada, sem trecho parado depois (ele fazia a rolagem parecer presa na tela laranja)
     var p = clamp01(pScroll) * 0.88;
@@ -104,8 +109,8 @@
     var splat = Math.sin(Math.PI * clamp01((t - 0.8) / 0.2)) * 0.18;
     var sx = 1 + SPREAD * crush + splat;
     var bulge = Math.sin(Math.PI * clamp01((t - 0.3) / 0.6));
-    mPath.setAttribute('d', mShape(k, sx, bulge));
-    mPath.setAttribute('stroke-width', STROKE * (1 + FATTEN * crush - splat * 0.6));
+    var forma = new Path2D(mShape(k, sx, bulge));
+    var largura = STROKE * (1 + FATTEN * crush - splat * 0.6);
 
     // Zoom exponencial (s0 * k^t) para o crescimento parecer constante na tela.
     var spin = clamp01((p - 0.3) / 0.55);
@@ -116,22 +121,66 @@
     var rot = lerp(0, 180, easeInOut(spin));
     // esmagado contra o chão: a base fica parada e o topo desce; no giro volta ao centro
     var floor = MH * crush * s0 * (1 - easeInOut(clamp01(spin / 0.4)));
-    mPath.setAttribute('transform',
-      'translate(' + (W / 2 + shake * s0) + ' ' + (HH / 2 + floor) + ') rotate(' + rot + ') scale(' + scale + ')');
-
-    xCircle.setAttribute('r', easeIn(clamp01((p - 0.68) / 0.2)) * diag * 0.6);
-
+    var raio = easeIn(clamp01((p - 0.68) / 0.2)) * diag * 0.6;
     var ringScale = s0 * L;
-    rings[0].setAttribute('r', ringScale * 1.4 * scale / s0);
-    rings[1].setAttribute('r', ringScale * 1.05 * scale / s0);
     var ringAlpha = 1 - clamp01((p - 0.25) / 0.3);
-    rings[0].style.opacity = rings[1].style.opacity = ringAlpha;
-
     // texto desliza da direita até o centro enquanto a linha gira
     var tx = lerp(W * 0.62, 0, easeInOut(clamp01((p - 0.1) / 0.75)));
-    text.setAttribute('transform', 'translate(' + (W / 2 + tx) + ' 0)');
 
+    var c = ctx;
+    c.setTransform(DPR, 0, 0, DPR, 0, 0);
+    c.globalCompositeOperation = 'source-over';
+    c.globalAlpha = 1;
+    c.clearRect(0, 0, W, HH);
 
+    // 1. a forma (o M e o círculo que fecha), em branco
+    c.save();
+    c.translate(W / 2 + shake * s0, HH / 2 + floor);
+    c.rotate(rot * Math.PI / 180);
+    c.scale(scale, scale);
+    c.lineWidth = largura;
+    c.lineCap = 'square';
+    c.lineJoin = 'miter';
+    c.miterLimit = 10;
+    c.strokeStyle = '#fff';
+    c.stroke(forma);
+    c.restore();
+    if (raio > 0) {
+      c.beginPath();
+      c.arc(W / 2, HH / 2, raio, 0, Math.PI * 2);
+      c.fillStyle = '#fff';
+      c.fill();
+    }
+
+    // 2. o gradiente só onde tem forma, e o texto só por cima dela
+    c.setTransform(1, 0, 0, 1, 0, 0);
+    c.globalCompositeOperation = 'source-in';
+    c.drawImage(camadaGrad, 0, 0);
+    c.globalCompositeOperation = 'source-atop';
+    c.drawImage(camadaTexto, Math.round(tx * DPR), 0);
+
+    // 3. os anéis finos ficam atrás
+    if (ringAlpha > 0) {
+      c.setTransform(DPR, 0, 0, DPR, 0, 0);
+      c.globalCompositeOperation = 'destination-over';
+      c.globalAlpha = ringAlpha;
+      c.strokeStyle = 'rgba(230, 227, 220, .12)';
+      c.lineWidth = 1;
+      [1.4, 1.05].forEach(function (m) {
+        c.beginPath();
+        c.arc(W / 2, HH / 2, ringScale * m * scale / s0, 0, Math.PI * 2);
+        c.stroke();
+      });
+      c.globalAlpha = 1;
+    }
+    c.globalCompositeOperation = 'source-over';
+  }
+
+  // o ScrollTrigger pode chamar várias vezes por quadro: desenha uma vez só, no próximo quadro
+  var pedido = 0;
+  function render(pScroll) {
+    progress = pScroll;
+    if (!pedido) pedido = requestAnimationFrame(function () { pedido = 0; desenha(); });
   }
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;

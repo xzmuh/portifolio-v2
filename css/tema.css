@@ -4040,3 +4040,25 @@ body::-webkit-scrollbar {
     justify-content: space-between;
   }
 }
+
+/* Becca no celular mais enxuta: título "Becca: Uma IA com personalidade", sem o texto de abertura
+   e sem o nome repetido na ficha */
+.becca_so-celular {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .becca_so-celular {
+    display: inline;
+  }
+
+  .becca_intro,
+  .becca_pre,
+  .becca_nome {
+    display: none;
+  }
+
+  .becca_topo {
+    gap: 0;
+  }
+}
