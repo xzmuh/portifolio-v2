@@ -3492,35 +3492,551 @@ body::-webkit-scrollbar {
   cursor: pointer;
 }
 
-/* ---------- IA (Becca): layout das versões do currículo (texto | palco | lista), palco com vídeo da demo ---------- */
 
-.curriculo--ia {
-  padding-top: 0;
+/* ---------- IA (Becca): seção clara em formato de chamada (js/becca.js) ---------- */
+
+.becca {
+  position: relative;
+  padding: clamp(5rem, 9vw, 9rem) 0;
+  background: var(--cinza);
+  color: var(--tinta);
+  overflow: hidden;
 }
 
-.curriculo--ia .curriculo_foto {
+.becca .container {
+  position: relative;
+  z-index: 1;
+}
+
+.becca_topo {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: clamp(2rem, 4vw, 5rem);
+  align-items: end;
+  margin-bottom: clamp(2.5rem, 5vw, 4.5rem);
+}
+
+.becca_pre {
+  margin: 0 0 .5rem;
+  font-size: .8rem;
+  letter-spacing: .32em;
+  text-transform: uppercase;
+  color: #555;
+}
+
+/* letreiro espetado do Edgerunners (PNG gerado, usado como máscara para pintar na cor do site) */
+.becca_letreiro {
   display: block;
-  padding: 2.4rem;
+  width: min(100%, 30rem);
+  aspect-ratio: 1400 / 221;
+  margin: 0 0 1.6rem;
+  background: var(--laranja);
+  -webkit-mask: url("../img/tema/letreiro-edgerunners.png") no-repeat 0 50% / contain;
+  mask: url("../img/tema/letreiro-edgerunners.png") no-repeat 0 50% / contain;
 }
 
-.curriculo--ia .curriculo_moldura {
+.becca_titulo {
+  margin: 0;
+  font-size: clamp(3rem, 5.8vw, 6.4rem);
+  font-weight: 700;
+  line-height: .88;
+  letter-spacing: -.01em;
+  text-transform: uppercase;
+}
+
+.becca_intro p {
+  margin: 0 0 1.2rem;
+  max-width: 30em;
+  font-size: clamp(.95rem, 1.1vw, 1.2rem);
+  line-height: 1.5;
+  color: #3a3a3a;
+}
+
+.becca_intro b {
+  font-weight: 600;
+  color: var(--tinta);
+}
+
+
+/* a chamada: ficha | retrato | tempo */
+.becca_chamada {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr) minmax(0, 1fr);
+  border-top: 1px solid rgba(0, 0, 0, .25);
+  border-bottom: 1px solid rgba(0, 0, 0, .25);
+}
+
+.becca_chamada > * {
+  padding: clamp(1.5rem, 2.6vw, 2.6rem);
+}
+
+/* fonte do cyberpunk (Rajdhani) nos nomes, números e rótulos */
+.becca_titulo,
+.becca_pre,
+.becca_nome,
+.becca_tracos b,
+.becca_selo,
+.becca_etapas b,
+.becca_etapas span {
+  font-family: "Rajdhani", var(--fonte);
+}
+
+.becca_ficha {
+  display: flex;
+  flex-direction: column;
+}
+
+.becca_nome {
+  margin: 0;
+  font-size: clamp(2.6rem, 4vw, 4.2rem);
+  font-weight: 700;
+  line-height: .9;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.becca_tese {
+  margin: 1rem 0 1.6rem;
+  max-width: 24em;
+  font-size: clamp(.95rem, 1.05vw, 1.1rem);
+  line-height: 1.5;
+  color: #3a3a3a;
+}
+
+.becca_tese b {
+  font-weight: 600;
+  color: var(--tinta);
+}
+
+.becca_tracos {
+  margin: auto 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid rgba(0, 0, 0, .18);
+}
+
+.becca_tracos li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: .7rem 0 .7rem .9rem;
+  border-bottom: 1px solid rgba(0, 0, 0, .18);
+  box-shadow: inset 2px 0 0 var(--laranja);
+}
+
+.becca_tracos b {
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.becca_tracos span {
+  font-size: .85rem;
+  color: #5a5a5a;
+  text-align: right;
+}
+
+.becca_chamada > .becca_retrato {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  background: var(--preto);
+  overflow: hidden;
+}
+
+.becca_retrato img {
   display: block;
-}
-
-.curriculo--ia .curriculo_thumb--aqui svg {
-  width: 2rem;
-  height: 2rem;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.6;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.curriculo_moldura video {
-  position: absolute;
-  inset: 0;
   width: 100%;
   height: 100%;
+  aspect-ratio: 1;
   object-fit: cover;
+}
+
+.becca_selo {
+  position: absolute;
+  top: 1.2rem;
+  left: 1.2rem;
+  padding: .35rem .6rem;
+  background: var(--tinta);
+  color: #fff;
+  font-size: .7rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+.becca_tempo {
+  display: flex;
+  flex-direction: column;
+}
+
+.becca_como {
+  margin: 0 0 1.4rem;
+  font-family: "Rajdhani", var(--fonte);
+  font-size: clamp(1.8rem, 2.6vw, 2.8rem);
+  font-weight: 700;
+  line-height: .95;
+  text-transform: uppercase;
+}
+
+.becca_etapas {
+  margin: auto 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid rgba(0, 0, 0, .18);
+}
+
+.becca_etapas li {
+  display: grid;
+  grid-template-columns: 2.4rem 1fr;
+  gap: .4rem;
+  padding: .75rem 0;
+  border-bottom: 1px solid rgba(0, 0, 0, .18);
+  color: #8a8a8a;
+  transition: color .3s ease;
+}
+
+.becca_etapas span {
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: .75rem;
+  padding-top: .2rem;
+}
+
+.becca_etapas b {
+  justify-self: start;
+  display: inline;
+  padding: 0 .15em;
+  margin-left: -.15em;
+  font-size: 1.05rem;
+  font-weight: 700;
+  background: linear-gradient(var(--laranja), var(--laranja)) no-repeat 0 50% / 0% 100%;
+  transition: background-size .45s var(--suave), color .3s ease;
+}
+
+.becca_etapas small {
+  display: block;
+  margin-top: .15rem;
+  font-size: .82rem;
+  line-height: 1.35;
+}
+
+.becca_etapas li.acesa {
+  color: var(--tinta);
+}
+
+.becca_etapas li.acesa b {
+  background-size: 100% 100%;
+  color: #fff;
+}
+
+@media (max-width: 991px) {
+  .becca_topo {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .becca_chamada {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .becca_ficha {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 600px) {
+  .becca_chamada {
+    grid-template-columns: 1fr;
+  }
+
+  .becca_chamada > * {
+    padding: 1.4rem 0;
+  }
+
+  .becca_retrato {
+    padding: 0;
+  }
+}
+
+/* retrato com cantos chanfrados, como os painéis do Cyberpunk */
+.becca_chamada > .becca_retrato {
+  clip-path: polygon(0 0, calc(100% - 2.2rem) 0, 100% 2.2rem, 100% 100%, 2.2rem 100%, 0 calc(100% - 2.2rem));
+}
+
+.becca_selo {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - .45rem), calc(100% - .45rem) 100%, 0 100%);
+  padding-right: .9rem;
+}
+
+/* "Ler sobre": abre a página do projeto (sobre/<projeto>/) em outra aba */
+.curriculo_ler,
+.becca_ler {
+  display: inline-flex;
+  align-items: center;
+  gap: .5em;
+  font-size: .78rem;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: color .3s;
+}
+
+.curriculo_ler {
+  margin: -.6rem 0 1.1rem calc(.9rem + 2rem + 1.1rem + 7rem + 1.1rem);
+  color: #9b9b9b;
+}
+
+.curriculo_ler:hover {
+  color: var(--laranja);
+}
+
+.curriculo_ler svg,
+.becca_ler svg {
+  width: 1.1em;
+  height: 1.1em;
+  fill: none;
+  stroke: var(--laranja);
+  stroke-width: 2;
+  transition: transform .4s var(--suave);
+}
+
+.curriculo_ler:hover svg,
+.becca_ler:hover svg {
+  transform: translateX(.3em);
+}
+
+.becca_ler {
+  align-self: flex-start;
+  margin-top: 1.4rem;
+  padding: .8rem 1.1rem;
+  background: var(--tinta);
+  color: #fff;
+}
+
+.becca_ler:hover {
+  background: var(--laranja);
+  color: var(--tinta);
+}
+
+.becca_ler:hover svg {
+  stroke: var(--tinta);
+}
+
+@media (max-width: 600px) {
+  .curriculo_ler {
+    margin-left: .9rem;
+  }
+}
+
+/* ---------- menu lateral do celular (js/menu.js): painéis em cascata pela direita, como o Panel Menu
+   do AnimationsLabs, nas cores do site ---------- */
+
+.menu_botao {
+  display: none;
+  align-items: center;
+  gap: .7rem;
+  padding: .4rem 0;
+  border: 0;
+  background: none;
+  color: #f2f2f2;
+  font: 600 .85rem/1 var(--fonte);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color .35s ease;
+}
+
+.header.header--claro .menu_botao {
+  color: var(--tinta);
+}
+
+.menu_botao_txt {
+  display: block;
+  height: 1em;
+  overflow: hidden;
+}
+
+.menu_botao_txt span {
+  display: block;
+  transition: transform .5s var(--suave);
+}
+
+.menu-aberto .menu_botao_txt span {
+  transform: translateY(-100%);
+}
+
+.menu_botao b {
+  display: grid;
+  place-items: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  background: var(--laranja);
+  color: var(--tinta);
+  font-size: 1.5rem;
+  font-weight: 400;
+  line-height: 1;
+  clip-path: polygon(6px 0, calc(100% - 6px) 0, 100% 6px, 100% calc(100% - 6px), calc(100% - 6px) 100%, 6px 100%, 0 calc(100% - 6px), 0 6px);
+}
+
+/* com o menu aberto o botão fica por cima dos painéis, sempre claro */
+.menu-aberto .header {
+  z-index: 1001;
+}
+
+.menu-aberto .menu_botao {
+  color: #f2f2f2;
+}
+
+.menu_lateral {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+}
+
+.menu_lateral[hidden] {
+  display: none;
+}
+
+.menu_fundo {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgba(17, 17, 17, .55);
+  cursor: pointer;
+}
+
+.menu_painel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: min(620px, 100%);
+  height: 100%;
+  padding: 6.5rem 0 2rem;
+  overflow: hidden;
+}
+
+.menu_camadas,
+.menu_camadas i {
+  position: absolute;
+  inset: 0;
+}
+
+.menu_camadas i {
+  background: var(--preto);
+}
+
+.menu_camadas i:first-child {
+  background: var(--laranja);
+}
+
+.menu_camadas i:nth-child(2) {
+  background: var(--cinza);
+}
+
+.menu_dentro {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.menu_links {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.menu_links li {
+  overflow: hidden;
+}
+
+.menu_links a {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: .7rem;
+  padding: .55rem 1.6rem;
+  color: var(--cinza-claro);
+  text-decoration: none;
+  overflow: hidden;
+}
+
+.menu_links a:before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--laranja);
+  transform: translateY(101%);
+  transition: transform .45s cubic-bezier(.65, .05, 0, 1);
+}
+
+.menu_links strong {
+  position: relative;
+  font-size: clamp(2.6rem, 12vw, 5.4rem);
+  font-weight: 800;
+  line-height: .85;
+  letter-spacing: -.06em;
+  text-transform: uppercase;
+  transition: color .3s;
+}
+
+.menu_links small {
+  position: relative;
+  font-size: .75rem;
+  font-weight: 600;
+  color: var(--laranja);
+  transition: color .3s;
+}
+
+.menu_links a:hover:before,
+.menu_links a:focus-visible:before {
+  transform: none;
+}
+
+.menu_links a:hover strong,
+.menu_links a:hover small,
+.menu_links a:focus-visible strong,
+.menu_links a:focus-visible small {
+  color: var(--tinta);
+}
+
+.menu_rodape {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  padding: 1.6rem 1.6rem 0;
+  font-size: .85rem;
+  line-height: 1.5;
+  color: #9b9b9b;
+}
+
+.menu_rodape a {
+  color: inherit;
+  text-decoration: none;
+  transition: color .3s;
+}
+
+.menu_rodape a:hover {
+  color: var(--laranja);
+}
+
+@media (max-width: 767px) {
+  .header .nav {
+    display: none;
+  }
+
+  .menu_botao {
+    display: inline-flex;
+  }
+
+  .navbar_inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
 }

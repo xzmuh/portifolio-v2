@@ -38,7 +38,7 @@
   <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin="anonymous" />
   <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js" type="text/javascript"></script>
   <script
-    type="text/javascript">WebFont.load({ google: { families: ["Inter Tight:300,400,500,600,700,800,900"] } });</script>
+    type="text/javascript">WebFont.load({ google: { families: ["Inter Tight:300,400,500,600,700,800,900", "Rajdhani:500,600,700"] } });</script>
   <script
     type="text/javascript">!function (o, c) { var n = c.documentElement, t = " w-mod-"; n.className += t + "js", ("ontouchstart" in o || o.DocumentTouch && c instanceof DocumentTouch) && (n.className += t + "touch") }(window, document);</script>
   <link href="images/mgt-icon.svg?v=20261008l" rel="icon" type="image/svg+xml" />
@@ -487,9 +487,33 @@
           <nav class="nav"><a href="#works" class="nav_link">Projetos.</a><a href="#skills"
               class="nav_link">Tecnologias.</a><a href="#experience" class="nav_link">Trajetória.</a><a href="#about"
               class="nav_link">Sobre.</a><a href="#contact" class="nav_link">Contato.</a></nav>
+          <!-- celular: botão que abre o menu lateral em painéis (js/menu.js), no estilo do Panel Menu do AnimationsLabs -->
+          <button class="menu_botao" type="button" data-menu-toggle aria-expanded="false" aria-controls="menu-lateral">
+            <span class="menu_botao_txt"><span>Menu</span><span>Fechar</span></span><b aria-hidden="true">+</b>
+          </button>
         </div>
       </div>
     </header>
+    <div class="menu_lateral" id="menu-lateral" data-menu hidden>
+      <button class="menu_fundo" type="button" data-menu-toggle aria-label="Fechar menu" tabindex="-1"></button>
+      <nav class="menu_painel" aria-label="Menu">
+        <div class="menu_camadas" aria-hidden="true"><i></i><i></i><i></i></div>
+        <div class="menu_dentro">
+          <ul class="menu_links">
+            <li><a href="#experiencias"><strong>Currículo</strong><small>01</small></a></li>
+            <li><a href="#works"><strong>Projetos</strong><small>02</small></a></li>
+            <li><a href="#skills"><strong>Tecnologias</strong><small>03</small></a></li>
+            <li><a href="#experience"><strong>Trajetória</strong><small>04</small></a></li>
+            <li><a href="#about"><strong>Sobre</strong><small>05</small></a></li>
+            <li><a href="#contact"><strong>Contato</strong><small>06</small></a></li>
+          </ul>
+          <div class="menu_rodape" data-menu-fade>
+            <a href="mailto:murilo_agudos@hotmail.com">murilo_agudos@hotmail.com</a>
+            <span><a href="https://www.linkedin.com/in/murilo-trigo-6205b3190/" target="_blank" rel="noopener">LinkedIn</a> · <a href="https://github.com/xzmuh" target="_blank" rel="noopener">GitHub</a> · <a href="https://wa.me/5514981647336" target="_blank" rel="noopener">WhatsApp</a></span>
+          </div>
+        </div>
+      </nav>
+    </div>
     <div id="luxy" data-barba="container" data-barba-namespace="home-page" class="page-wrapper">
       <section id="home" data-w-id="04dcac28-e0ae-953e-2822-13c173886ed8" class="section hero">
         <!-- fundo abstrato: curvas de nível e manchas em meia-tinta (js/abstrato.js) -->
@@ -740,19 +764,22 @@
                 <img class="curriculo_thumb" src="img/tema/exp-rpg.webp" alt="" loading="lazy" />
                 <span class="curriculo_nome"><i>Versão jogo</i><b>Crônicas de Murilo</b><small>A trajetória como campanha de RPG em 3D: role o dado e avance capítulo a capítulo.</small></span>
                 <span class="curriculo_ir">Jogar <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6" /></svg></span>
-              </a></li>
+              </a>
+                <a class="curriculo_ler" href="sobre/rpg/" target="_blank" rel="noopener" aria-label="Ler sobre Crônicas de Murilo">Ler sobre <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6" /></svg></a></li>
               <li class="surge"><a class="curriculo_item" href="experiencias/cyberpunk/" data-foto="img/tema/exp-cyberpunk.webp" data-selo="Versão cyberpunk">
                 <span class="curriculo_num">02</span>
                 <img class="curriculo_thumb" src="img/tema/exp-cyberpunk.webp" alt="" loading="lazy" />
                 <span class="curriculo_nome"><i>Versão cyberpunk</i><b>Cyberpunk</b><small>O currículo como menu de Cyberpunk: implantes, árvore de habilidades e um mapa da carreira com Sandevistan.</small></span>
                 <span class="curriculo_ir">Entrar <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6" /></svg></span>
-              </a></li>
+              </a>
+                <a class="curriculo_ler" href="sobre/cyberpunk/" target="_blank" rel="noopener" aria-label="Ler sobre Cyberpunk">Ler sobre <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6" /></svg></a></li>
               <li class="surge"><a class="curriculo_item" href="experiencias/corredor/" data-foto="img/tema/exp-corredor.webp" data-selo="Versão papel">
                 <span class="curriculo_num">03</span>
                 <img class="curriculo_thumb" src="img/tema/exp-corredor.webp" alt="" loading="lazy" />
                 <span class="curriculo_nome"><i>Versão papel</i><b>Corredor de papel</b><small>Um corredor desenhado a lápis: cada porta abre uma parte do currículo.</small></span>
                 <span class="curriculo_ir">Entrar <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6" /></svg></span>
-              </a></li>
+              </a>
+                <a class="curriculo_ler" href="sobre/corredor/" target="_blank" rel="noopener" aria-label="Ler sobre Corredor de papel">Ler sobre <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6" /></svg></a></li>
               <li class="surge"><div class="curriculo_item curriculo_item--aqui">
                 <span class="curriculo_num">04</span>
                 <span class="curriculo_thumb curriculo_thumb--aqui"><img src="images/mgt-icon.svg" alt="" /></span>
@@ -787,53 +814,58 @@
                 <img class="curriculo_thumb" src="img/tema/jogo-alphereon.webp" alt="" loading="lazy" />
                 <span class="curriculo_nome"><i>Alpha · em desenvolvimento</i><b>Alphereon</b><small>Combate espacial com naves de voxel e cooperativo para até 3 pilotos.</small></span>
                 <span class="curriculo_ir">Jogar <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6" /></svg></span>
-              </a></li>
+              </a>
+                <a class="curriculo_ler" href="sobre/alphereon/" target="_blank" rel="noopener" aria-label="Ler sobre Alphereon">Ler sobre <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6" /></svg></a></li>
           </ol>
         </div>
       </section>
-      <!-- IA: companheira de voz no desktop; mesmo layout das versões do currículo (texto, palco, lista).
-           Quando a gravação da demo existir, trocar a imagem do palco por
-           <video class="curriculo_eu" src="img/tema/ia-becca.mp4" poster="img/tema/ia-becca.webp" autoplay muted loop playsinline>. -->
-      <section id="ia" class="curriculo curriculo--ia" aria-labelledby="ia-titulo">
-        <div class="container curriculo_inner">
-          <div class="curriculo_texto surge">
-            <p class="curriculo_pre">Projeto pessoal</p>
-            <h2 id="ia-titulo" class="curriculo_titulo">Uma <span>IA</span> que conversa</h2>
-            <p class="curriculo_sub">A Becca vive no meu desktop: um avatar 3D que escuta minha voz, responde falando
-              <b>em cerca de 2 segundos</b>, tem humor e memória próprios e ainda mexe no PC quando eu peço.</p>
-            <p class="curriculo_aviso">Protótipo de fã, sem fins comerciais · roda só no meu PC</p>
+      <!-- IA: a Becca (js/becca.js acende as etapas em ordem).
+           Seção clara, para quebrar as duas pretas de cima. -->
+      <section id="ia" class="becca" aria-labelledby="ia-titulo" data-becca>
+        <div class="grade grade--escura" aria-hidden="true"></div>
+        <div class="container">
+          <header class="becca_topo surge">
+            <div>
+              <p class="becca_pre">Projeto pessoal · inspirado em</p>
+              <span class="becca_letreiro" role="img" aria-label="Cyberpunk: Edgerunners"></span>
+              <h2 id="ia-titulo" class="becca_titulo">Uma IA com<br /><em class="hl">personalidade</em></h2>
+            </div>
+            <div class="becca_intro">
+              <p>A Becca vive no meu desktop: um avatar 3D que <b>conversa comigo por voz</b>, lembra do que
+                eu conto e mexe no PC quando eu peço.</p>
+            </div>
+          </header>
+
+          <div class="becca_chamada surge" style="--i:1">
+            <div class="becca_ficha">
+              <p class="becca_nome">Becca</p>
+              <p class="becca_tese">Recriei a Rebecca, de Cyberpunk: Edgerunners, como uma IA de voz em tempo real.
+                Cada reação, estado emocional e a própria voz foram recriados para ficar <b>o mais próximo possível
+                da personagem do anime</b>, com memória do que eu conto e automação do PC por comando de voz.</p>
+              <ul class="becca_tracos">
+                <li><b>Humor</b><span>muda com a conversa</span></li>
+                <li><b>Ciúme</b><span>reage quando outra pessoa fala</span></li>
+                <li><b>Afinidade</b><span>cresce com o tempo</span></li>
+                <li><b>Memória</b><span>guarda o que importa</span></li>
+              </ul>
+              <a class="becca_ler" href="sobre/becca/" target="_blank" rel="noopener">Ler sobre a Becca <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6" /></svg></a>
+            </div>
+
+            <figure class="becca_retrato">
+              <img src="img/tema/ia-becca-3.webp" alt="A Becca, avatar 3D da IA" loading="lazy" />
+              <span class="becca_selo">Avatar 3D</span>
+            </figure>
+
+            <div class="becca_tempo">
+              <p class="becca_como">Como ela funciona</p>
+              <ol class="becca_etapas">
+                <li data-etapa><span>01</span><div><b>Ouvido</b><small>Whisper na GPU, reconhece a minha voz</small></div></li>
+                <li data-etapa><span>02</span><div><b>Cérebro</b><small>LLM em streaming com a personalidade dela</small></div></li>
+                <li data-etapa><span>03</span><div><b>Voz e corpo</b><small>voz com emoção e risada, avatar VRM com expressões</small></div></li>
+                <li data-etapa><span>04</span><div><b>No PC</b><small>abre jogos, Spotify, YouTube e lembretes</small></div></li>
+              </ol>
+            </div>
           </div>
-          <figure class="curriculo_foto surge">
-            <span class="curriculo_bloco curriculo_bloco--cima" aria-hidden="true"></span>
-            <span class="curriculo_bloco curriculo_bloco--baixo" aria-hidden="true"></span>
-            <span class="curriculo_moldura">
-              <img class="curriculo_eu" src="img/tema/ia-becca.webp" alt="A Becca, avatar 3D da IA" loading="lazy" />
-            </span>
-            <span class="curriculo_selo"><i class="jogo_luz"></i>Demo</span>
-            <figcaption class="curriculo_script" aria-hidden="true"><span>listen</span><span>think</span><span>talk</span></figcaption>
-          </figure>
-          <ol class="curriculo_lista">
-              <li class="surge"><div class="curriculo_item curriculo_item--aqui">
-                <span class="curriculo_num">01</span>
-                <span class="curriculo_thumb curriculo_thumb--aqui"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3Z"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></span>
-                <span class="curriculo_nome"><i>Ouvido</i><b>Voz para texto local</b><small>Whisper rodando na GPU, com reconhecimento de quem está falando: ela sabe quando não sou eu.</small></span>
-              </div></li>
-              <li class="surge"><div class="curriculo_item curriculo_item--aqui">
-                <span class="curriculo_num">02</span>
-                <span class="curriculo_thumb curriculo_thumb--aqui"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 2 5 3 3 0 0 0 6 1V4.5A2.5 2.5 0 0 0 9 4Z"/><path d="M15 4a3 3 0 0 1 3 3 3 3 0 0 1 2 5 3 3 0 0 1-2 5 3 3 0 0 1-6 1"/></svg></span>
-                <span class="curriculo_nome"><i>Cérebro</i><b>Personalidade com humor e memória</b><small>LLM em streaming: humor que muda com a conversa, ciúme, afinidade que cresce e memória do que importa.</small></span>
-              </div></li>
-              <li class="surge"><div class="curriculo_item curriculo_item--aqui">
-                <span class="curriculo_num">03</span>
-                <span class="curriculo_thumb curriculo_thumb--aqui"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h2M7 8v8M11 5v14M15 9v6M19 11v2"/></svg></span>
-                <span class="curriculo_nome"><i>Voz e corpo</i><b>Fala com emoção e avatar 3D</b><small>Voz sintetizada frase a frase enquanto ela ainda pensa, risadas reais e um avatar VRM com expressões e animações.</small></span>
-              </div></li>
-              <li class="surge"><div class="curriculo_item curriculo_item--aqui">
-                <span class="curriculo_num">04</span>
-                <span class="curriculo_thumb curriculo_thumb--aqui"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1"/><path d="M8 20h8M12 16v4"/></svg></span>
-                <span class="curriculo_nome"><i>No PC</i><b>Ações por voz</b><small>Abre jogos, toca música no Spotify e no YouTube, cria lembretes e faz tarefinhas no Windows.</small></span>
-              </div></li>
-          </ol>
         </div>
       </section>
       <section id="works" class="section projects">
@@ -1456,6 +1488,7 @@
   <!--
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.3/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.3/Flip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.3/CustomEase.min.js"></script>
 <script src="https://unpkg.com/@barba/core"></script>
 -->
   <script>
@@ -1668,6 +1701,8 @@
   <script src="js/tema.js?v=20261026b"></script>
   <script src="js/oficio.js?v=20261008za"></script>
   <script src="js/rolagem.js?v=20261008u"></script>
+  <script src="js/becca.js?v=20261028d"></script>
+  <script src="js/menu.js?v=20261028"></script>
 </body>
 
 </html>

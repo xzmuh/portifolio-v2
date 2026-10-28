@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Alphereon · Murilo Gonzales</title>
+<meta name="description" content="Como o Alphereon saiu de um minijogo e virou um jogo de combate espacial." />
+<link rel="icon" href="../../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&family=Pinyon+Script&family=Saira+Condensed:wght@500;600&display=swap" rel="stylesheet" />
+<link href="../sobre.css?v=2" rel="stylesheet" />
+</head>
+<body data-tema="alphereon">
+<script>document.body.classList.add('js')</script>
+<div class="abertura" aria-hidden="true"><span>Alphereon</span></div>
+
+<header class="capa capa--larga">
+  <div class="grade" aria-hidden="true"></div>
+  <div class="container topo">
+    <a class="voltar" href="../../#jogos"><img src="../../images/mgt-icon.svg" alt="" /><span>Portfólio</span></a>
+    <a class="botao" href="https://alphereon.pages.dev/" target="_blank" rel="noopener">Jogar <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" /></svg></a>
+  </div>
+  <div class="container capa_grade">
+    <div>
+      <p class="chapeu">Jogo · em desenvolvimento</p>
+      <h1 class="titulo"><span><span>Alphe</span></span><span><span><em class="hl">reon</em></span></span></h1>
+      <p class="lead surge">Combate espacial no navegador, com naves de voxel, campanha, sobrevivência e cooperativo para até três pilotos.</p>
+    </div>
+    <figure class="palco">
+      <span class="palco_bloco palco_bloco--cima" aria-hidden="true"></span>
+      <span class="palco_bloco palco_bloco--baixo" aria-hidden="true"></span>
+      <div class="palco_moldura" style="aspect-ratio:1200 / 630"><img src="../../img/tema/jogo-alphereon.webp" alt="Uma nave do Alphereon" /></div>
+      <span class="palco_selo">Em desenvolvimento</span>
+      <figcaption class="palco_script" aria-hidden="true"><span>build</span><span>test</span><span>repeat</span></figcaption>
+    </figure>
+  </div>
+</header>
+
+<section class="proposito">
+  <div class="grade" aria-hidden="true"></div>
+  <div class="container proposito_grade">
+    <div class="surge"><p class="parte_num">Por que foi criado</p><p class="proposito_texto">Nasceu como um minijogo escondido em outro projeto e cresceu até virar o meu laboratório de game design, inteligência de inimigos e multiplayer.</p></div>
+    <div class="surge"><p class="parte_num">A experiência que eu queria passar</p><p class="proposito_texto">A adrenalina de um combate espacial de console rodando direto no navegador, sozinho ou com dois amigos, sem instalar nada.</p></div>
+  </div>
+</section>
+
+<main>
+  <section class="parte">
+    <div class="grade" aria-hidden="true"></div>
+    <div class="container">
+      <div class="parte_cab surge">
+        <p class="parte_num"><b>01</b>A ideia inicial</p>
+        <h2>Decolar da Lua e <em class="hl">atirar</em></h2>
+      </div>
+      <div class="parte_texto">
+        <div class="surge"><p>A primeira versão cabia numa frase: decolar da Lua e atirar para a frente, num corredor reto. Poucos minutos de jogo.</p></div>
+      </div>
+    </div>
+  </section>
+  <section class="parte escuro">
+    <div class="grade" aria-hidden="true"></div>
+    <div class="container tempo">
+      <div class="tempo_lado"><div class="surge">
+        <p class="parte_num"><b>02</b>Como foi crescendo</p>
+        <h2>De corredor a jogo para jogar <em class="hl">junto</em></h2>
+      </div></div>
+      <ol class="tempo_lista"><li><span class="tempo_quando">15 out</span><h3>O corredor na Lua</h3><p>O minijogo escondido: decolar e atirar para a frente.</p></li><li><span class="tempo_quando">16 out</span><h3>Espaço de verdade</h3><p>Arena aberta, câmera presa à nave, explosões em camadas, inimigos variados, a nave-mãe, poderes e a cabine.</p></li><li><span class="tempo_quando">20 out</span><h3>Um jogo próprio</h3><p>Nome, menu em órbita no estilo Destiny, campanha, hangar, naves montadas cubo a cubo e mapas com mecânicas próprias.</p></li><li><span class="tempo_quando">21 out</span><h3>Para jogar junto</h3><p>Cooperativo para três pilotos, chefes com fases, armas com identidade, perfil de piloto com medalhas e música.</p></li><li><span class="tempo_quando">Depois</span><h3>Inimigos que pensam</h3><p>Os inimigos deixaram de ser alvos e viraram pilotos, com temperamento, jogadas em grupo e disputa pela sua cauda.</p></li></ol>
+    </div>
+  </section>
+
+  <section class="parte">
+    <div class="grade" aria-hidden="true"></div>
+    <div class="container">
+      <div class="parte_cab surge">
+        <p class="parte_num"><b>03</b>Evolução técnica</p>
+        <h2>O que tem dentro do <em class="hl">motor</em></h2>
+      </div>
+      <ol class="licoes"><li class="surge"><i>01</i><h3>Naves construídas no código</h3><p>Cada nave é uma grade de cubos simétrica montada por geometria, que vira duas malhas: o casco, só com as faces de fora e sombra de canto por vértice, e as partes acesas que brilham.</p></li><li class="surge"><i>02</i><h3>Multiplayer sem servidor de jogo</h3><p>O cooperativo conecta os navegadores direto entre si por WebRTC. Um jogador comanda a partida e os outros seguem o estado dele.</p></li><li class="surge"><i>03</i><h3>Inimigos que pensam</h3><p>Cada nave vive um ciclo próprio de entrar, passar, romper e se reposicionar, olhando quantas já estão brigando. O temperamento só muda os números desse ciclo, então dá variedade sem quebrar o jogo.</p></li><li class="surge"><i>04</i><h3>Cenário que quebra</h3><p>Destroços, satélites e favos são feitos de placas que esquentam, soltam girando e estouram quando apanham.</p></li><li class="surge"><i>05</i><h3>Controle de jato</h3><p>Suporte a controle com curva que ganha força no fundo, ajuda de mira que acompanha o alvo e vibração.</p></li><li class="surge"><i>06</i><h3>Leve para rodar no navegador</h3><p>Sons carregados sob demanda com limitador de volume, níveis de gráfico e progresso salvo no próprio navegador.</p></li></ol>
+    </div>
+  </section>
+</main>
+
+<footer class="fim">
+  <div class="grade" aria-hidden="true"></div>
+  <div class="container">
+    <p class="fim_frase surge">Bora <em class="hl">decolar</em>?</p>
+    <div class="fim_acoes surge"><a class="botao" href="https://alphereon.pages.dev/" target="_blank" rel="noopener">Jogar <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" /></svg></a><a class="botao botao--escuro" href="../../#jogos">Voltar ao portfólio <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" /></svg></a></div>
+    <div class="fim_rodape"><span>Murilo Gonzales · Full Stack</span><a href="../../#jogos">← Voltar ao portfólio</a></div>
+  </div>
+</footer>
+
+<script src="../sobre.js?v=2"></script>
+</body>
+</html>
