@@ -222,6 +222,16 @@
       z-index: 2;
     }
 
+    .flow-grid>.project_item.easynow {
+      grid-area: 9 / 3 / 10 / 5;
+      place-self: center end;
+      z-index: 1;
+    }
+
+    .project_item.easynow .project_image {
+      object-position: 15% 50%;
+    }
+
     /* print largo do quadro: mantém o título e a primeira coluna no recorte */
     .project_item.sigma-crm .project_image {
       object-position: 0% 50%;
@@ -241,7 +251,10 @@
     .project_item.sigmacx .project_desc,
     .project_item.sigma-crm .project_info,
     .project_item.sigma-crm .project_name,
-    .project_item.sigma-crm .project_desc {
+    .project_item.sigma-crm .project_desc,
+    .project_item.easynow .project_info,
+    .project_item.easynow .project_name,
+    .project_item.easynow .project_desc {
       place-self: end;
     }
 
@@ -1084,6 +1097,21 @@
                 </div>
               </div>
             </div>
+            <div class="project_item easynow w-dyn-list">
+              <div role="list" class="w-dyn-items">
+                <div role="listitem" class="works-item w-dyn-item">
+                  <div class="project_wrap small w-inline-block"><img loading="lazy" width="1000"
+                      src="images/projects/easynow.webp" alt="easynow" class="project_image" />
+                    <div class="project_darken"></div>
+                    <div class="project_info">
+                      <h3 class="project_name item-name">easynow</h3>
+                      <div class="project_desc">App de desktop em Rust que junta vários agentes de IA numa janela só, com
+                        abas, quem está trabalhando ou esperando, limites de uso e comando por voz.</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
     </div>
@@ -1098,7 +1126,7 @@
           </div>
           <div class="numero numero--foto surge">
             <img src="img/tema/mesa.webp" alt="" loading="lazy" />
-            <div class="numero_sobre"><b>9</b><span>projetos particulares em destaque</span></div>
+            <div class="numero_sobre"><b>10</b><span>projetos particulares em destaque</span></div>
           </div>
           <div class="numero numero--stack surge">
             <h3 class="numero_titulo">Stack principal</h3>
