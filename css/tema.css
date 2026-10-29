@@ -2375,6 +2375,12 @@ body::-webkit-scrollbar {
   object-fit: cover;
 }
 
+/* a imagem do cyberpunk é larga e o menu fica à esquerda: enquadra o canto do menu */
+.curriculo_moldura img[src$="exp-cyberpunk.webp"],
+.curriculo_thumb[src$="exp-cyberpunk.webp"] {
+  object-position: 3% 50%;
+}
+
 .curriculo_selo {
   position: absolute;
   z-index: 2;

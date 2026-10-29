@@ -32,7 +32,7 @@
   <link href="css/footer.css?v=20261008" rel="stylesheet" type="text/css" />
   <link href="css/xreveal.css?v=20261028" rel="stylesheet" type="text/css" />
   <link href="css/pixel-seam.css" rel="stylesheet" type="text/css" />
-  <link href="css/tema.css?v=20261026e" rel="stylesheet" type="text/css" />
+  <link href="css/tema.css?v=20261029a" rel="stylesheet" type="text/css" />
   <link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com" rel="preconnect" />
   <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin="anonymous" />
@@ -216,6 +216,17 @@
       z-index: 1;
     }
 
+    .flow-grid>.project_item.sigma-crm {
+      grid-area: 8 / 2 / 9 / 4;
+      place-self: center;
+      z-index: 2;
+    }
+
+    /* print largo do quadro: mantém o título e a primeira coluna no recorte */
+    .project_item.sigma-crm .project_image {
+      object-position: 0% 50%;
+    }
+
     /* Hero screenshots are wide; keep the headline side in the square crop. */
     .project_item.dialogi .project_image,
     .project_item.sigmacx .project_image {
@@ -227,7 +238,10 @@
     .project_item.dialogi .project_name,
     .project_item.dialogi .project_desc,
     .project_item.sigmacx .project_name,
-    .project_item.sigmacx .project_desc {
+    .project_item.sigmacx .project_desc,
+    .project_item.sigma-crm .project_info,
+    .project_item.sigma-crm .project_name,
+    .project_item.sigma-crm .project_desc {
       place-self: end;
     }
 
@@ -318,6 +332,43 @@
         grid-area: auto;
       }
     }
+  </style>
+  <style>
+    /* skills em grade: 3 colunas no desktop, traço laranja curto, itens em linha */
+    #skills .services_collection { margin-top: 5em; }
+    #skills .services_list { grid-row-gap: 3.5em !important; }
+    @media (min-width: 768px) {
+      #skills .services_list { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-column-gap: 3em; }
+    }
+    @media (min-width: 1100px) {
+      #skills .services_list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+    #skills .service { display: flex; flex-direction: column; gap: 1.4em; padding-left: 1.4em; }
+    #skills .service:before { left: 0; top: .3em; width: 3px; height: 2.6em; }
+    #skills .service-content { grid-row-gap: .8em; }
+    #skills .service_title { font-size: clamp(1.5rem, 2.1vw, 2.1rem); line-height: 1.2; }
+    #skills .service:nth-child(even) .service-content,
+    #skills .service:nth-child(even) .service_list { order: 0; }
+    #skills .service_list,
+    #skills .service:nth-child(even) .service_list {
+      flex-direction: row; flex-wrap: wrap; align-items: flex-start; gap: .35em 1.1em;
+      padding: 0; text-align: left; width: auto;
+    }
+    #skills .service_list:after { display: none; }
+    @media (max-width: 767px) { #skills .services_list { grid-template-columns: minmax(0, 1fr); } }
+    #skills .service, #skills .service-content, #skills .service-desc { min-width: 0; max-width: 100%; }
+    #skills .section_body.small.service-desc { padding-left: 0; }
+    #skills .service_list p { font-size: 1rem !important; white-space: nowrap; width: auto !important; flex: 0 0 auto; }
+    #skills .service_list p,
+    #skills .service:nth-child(even) .service_list p {
+      font-size: 1.05em; padding: 0; margin: 0; opacity: 0;
+      transform: translate3d(0, .6em, 0);
+      transition: transform .6s cubic-bezier(.19, 1, .22, 1), opacity .6s ease;
+    }
+    #skills .service_list p.reveal,
+    #skills .service:nth-child(even) .service_list p.reveal { transform: none; opacity: 1; }
+    #skills .service_list:before { display: none; }
+    #skills .service_list, #skills .service:nth-child(even) .service_list { display: flex !important; flex-direction: row !important; flex-wrap: wrap !important; }
   </style>
 </head>
 
@@ -1018,6 +1069,21 @@
                 </div>
               </div>
             </div>
+            <div class="project_item sigma-crm w-dyn-list">
+              <div role="list" class="w-dyn-items">
+                <div role="listitem" class="works-item w-dyn-item">
+                  <div class="project_wrap small w-inline-block"><img loading="lazy" width="1000"
+                      src="images/projects/sigma-crm.webp" alt="Sigma CRM" class="project_image" />
+                    <div class="project_darken"></div>
+                    <div class="project_info">
+                      <h3 class="project_name item-name">Sigma CRM</h3>
+                      <div class="project_desc">CRM que recebe sozinho os leads dos formulários das landing pages, com
+                        quadro de etapas, responsável por lead e aviso por e-mail.</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
     </div>
@@ -1032,13 +1098,13 @@
           </div>
           <div class="numero numero--foto surge">
             <img src="img/tema/mesa.webp" alt="" loading="lazy" />
-            <div class="numero_sobre"><b>8</b><span>projetos particulares em destaque</span></div>
+            <div class="numero_sobre"><b>9</b><span>projetos particulares em destaque</span></div>
           </div>
           <div class="numero numero--stack surge">
             <h3 class="numero_titulo">Stack principal</h3>
-            <p class="numero_texto">O que uso no dia a dia, do banco de dados à tela, passando por nuvem e IA.</p>
+            <p class="numero_texto">Minha stack vai do banco de dados à tela: <span class="hl">Node.js</span> e NestJS no back-end, <span class="hl">React</span> e Next.js no front, React Native nos apps e Cloudflare e AWS na nuvem.</p>
             <ul class="numero_chips">
-              <li>TypeScript</li><li>JavaScript</li><li>Node.js</li><li>NestJS</li><li>PHP</li><li>Python</li><li>React</li><li>React Native</li><li>Angular</li><li>Tailwind</li><li>PostgreSQL</li><li>MySQL</li><li>MongoDB</li><li>AWS</li><li>Cloudflare</li><li>Three.js</li><li>GSAP</li><li>IA</li><li>Git</li>
+              <li>TypeScript</li><li>JavaScript</li><li>Node.js</li><li>NestJS</li><li>PHP</li><li>Python</li><li>React</li><li>Next.js</li><li>React Native</li><li>Angular</li><li>Tailwind</li><li>PostgreSQL</li><li>MySQL</li><li>MongoDB</li><li>AWS</li><li>Cloudflare</li><li>Three.js</li><li>GSAP</li><li>Framer Motion</li><li>Rust</li><li>Bevy</li><li>IA</li><li>Git</li>
             </ul>
             <a href="#skills" class="botao botao--escuro">Ver tecnologias <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" /></svg></a>
           </div>
@@ -1100,6 +1166,8 @@
                 <p>Tailwind CSS</p>
                 <p>JavaScript</p>
                 <p>React</p>
+                <p>Next.js</p>
+                <p>React Native</p>
                 <p>Angular</p>
               </div>
             </div>
@@ -1118,6 +1186,7 @@
                 <p>PHP</p>
                 <p>Python</p>
                 <p>TypeScript</p>
+                <p>Cloudflare</p>
               </div>
             </div>
             <div role="listitem" class="service w-dyn-item">
@@ -1134,6 +1203,35 @@
                 <p>MySQL</p>
                 <p>MongoDB</p>
                 <p>Integrações</p>
+              </div>
+            </div>
+            <div role="listitem" class="service w-dyn-item">
+              <div class="service-content">
+                <h3 class="service_title">IA Aplicada.</h3>
+                <div class="section_body small service-desc w-richtext">
+                  <p>Assistentes que escutam, pensam e respondem por voz em tempo real: reconhecimento de fala, LLMs, síntese e modelagem de voz para dar timbre e emoção a um personagem.</p>
+                </div>
+              </div>
+              <div class="service_list w-richtext">
+                <p>LLMs</p>
+                <p>Whisper</p>
+                <p>Síntese de voz</p>
+                <p>Modelagem de voz</p>
+                <p>Agentes de IA</p>
+              </div>
+            </div>
+            <div role="listitem" class="service w-dyn-item">
+              <div class="service-content">
+                <h3 class="service_title">Jogos &amp; Animação.</h3>
+                <div class="section_body small service-desc w-richtext">
+                  <p>Interfaces que se mexem com propósito e experiências interativas: animação de interface na web, cenas 3D no navegador e jogos em Rust com Bevy.</p>
+                </div>
+              </div>
+              <div class="service_list w-richtext">
+                <p>Framer Motion</p>
+                <p>Three.js</p>
+                <p>Rust</p>
+                <p>Bevy</p>
               </div>
             </div>
           </div>
