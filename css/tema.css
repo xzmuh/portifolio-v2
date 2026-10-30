@@ -4068,3 +4068,307 @@ body::-webkit-scrollbar {
     gap: 0;
   }
 }
+
+/* ---------- Projeto em destaque: Beauty Exp. (seção escura; js/beauty.js) ----------
+   capítulos | tela com o pitch mudo. O capítulo do tempo atual acende e a régua dele enche. */
+
+.beauty {
+  position: relative;
+  padding: clamp(5rem, 9vw, 9rem) 0 clamp(4rem, 6vw, 6rem);
+  background: var(--preto);
+  color: #e6e3dc;
+  overflow: hidden;
+}
+
+.beauty .container {
+  position: relative;
+  z-index: 1;
+}
+
+.beauty_topo {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: clamp(2rem, 4vw, 5rem);
+  align-items: end;
+  margin-bottom: clamp(2.5rem, 5vw, 4.5rem);
+}
+
+.beauty_pre {
+  display: inline-flex;
+  align-items: center;
+  gap: .65em;
+  margin: 0 0 1.4rem;
+  font-size: .8rem;
+  font-weight: 500;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: rgba(230, 227, 220, .55);
+}
+
+.beauty_pre:before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  background: var(--laranja);
+}
+
+.beauty_nome {
+  margin: 0 0 .6rem;
+  font-family: "Rajdhani", var(--fonte);
+  font-size: clamp(1.6rem, 2.4vw, 2.4rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--laranja);
+}
+
+.beauty_titulo {
+  margin: 0;
+  font-size: clamp(3rem, 5.8vw, 6.4rem);
+  font-weight: 700;
+  line-height: .96;
+  letter-spacing: -.02em;
+  text-transform: uppercase;
+}
+
+.beauty_intro p {
+  margin: 0;
+  max-width: 30em;
+  font-size: clamp(.95rem, 1.1vw, 1.2rem);
+  line-height: 1.5;
+  color: rgba(230, 227, 220, .7);
+}
+
+.beauty_intro b {
+  font-weight: 600;
+  color: #e6e3dc;
+}
+
+.beauty_ler {
+  display: inline-flex;
+  align-items: center;
+  gap: .5em;
+  margin-top: 1.6rem;
+  padding: .8rem 1.1rem;
+  background: var(--laranja);
+  color: var(--tinta);
+  font-size: .78rem;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - .5rem), calc(100% - .5rem) 100%, 0 100%);
+  transition: background-color .45s var(--suave), color .45s var(--suave);
+}
+
+.beauty_ler svg {
+  width: 1.1em;
+  height: 1.1em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  transition: transform .4s var(--suave);
+}
+
+.beauty_ler:hover {
+  background: #e6e3dc;
+}
+
+.beauty_ler:hover svg {
+  transform: translateX(.3em);
+}
+
+.beauty_palco {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2.4fr);
+  border-top: 1px solid rgba(230, 227, 220, .14);
+  border-bottom: 1px solid rgba(230, 227, 220, .14);
+}
+
+.beauty_caps {
+  margin: 0;
+  padding: 0 clamp(1.2rem, 2.4vw, 2.4rem) 0 0;
+  list-style: none;
+  align-self: center;
+}
+
+.beauty_caps button {
+  position: relative;
+  display: grid;
+  grid-template-columns: 2.4rem 1fr;
+  column-gap: .4rem;
+  width: 100%;
+  padding: .7rem 0;
+  border: 0;
+  border-bottom: 1px solid rgba(230, 227, 220, .14);
+  background: none;
+  color: rgba(230, 227, 220, .45);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: color .3s ease;
+}
+
+.beauty_caps li:first-child button {
+  border-top: 1px solid rgba(230, 227, 220, .14);
+}
+
+.beauty_caps span {
+  grid-row: span 2;
+  padding-top: .2rem;
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: .75rem;
+}
+
+.beauty_caps b {
+  justify-self: start;
+  padding: 0 .15em;
+  margin-left: -.15em;
+  font-size: 1.05rem;
+  font-weight: 700;
+  background: linear-gradient(var(--laranja), var(--laranja)) no-repeat 0 50% / 0% 100%;
+  transition: background-size .45s var(--suave), color .3s ease;
+}
+
+.beauty_caps small {
+  margin-top: .15rem;
+  font-size: .82rem;
+  line-height: 1.35;
+}
+
+/* régua do capítulo: enche com o tempo do vídeo (--p de 0 a 1) */
+.beauty_caps i {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: var(--laranja);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+
+.beauty_caps button:hover {
+  color: #e6e3dc;
+}
+
+.beauty_caps .ativo {
+  color: #e6e3dc;
+}
+
+.beauty_caps .ativo b {
+  background-size: 100% 100%;
+  color: var(--tinta);
+}
+
+.beauty_caps .ativo i {
+  transform: scaleX(var(--p, 0));
+}
+
+.beauty_tela {
+  position: relative;
+  margin: clamp(1.2rem, 2.4vw, 2.4rem) 0;
+  background: #f1ece6;
+  clip-path: polygon(0 0, calc(100% - 2.2rem) 0, 100% 2.2rem, 100% 100%, 2.2rem 100%, 0 calc(100% - 2.2rem));
+}
+
+.beauty_tela video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.beauty_selo {
+  position: absolute;
+  top: 1.2rem;
+  left: 1.2rem;
+  padding: .35rem .9rem .35rem .6rem;
+  background: var(--tinta);
+  color: #fff;
+  font-size: .7rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - .45rem), calc(100% - .45rem) 100%, 0 100%);
+}
+
+.beauty_barra {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: rgba(0, 0, 0, .12);
+}
+
+.beauty_barra i {
+  display: block;
+  height: 100%;
+  background: var(--laranja);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+
+.beauty_stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 1.6rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.beauty_stack li {
+  padding: .45rem .8rem;
+  border: 1px solid rgba(230, 227, 220, .2);
+  font-size: .72rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: rgba(230, 227, 220, .7);
+}
+
+@media (max-width: 991px) {
+  .beauty_topo {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .beauty_palco {
+    grid-template-columns: 1fr;
+  }
+
+  .beauty_tela {
+    order: -1;
+  }
+
+  .beauty_caps {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 1.2rem;
+    padding: 0 0 1.2rem;
+  }
+
+  .beauty_caps li:nth-child(2) button {
+    border-top: 1px solid rgba(230, 227, 220, .14);
+  }
+}
+
+@media (max-width: 600px) {
+  .beauty_caps small {
+    display: none;
+  }
+
+  .beauty_caps b {
+    font-size: .95rem;
+  }
+
+  .beauty_tela {
+    clip-path: polygon(0 0, calc(100% - 1.2rem) 0, 100% 1.2rem, 100% 100%, 1.2rem 100%, 0 calc(100% - 1.2rem));
+  }
+
+  .beauty_selo {
+    top: .7rem;
+    left: .7rem;
+  }
+}

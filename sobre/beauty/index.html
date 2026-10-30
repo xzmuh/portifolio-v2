@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Beauty Exp. · Murilo Gonzales</title>
+<meta name="description" content="Beauty Exp.: o sistema de gestão para clínicas de estética feito pelo Murilo, na web e no celular." />
+<link rel="icon" href="../../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&family=Pinyon+Script&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+<link href="../sobre.css?v=2" rel="stylesheet" />
+</head>
+<body data-tema="beauty">
+<script>document.body.classList.add('js')</script>
+<div class="abertura" aria-hidden="true"><span>Beauty</span></div>
+
+<header class="capa capa--larga">
+  <div class="grade" aria-hidden="true"></div>
+  <div class="container topo">
+    <a class="voltar" href="../../#beauty"><img src="../../images/mgt-icon.svg" alt="" /><span>Portfólio</span></a>
+  </div>
+  <div class="container capa_grade">
+    <div>
+      <p class="chapeu">Produto · SaaS para clínicas de estética</p>
+      <h1 class="titulo"><span><span>Beauty</span></span><span><span><em class="hl">Exp.</em></span></span></h1>
+      <p class="lead surge">Um sistema para a clínica de estética inteira: agenda, pacientes, protocolos, fotos de antes e depois e financeiro, com uma IA que organiza o cadastro e sugere o tratamento. No computador e no celular.</p>
+    </div>
+    <figure class="palco">
+      <span class="palco_bloco palco_bloco--cima" aria-hidden="true"></span>
+      <span class="palco_bloco palco_bloco--baixo" aria-hidden="true"></span>
+      <div class="palco_moldura" style="aspect-ratio:16 / 9"><img src="../../images/projects/beauty-pitch.jpg" alt="Agenda do dia na Beauty Exp." /></div>
+      <span class="palco_selo">Web + app</span>
+      <figcaption class="palco_script" aria-hidden="true"><span>agenda</span><span>cuida</span><span>guarda</span></figcaption>
+    </figure>
+  </div>
+</header>
+
+<section class="proposito">
+  <div class="grade" aria-hidden="true"></div>
+  <div class="container proposito_grade">
+    <div class="surge"><p class="parte_num">Por que foi criado</p><p class="proposito_texto">A profissional estuda anos para cuidar de pele, e o dia vai embora em WhatsApp, planilha, papelzinho de retorno e foto perdida no celular.</p></div>
+    <div class="surge"><p class="parte_num">A experiência que eu queria passar</p><p class="proposito_texto">Abrir o sistema e já saber o que fazer: quem confirmar, quem cobrar, qual horário está livre. A tecnologia cuida da rotina, ela cuida das pessoas.</p></div>
+  </div>
+</section>
+
+<main>
+  <section class="parte">
+    <div class="grade" aria-hidden="true"></div>
+    <div class="container">
+      <div class="parte_cab surge">
+        <p class="parte_num"><b>01</b>O desafio</p>
+        <h2>Simples de <em class="hl">verdade</em></h2>
+      </div>
+      <div class="parte_texto"><p class="frase surge">Sistema de clínica costuma ser um formulário gigante. A Beauty tinha que ser o contrário.</p>
+        <div class="surge"><p>Cada tela mostra um resumo e o próximo passo com um botão claro, como "Reagendar" ou "Enviar cobrança", no lugar de um formulário genérico. Telas irmãs seguem o mesmo padrão visual, então quem aprendeu uma aprende todas.</p><p>Para ninguém ficar perdido, o próprio sistema tem aulas em vídeo de cada tarefa.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="parte escuro">
+    <div class="grade" aria-hidden="true"></div>
+    <div class="container tempo">
+      <div class="tempo_lado"><div class="surge">
+        <p class="parte_num"><b>02</b>Um dia na clínica</p>
+        <h2>Da agenda ao <em class="hl">resultado</em></h2>
+      </div></div>
+      <ol class="tempo_lista"><li><span class="tempo_quando">Manhã</span><h3>O que precisa de atenção</h3><p>O "Meu Dia" lista quem confirmar para amanhã e quem está com pagamento pendente, com o botão de cada ação.</p></li><li><span class="tempo_quando">Agenda</span><h3>O horário livre aparece sozinho</h3><p>Os buracos do dia viram um atalho para agendar, sem procurar na grade.</p></li><li><span class="tempo_quando">Paciente nova</span><h3>Escreve do seu jeito</h3><p>Nome, nascimento, telefone e queixa num texto corrido: a IA separa os campos e a profissional só confere.</p></li><li><span class="tempo_quando">Atendimento</span><h3>A IA sugere o protocolo</h3><p>Pela queixa, os protocolos da biblioteca da clínica aparecem em ordem de aderência, com sessões, intervalo e duração.</p></li><li><span class="tempo_quando">Resultado</span><h3>Antes e depois lado a lado</h3><p>As fotos de cada sessão ficam no paciente, com régua para comparar a evolução.</p></li><li><span class="tempo_quando">Fim do mês</span><h3>Sem planilha</h3><p>Faturamento recebido, a receber e atrasado num painel só.</p></li></ol>
+    </div>
+  </section>
+
+  <section class="parte">
+    <div class="grade" aria-hidden="true"></div>
+    <div class="container">
+      <div class="parte_cab surge">
+        <p class="parte_num"><b>03</b>Evolução técnica</p>
+        <h2>O que tem por <em class="hl">dentro</em></h2>
+      </div>
+      <ol class="licoes"><li class="surge"><i>01</i><h3>Web e app com a mesma cara</h3><p>React + Vite no navegador e React Native com Expo no celular, com os mesmos tokens de tema gerados de uma fonte só e checagem de que as rotas existem nos dois.</p></li><li class="surge"><i>02</i><h3>API em NestJS</h3><p>Back-end com CQRS e JWT, banco Postgres na nuvem (Neon) e migrations aplicadas na hora de subir.</p></li><li class="surge"><i>03</i><h3>IA onde poupa digitação</h3><p>Cadastro montado a partir de texto livre e sugestão de protocolo pela queixa, sempre com a profissional confirmando.</p></li><li class="surge"><i>04</i><h3>Demonstração que não envelhece</h3><p>Uma clínica de exemplo é gerada com datas relativas a hoje, para a agenda de qualquer apresentação parecer de verdade.</p></li><li class="surge"><i>05</i><h3>Aulas em vídeo</h3><p>Tutoriais gravados direto do sistema, com cursor e narração, para cada tarefa do dia a dia.</p></li><li class="surge"><i>06</i><h3>Pitch feito em código</h3><p>O vídeo de apresentação foi montado em HTML e renderizado quadro a quadro, com as telas reais reconstruídas.</p></li></ol>
+    </div>
+  </section>
+</main>
+
+<footer class="fim">
+  <div class="grade" aria-hidden="true"></div>
+  <div class="container">
+    <p class="fim_frase surge">Você cuida das <em class="hl">pessoas</em>.</p>
+    <div class="fim_acoes surge"><a class="botao botao--escuro" href="../../#beauty">Voltar ao portfólio <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" /></svg></a></div>
+    <div class="fim_rodape"><span>Murilo Gonzales · Full Stack</span><a href="../../#beauty">← Voltar ao portfólio</a></div>
+  </div>
+</footer>
+
+<script src="../sobre.js?v=2"></script>
+</body>
+</html>

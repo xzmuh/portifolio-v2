@@ -32,7 +32,7 @@
   <link href="css/footer.css?v=20261008" rel="stylesheet" type="text/css" />
   <link href="css/xreveal.css?v=20261028" rel="stylesheet" type="text/css" />
   <link href="css/pixel-seam.css" rel="stylesheet" type="text/css" />
-  <link href="css/tema.css?v=20261029a" rel="stylesheet" type="text/css" />
+  <link href="css/tema.css?v=20261030" rel="stylesheet" type="text/css" />
   <link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com" rel="preconnect" />
   <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin="anonymous" />
@@ -932,6 +932,52 @@
           </div>
         </div>
       </section>
+      <!-- Projeto em destaque: Beauty Exp. (js/beauty.js toca o pitch mudo só com a seção na tela
+           e liga os capítulos ao tempo do vídeo). Seção escura entre a Becca e os Projetos, que são claras. -->
+      <section id="beauty" class="beauty" aria-labelledby="beauty-titulo" data-beauty>
+        <div class="grade" aria-hidden="true"></div>
+        <div class="container">
+          <header class="beauty_topo surge">
+            <div>
+              <p class="beauty_pre">Projeto em destaque · SaaS para clínicas de estética</p>
+              <p class="beauty_nome">Beauty Exp.</p>
+              <h2 id="beauty-titulo" class="beauty_titulo">A clínica numa <em class="hl">tela só</em></h2>
+            </div>
+            <div class="beauty_intro">
+              <p>Sistema completo para clínicas de estética: <b>agenda, pacientes, protocolos, fotos de antes e
+                depois e financeiro</b>, com uma IA que monta o cadastro e sugere o tratamento. No computador e no
+                celular.</p>
+              <a class="beauty_ler" href="sobre/beauty/" target="_blank" rel="noopener">Ler sobre a Beauty <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6" /></svg></a>
+            </div>
+          </header>
+
+          <div class="beauty_palco surge" style="--i:1">
+            <ol class="beauty_caps" aria-label="Capítulos do vídeo">
+              <li><button type="button" data-cap="0"><span>01</span><b>Agenda</b><small>o horário livre aparece sozinho</small><i></i></button></li>
+              <li><button type="button" data-cap="8.4"><span>02</span><b>Cadastro com IA</b><small>escreve do seu jeito, a IA organiza</small><i></i></button></li>
+              <li><button type="button" data-cap="16.4"><span>03</span><b>Protocolos</b><small>biblioteca clínica padronizada</small><i></i></button></li>
+              <li><button type="button" data-cap="22.4"><span>04</span><b>IA sugere</b><small>o protocolo ideal pela queixa</small><i></i></button></li>
+              <li><button type="button" data-cap="28.9"><span>05</span><b>Antes e depois</b><small>cada resultado guardado</small><i></i></button></li>
+              <li><button type="button" data-cap="34.4"><span>06</span><b>O que fazer hoje</b><small>confirmações e cobranças</small><i></i></button></li>
+              <li><button type="button" data-cap="42.4"><span>07</span><b>Financeiro</b><small>o mês sem planilha</small><i></i></button></li>
+              <li><button type="button" data-cap="48.4"><span>08</span><b>Web e celular</b><small>React no navegador, React Native no app</small><i></i></button></li>
+            </ol>
+
+            <figure class="beauty_tela">
+              <video muted loop playsinline preload="none" poster="images/projects/beauty-pitch.jpg"
+                aria-label="Pitch da Beauty Exp. mostrando as telas do sistema">
+                <source src="images/projects/beauty-pitch.mp4" type="video/mp4" />
+              </video>
+              <span class="beauty_selo">Pitch · sem som</span>
+              <span class="beauty_barra" aria-hidden="true"><i></i></span>
+            </figure>
+          </div>
+
+          <ul class="beauty_stack surge" style="--i:2" aria-label="Tecnologias">
+            <li>React + Vite</li><li>NestJS</li><li>React Native · Expo</li><li>Postgres (Neon)</li><li>IA no cadastro e nos protocolos</li>
+          </ul>
+        </div>
+      </section>
       <section id="works" class="section projects">
       <div class="grade grade--escura" aria-hidden="true"></div>
         <div class="container works">
@@ -968,7 +1014,7 @@
             <div id="w-node-_31353db0-b592-3a3d-f0b0-8a650926bbd9-4b175c0b" class="project_item pli w-dyn-list">
               <div role="list" class="w-dyn-items">
                 <div role="listitem" class="works-item w-dyn-item">
-                  <div class="project_wrap medium w-inline-block"><img
+                  <a href="#beauty" class="project_wrap medium w-inline-block"><img
                       id="w-node-_31353db0-b592-3a3d-f0b0-8a650926bbdd-4b175c0b" loading="lazy" width="650"
                       src="images/projects/beauty-exp.webp" alt="Beauty Exp" class="project_image" />
                     <div id="w-node-_31353db0-b592-3a3d-f0b0-8a650926bbde-4b175c0b" class="project_darken"></div>
@@ -978,7 +1024,7 @@
                       <div id="w-node-_31353db0-b592-3a3d-f0b0-8a650926bbe1-4b175c0b" class="project_desc">Sistema de
                         gestão para clínicas de estética, com agenda, pacientes, procedimentos e financeiro.</div>
                     </div>
-                  </div>
+                  </a>
                 </div>
               </div>
             </div>
@@ -1809,6 +1855,7 @@
   <script src="js/oficio.js?v=20261008za"></script>
   <script src="js/rolagem.js?v=20261008u"></script>
   <script src="js/becca.js?v=20261028d"></script>
+  <script src="js/beauty.js?v=20261030"></script>
   <script src="js/menu.js?v=20261028"></script>
 </body>
 
