@@ -4324,19 +4324,6 @@ body::-webkit-scrollbar {
   object-fit: cover;
 }
 
-.beauty_selo {
-  position: absolute;
-  top: 1.2rem;
-  left: 1.2rem;
-  padding: .35rem .9rem .35rem .6rem;
-  background: var(--tinta);
-  color: #fff;
-  font-size: .7rem;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  clip-path: polygon(0 0, 100% 0, 100% calc(100% - .45rem), calc(100% - .45rem) 100%, 0 100%);
-}
-
 .beauty_barra {
   position: absolute;
   left: 0;
@@ -4409,10 +4396,5 @@ body::-webkit-scrollbar {
 
   .beauty_tela {
     clip-path: polygon(0 0, calc(100% - 1.2rem) 0, 100% 1.2rem, 100% 100%, 1.2rem 100%, 0 calc(100% - 1.2rem));
-  }
-
-  .beauty_selo {
-    top: .7rem;
-    left: .7rem;
   }
 }
