@@ -78,6 +78,8 @@ const PROJETOS = [
   ['API de Notificações', 'alertas orientados a eventos', 'API interna de notificações orientada a eventos, distribuindo alertas para várias plataformas.'],
   ['Dialogi', 'gamificação para operações', 'Site da plataforma de gamificação para operações, com experiências interativas e animações.', 'https://dialogi.ai'],
   ['SigmaCX', 'plataforma de CX', 'Site institucional da SigmaCX, plataforma de CX que unifica canais, automação e IA.', 'https://sigmacx.ai'],
+  ['Sigma CRM', 'leads das landing pages', 'CRM que recebe sozinho os leads dos formulários das landing pages, com quadro de etapas, responsável por lead e aviso por e-mail.'],
+  ['easynow', 'agentes de IA numa janela só', 'App de desktop em Rust que junta vários agentes de IA numa janela só, com abas, quem está trabalhando ou esperando, limites de uso e comando por voz.'],
 ];
 
 /* ---------- renderer ---------- */
@@ -421,7 +423,7 @@ function montaSala(def) {
 
 function conteudoDa(chave, { pendura, interativo, noFundo, rotY, reg, W, paiSala }) {
   if (chave === 'projetos') {
-    // dois varais com quatro cartões cada; clicar vira o cartão
+    // dois varais com cinco cartões cada; clicar vira o cartão
     const larguraVaral = W - 0.3;
     for (const lado of [-1, 1]) {
       folha(reg, {
@@ -433,10 +435,10 @@ function conteudoDa(chave, { pendura, interativo, noFundo, rotY, reg, W, paiSala
     [3.05, 1.0].forEach((yVaral, fila) => {
       const corda = pendura(d.varal(), larguraVaral, 0.5, 0, 0, yVaral, { seed: 100 + fila });
       corda.position.copy(noFundo(SALA.prof - 0.3, 0, yVaral));
-      for (let col = 0; col < 4; col++) {
-        const i = fila * 4 + col;
+      for (let col = 0; col < 5; col++) {
+        const i = fila * 5 + col;
         const [titulo, linha, descricao, link] = PROJETOS[i];
-        const lateral = (col - 1.5) * 1.05;
+        const lateral = (col - 2) * 0.9;
         // acompanha a "barriga" da corda desenhada
         const y = yVaral + 0.125 - 0.175 * Math.sin(Math.PI * (lateral + larguraVaral / 2) / larguraVaral);
         const cartao = new THREE.Group();

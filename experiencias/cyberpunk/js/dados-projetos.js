@@ -71,6 +71,32 @@ export const PROJETOS = [
     ],
   },
   {
+    id: 'sigma-crm', nome: 'Sigma CRM', grupo: 'sistemas', tipo: 'Sistema', complexidade: 'Moderada',
+    imagem: 'sigma-crm.webp',
+    objetivos: [
+      { texto: 'Receber sozinho os leads dos formulários das landing pages' },
+      { texto: 'Quadro de etapas' },
+      { texto: 'Responsável por lead' },
+      { texto: 'Aviso por e-mail' },
+    ],
+    texto: [
+      'CRM que recebe sozinho os leads dos formulários das landing pages, com quadro de etapas, responsável por lead e aviso por e-mail.',
+    ],
+  },
+  {
+    id: 'easynow', nome: 'easynow', grupo: 'sistemas', tipo: 'App', complexidade: 'Alta',
+    imagem: 'easynow.webp',
+    objetivos: [
+      { texto: 'Vários agentes de IA numa janela só, em abas' },
+      { texto: 'Mostrar quem está trabalhando ou esperando' },
+      { texto: 'Limites de uso' },
+      { texto: 'Comando por voz' },
+    ],
+    texto: [
+      'App de desktop em Rust que junta vários agentes de IA numa janela só, com abas, quem está trabalhando ou esperando, limites de uso e comando por voz.',
+    ],
+  },
+  {
     id: 'dialogi', nome: 'Dialogi', grupo: 'sites', tipo: 'Site', complexidade: 'Alta', url: 'https://dialogi.ai',
     imagem: 'dialogi.webp',
     objetivos: [
