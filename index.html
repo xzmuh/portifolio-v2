@@ -32,7 +32,7 @@
   <link href="css/footer.css?v=20261008" rel="stylesheet" type="text/css" />
   <link href="css/xreveal.css?v=20261028" rel="stylesheet" type="text/css" />
   <link href="css/pixel-seam.css" rel="stylesheet" type="text/css" />
-  <link href="css/tema.css?v=20261030" rel="stylesheet" type="text/css" />
+  <link href="css/tema.css?v=20261103" rel="stylesheet" type="text/css" />
   <link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com" rel="preconnect" />
   <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin="anonymous" />
@@ -202,30 +202,39 @@
       position: relative;
     }
 
-    /* Dialogi / SigmaCX continue the staggered stack below Freplan and Beauty Exp. The
-     mobile reset in the block above (.flow-grid>div !important) still wins. */
+    /* Dialogi, SigmaCX, Sigma CRM and easynow keep the stack zigzagging left/right below
+     Freplan and Beauty Exp. The mobile reset in the block above (.flow-grid>div !important) still wins. */
     .flow-grid>.project_item.dialogi {
-      grid-area: 6 / 2 / 7 / 4;
-      place-self: center;
+      grid-area: 6 / 1 / 7 / 3;
+      place-self: start;
       z-index: 3;
     }
 
     .flow-grid>.project_item.sigmacx {
-      grid-area: 7 / 3 / 8 / 5;
-      place-self: center end;
+      grid-area: 6 / 3 / 7 / 5;
+      place-self: start end;
       z-index: 1;
     }
 
     .flow-grid>.project_item.sigma-crm {
-      grid-area: 8 / 2 / 9 / 4;
-      place-self: center;
+      grid-area: 7 / 1 / 8 / 3;
+      place-self: start center;
       z-index: 2;
     }
 
     .flow-grid>.project_item.easynow {
-      grid-area: 9 / 3 / 10 / 5;
-      place-self: center end;
+      grid-area: 7 / 3 / 8 / 5;
+      place-self: start end;
       z-index: 1;
+    }
+
+    /* duas por linha; a da direita desce um pouco, como a escada do topo */
+    @media (min-width: 768px) {
+
+      .flow-grid>.project_item.sigmacx,
+      .flow-grid>.project_item.easynow {
+        margin-top: 12em;
+      }
     }
 
     .project_item.easynow .project_image {
@@ -888,9 +897,10 @@
       <section id="ia" class="becca" aria-labelledby="ia-titulo" data-becca>
         <div class="grade grade--escura" aria-hidden="true"></div>
         <div class="container">
+          <p class="secao_rotulo surge"><b>Projeto pessoal</b><span>IA de voz no desktop</span></p>
           <header class="becca_topo surge">
             <div>
-              <p class="becca_pre">Projeto pessoal · inspirado em</p>
+              <p class="becca_pre">Inspirado em</p>
               <span class="becca_letreiro" role="img" aria-label="Cyberpunk: Edgerunners"></span>
               <h2 id="ia-titulo" class="becca_titulo"><span class="becca_so-celular">Becca: </span>Uma IA com<br /><em class="hl">personalidade</em></h2>
             </div>
@@ -937,9 +947,9 @@
       <section id="beauty" class="beauty" aria-labelledby="beauty-titulo" data-beauty>
         <div class="grade" aria-hidden="true"></div>
         <div class="container">
+          <p class="secao_rotulo secao_rotulo--escuro surge"><b>Projeto em destaque</b><span>SaaS para clínicas de estética</span></p>
           <header class="beauty_topo surge">
             <div>
-              <p class="beauty_pre">Projeto em destaque · SaaS para clínicas de estética</p>
               <p class="beauty_nome">Beauty Exp.</p>
               <h2 id="beauty-titulo" class="beauty_titulo">A clínica numa <em class="hl">tela só</em></h2>
             </div>

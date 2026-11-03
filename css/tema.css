@@ -3530,6 +3530,50 @@ body::-webkit-scrollbar {
   color: #555;
 }
 
+/* rótulo do topo das seções de projeto (Becca, Beauty): diz de cara que tipo de projeto é */
+.secao_rotulo {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem 2rem;
+  flex-wrap: wrap;
+  margin: 0 0 clamp(2.5rem, 5vw, 4.5rem);
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--tinta);
+  text-transform: uppercase;
+}
+
+.secao_rotulo b {
+  font-size: clamp(1.6rem, 2.8vw, 3rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -.02em;
+}
+
+.secao_rotulo b:before {
+  content: "";
+  display: inline-block;
+  width: .5em;
+  height: .5em;
+  margin-right: .4em;
+  background: var(--laranja);
+  vertical-align: .08em;
+}
+
+.secao_rotulo span {
+  font-size: clamp(.8rem, 1vw, 1rem);
+  letter-spacing: .2em;
+  color: #555;
+}
+
+.secao_rotulo--escuro {
+  border-color: rgba(230, 227, 220, .85);
+}
+
+.secao_rotulo--escuro span {
+  color: rgba(230, 227, 220, .6);
+}
+
 /* letreiro espetado do Edgerunners (PNG gerado, usado como máscara para pintar na cor do site) */
 .becca_letreiro {
   display: block;
