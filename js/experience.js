@@ -23,7 +23,7 @@
   folha.className = 'xp-folha';
   folha.setAttribute('role', 'dialog');
   folha.setAttribute('aria-modal', 'true');
-  folha.innerHTML = '<div class="xp-folha_painel"><button class="xp-folha_fecha" type="button" aria-label="Fechar">' +
+  folha.innerHTML = '<div class="xp-folha_painel"><button class="xp-folha_fecha" type="button" aria-label="' + (document.documentElement.lang === 'en' ? 'Close' : 'Fechar') + '">' +
     '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg></button>' +
     '<div class="xp-folha_corpo"></div></div>';
   document.body.appendChild(folha);

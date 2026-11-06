@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Murilo's Chronicles · Murilo Gonzales</title>
+<meta name="description" content="How the RPG version of Murilo's résumé was born and grew." />
+<link rel="icon" href="../../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&family=Pinyon+Script&family=Cinzel:wght@500;700&display=swap" rel="stylesheet" />
+<link href="../sobre.css?v=2" rel="stylesheet" />
+</head>
+<body data-tema="rpg">
+<script>document.body.classList.add('js')</script>
+<div class="abertura" aria-hidden="true"><span>Chronicles</span></div>
+
+<header class="capa capa--larga">
+  <div class="grade" aria-hidden="true"></div>
+  <div class="container topo">
+    <a class="voltar" href="../../en.html#experiencias"><img src="../../images/mgt-icon.svg" alt="" /><span>Portfolio</span></a>
+    <a class="botao" href="../../experiencias/rpg/" target="_blank" rel="noopener">Play <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" /></svg></a>
+  </div>
+  <div class="container capa_grade">
+    <div>
+      <p class="chapeu">Game version · behind the table</p>
+      <h1 class="titulo"><span><span>Murilo's</span></span><span><span><em class="hl">Chronicles</em></span></span></h1>
+      <p class="lead surge">My résumé became a tabletop RPG campaign: a miniature 3D board where every stop along the trail is a chapter of my career.</p>
+    </div>
+    <figure class="palco">
+      <span class="palco_bloco palco_bloco--cima" aria-hidden="true"></span>
+      <span class="palco_bloco palco_bloco--baixo" aria-hidden="true"></span>
+      <div class="palco_moldura" style="aspect-ratio:1370 / 700"><img src="../../img/tema/exp-rpg.webp" alt="The campaign's 3D board" /></div>
+      <span class="palco_selo">Game version</span>
+      <figcaption class="palco_script" aria-hidden="true"><span>roll</span><span>explore</span><span>level up</span></figcaption>
+    </figure>
+  </div>
+</header>
+
+<section class="proposito">
+  <div class="grade" aria-hidden="true"></div>
+  <div class="container proposito_grade">
+    <div class="surge"><p class="parte_num">Why I built it</p><p class="proposito_texto">Nobody remembers a PDF résumé. I wanted one that makes you want to explore, and that shows off 3D in the browser, physics, sound and performance along the way.</p></div>
+    <div class="surge"><p class="parte_num">The experience I wanted to create</p><p class="proposito_texto">The feeling of opening a board game on a tavern table: everything can be touched, played with and broken, and my career unfolds as you play.</p></div>
+  </div>
+</section>
+
+<main>
+  <section class="parte">
+    <div class="grade" aria-hidden="true"></div>
+    <div class="container">
+      <div class="parte_cab surge">
+        <p class="parte_num"><b>I</b>The original idea</p>
+        <h2>A career turned <em class="hl">campaign</em></h2>
+      </div>
+      <div class="parte_texto">
+        <div class="surge"><p>A tavern table with a board on top. The hero moves from stop to stop, the camera flies over, and each chapter opens on a scroll sealed with the companies' wax seals.</p><p>Around the board, the table fills in the rest: the cards are my projects, the character sheet is my summary and the witch's potions are my tech stack, each in its brand color.</p></div>
+      </div>
+    </div>
+  </section>
+  <section class="parte escuro">
+    <div class="grade" aria-hidden="true"></div>
+    <div class="container tempo">
+      <div class="tempo_lado"><div class="surge">
+        <p class="parte_num"><b>II</b>How it grew</p>
+        <h2>From scenery to <em class="hl">game</em></h2>
+      </div></div>
+      <ol class="tempo_lista"><li><span class="tempo_quando">Early days</span><h3>The miniature world</h3><p>Water, a boat, a lighthouse, the sun village, the castle, the parchment character sheet and dice with real physics that roll downhill and fall into the river.</p></li><li><span class="tempo_quando">Soon after</span><h3>Running well on any PC</h3><p>Four graphics presets and automatic quality scaling, so it looks great on an everyday laptop.</p></li><li><span class="tempo_quando">The table responds</span><h3>Almost everything is clickable</h3><p>Forging to the hammer's rhythm, fishing off the pier, archery, a mine with dynamite, the witch's cauldron and a lantern festival.</p></li><li><span class="tempo_quando">It became a game</span><h3>Levels and challenges</h3><p>23 Elden Ring-style challenges, one of them secret. Every discovery earns XP, all the way to max level.</p></li><li><span class="tempo_quando">For everyone</span><h3>Mobile and first person</h3><p>First-person exploration, an on-screen joystick on mobile and a warning when the browser runs on the wrong graphics card.</p></li></ol>
+    </div>
+  </section>
+
+  <section class="parte">
+    <div class="grade" aria-hidden="true"></div>
+    <div class="container">
+      <div class="parte_cab surge">
+        <p class="parte_num"><b>III</b>Technical evolution</p>
+        <h2>What's <em class="hl">under</em> the table</h2>
+      </div>
+      <ol class="licoes"><li class="surge"><i>01</i><h3>Hand-rolled physics</h3><p>The dice run on custom physics: gravity, bounce, friction, and collisions with each other, the board's terrain and the buildings. When they stop, they settle on the face most aligned with the ground and report the number.</p></li><li class="surge"><i>02</i><h3>From thousands to hundreds of draw calls</h3><p>The wide view hit 1,300 draw calls and 6 million triangles. I grouped copies of the same model into per-region instances and added LOD: from afar, trees swap to simplified versions and small details stop being drawn.</p></li><li class="surge"><i>03</i><h3>Cheaper reflections and shadows</h3><p>The water reflection was redrawing the entire scene and eating a quarter of the CPU. Now it renders before the main pass, and only what can actually show up in the reflection.</p></li><li class="surge"><i>04</i><h3>Quality that adapts</h3><p>Four graphics presets and automatic FPS-based scaling, tested with a CPU throttled to a quarter of its speed, plus a warning when the browser runs on integrated graphics.</p></li><li class="surge"><i>05</i><h3>Terrain from hexagons</h3><p>The map is drawn on an easy-to-edit hex grid and turned into continuous terrain: cell heights become smooth hills and plateaus, and the river and road become curves.</p></li><li class="surge"><i>06</i><h3>Lag-free sound</h3><p>Key sounds are decoded ahead of time, with a fallback when the browser blocks Web Audio, and heavy audio only loads after the intro.</p></li></ol>
+    </div>
+  </section>
+</main>
+
+<footer class="fim">
+  <div class="grade" aria-hidden="true"></div>
+  <div class="container">
+    <p class="fim_frase surge">Roll the <em class="hl">dice</em>.</p>
+    <div class="fim_acoes surge"><a class="botao" href="../../experiencias/rpg/" target="_blank" rel="noopener">Play <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" /></svg></a><a class="botao botao--escuro" href="../../en.html#experiencias">Back to portfolio <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" /></svg></a></div>
+    <div class="fim_rodape"><span>Murilo Gonzales · Full Stack</span><a href="../../en.html#experiencias">← Back to portfolio</a></div>
+  </div>
+</footer>
+
+<script src="../sobre.js?v=2"></script>
+</body>
+</html>

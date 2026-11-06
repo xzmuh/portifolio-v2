@@ -53,7 +53,7 @@
     // o mouse incha a meia-tinta em volta dele
     if (mouse.forca > 0.01) {
       var mx = x - mouse.x, my = y - mouse.y;
-      m += Math.exp(-(mx * mx + my * my) / 9000) * 0.45 * mouse.forca;
+      m += Math.exp(-(mx * mx + my * my) / 15000) * 0.5 * mouse.forca;
     }
     return m;
   }

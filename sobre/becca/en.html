@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Becca · Murilo Gonzales</title>
+<meta name="description" content="How Becca, Murilo's AI with a personality, came to life." />
+<link rel="icon" href="../../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&family=Pinyon+Script&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+<link href="../sobre.css?v=2" rel="stylesheet" />
+</head>
+<body data-tema="becca">
+<script>document.body.classList.add('js')</script>
+<div class="abertura" aria-hidden="true"><span>Becca</span></div>
+
+<header class="capa">
+  <div class="grade" aria-hidden="true"></div>
+  <div class="container topo">
+    <a class="voltar" href="../../en.html#ia"><img src="../../images/mgt-icon.svg" alt="" /><span>Portfolio</span></a>
+    
+  </div>
+  <div class="container capa_grade">
+    <div>
+      <p class="chapeu">Personal project · AI · inspired by</p><span class="letreiro" role="img" aria-label="Cyberpunk: Edgerunners"></span>
+      <h1 class="titulo"><span><span>An AI</span></span><span><span>with a <em class="hl">soul</em></span></span></h1>
+      <p class="lead surge">I recreated Rebecca from Cyberpunk: Edgerunners as a real-time voice AI. Every reaction, emotional state and even her voice were rebuilt to stay <b>as close as possible to the anime character</b>, with memory of what I tell her and voice-controlled PC automation.</p>
+    </div>
+    <figure class="palco">
+      <span class="palco_bloco palco_bloco--cima" aria-hidden="true"></span>
+      <span class="palco_bloco palco_bloco--baixo" aria-hidden="true"></span>
+      <div class="palco_moldura" style="aspect-ratio:900 / 900"><img src="../../img/tema/ia-becca-3.webp" alt="Becca, the AI's 3D avatar" /></div>
+      <span class="palco_selo">3D avatar</span>
+      <figcaption class="palco_script" aria-hidden="true"><span>listen</span><span>feel</span><span>talk</span></figcaption>
+    </figure>
+  </div>
+</header>
+
+<section class="proposito">
+  <div class="grade" aria-hidden="true"></div>
+  <div class="container proposito_grade">
+    <div class="surge"><p class="parte_num">Why I built it</p><p class="proposito_texto">Inspired by VTubers: characters with their own avatar, voice and personality, chatting live. I wanted to see if an AI could be a character like that, all on its own, on my PC.</p></div>
+    <div class="surge"><p class="parte_num">The experience I wanted to create</p><p class="proposito_texto">Talking to a character, not an assistant: someone who recognizes your voice, remembers what you told her and reacts with real emotion.</p></div>
+  </div>
+</section>
+
+<main>
+  <section class="parte">
+    <div class="grade" aria-hidden="true"></div>
+    <div class="container">
+      <div class="parte_cab surge">
+        <p class="parte_num"><b>01</b>The character</p>
+        <h2>Recreating <em class="hl">Rebecca</em></h2>
+      </div>
+      <div class="parte_texto"><p class="frase surge">Recreating someone everyone recognizes is much harder than making up some generic assistant.</p>
+        <div class="surge"><p>I chose Rebecca from Cyberpunk: Edgerunners because she's an iconic character with a one-of-a-kind personality. If a reply comes out generic, fans notice right away.</p><p>The voice was another challenge: it needed her tone and emotion, with laughter mid-sentence, not a text-to-speech reader.</p></div>
+      </div>
+    </div>
+  </section>
+  <section class="parte escuro">
+    <div class="grade" aria-hidden="true"></div>
+    <div class="container tempo">
+      <div class="tempo_lado"><div class="surge">
+        <p class="parte_num"><b>02</b>A conversation, step by step</p>
+        <h2>From what I say to what she <em class="hl">does</em></h2>
+      </div></div>
+      <ol class="tempo_lista"><li><span class="tempo_quando">1 · Listens</span><h3>I speak</h3><p>Whisper, running on the GPU, turns speech into text and checks whether the voice is mine.</p></li><li><span class="tempo_quando">2 · Thinks</span><h3>She decides what to say</h3><p>The LLM gets what I said along with her current mood, affinity level and saved memories.</p></li><li><span class="tempo_quando">3 · Replies</span><h3>Talks while she thinks</h3><p>Each finished sentence is voiced right away, without waiting for the full reply, with real emotion and laughter along the way.</p></li><li><span class="tempo_quando">4 · Reacts</span><h3>Her body follows</h3><p>The VRM avatar changes expressions and animations based on how she's feeling.</p></li><li><span class="tempo_quando">5 · Acts</span><h3>If it's a request, she does it</h3><p>She opens games, plays music on Spotify and YouTube, sets reminders and handles small tasks in Windows.</p></li></ol>
+    </div>
+  </section>
+
+  <section class="parte">
+    <div class="grade" aria-hidden="true"></div>
+    <div class="container">
+      <div class="parte_cab surge">
+        <p class="parte_num"><b>03</b>Technical evolution</p>
+        <h2>What's <em class="hl">inside</em></h2>
+      </div>
+      <ol class="licoes"><li class="surge"><i>01</i><h3>Real-time conversation</h3><p>Speech-to-text, LLM and voice synthesis in a single streaming pipeline: each finished sentence is voiced right away, without waiting for the full reply.</p></li><li class="surge"><i>02</i><h3>Knowing who's talking</h3><p>Speaker identification on top of Whisper: she knows when the voice isn't mine and reacts to it.</p></li><li class="surge"><i>03</i><h3>Emotions that stick</h3><p>Mood, jealousy and affinity are states that shift with every conversation and get saved, along with memories of what matters.</p></li><li class="surge"><i>04</i><h3>Voice and body in sync</h3><p>The emotion behind each reply sets the tone of her voice and the VRM avatar's expression, so what she says, how she sounds and what she shows all match.</p></li></ol>
+    </div>
+  </section>
+</main>
+
+<footer class="fim">
+  <div class="grade" aria-hidden="true"></div>
+  <div class="container">
+    <p class="fim_frase surge">Wake up, <em class="hl">choom</em>.</p>
+    <div class="fim_acoes surge"><a class="botao botao--escuro" href="../../en.html#ia">Back to portfolio <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" /></svg></a></div>
+    <div class="fim_rodape"><span>Murilo Gonzales · Full Stack</span><a href="../../en.html#ia">← Back to portfolio</a></div>
+  </div>
+</footer>
+
+<script src="../sobre.js?v=2"></script>
+</body>
+</html>

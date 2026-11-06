@@ -50,7 +50,7 @@
         if (mouse.forca > 0.01) {
           var dx = x - mouse.x, dy = y - mouse.y;
           var d2 = dx * dx + dy * dy;
-          y += Math.exp(-d2 / 9000) * 28 * mouse.forca;
+          y += Math.exp(-d2 / 15000) * 32 * mouse.forca;
         }
         ctx.fillRect(x, y, tam, tam);
       }

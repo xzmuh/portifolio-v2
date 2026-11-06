@@ -5,6 +5,7 @@
   if (!raiz) return;
   var $ = function (sel, el) { return (el || raiz).querySelector(sel); };
   var $$ = function (sel, el) { return Array.prototype.slice.call((el || raiz).querySelectorAll(sel)); };
+  var EN = document.documentElement.lang === 'en';
   var acorda = function (el) { el.classList.remove('pisca'); void el.offsetWidth; el.classList.add('pisca'); };
 
   // ---------- Mobile: agenda (toque confirma o horário; os chips trocam o dia) ----------
@@ -13,6 +14,10 @@
     { titulo: 'Amanhã', itens: [['08:30', 'FS', 'Fábio Souza', 'Avaliação', 0], ['10:00', 'GA', 'Gabi Alves', 'Consulta', 1], ['13:30', 'HN', 'Hugo Nunes', 'Retorno', 0], ['15:00', 'IR', 'Ivo Rocha', 'Consulta', 0]] },
     { titulo: 'Sexta', itens: [['09:00', 'JM', 'Júlia Matos', 'Consulta', 1], ['11:30', 'KP', 'Kaio Pires', 'Avaliação', 1], ['17:00', 'LB', 'Lia Barros', 'Retorno', 1]] }
   ];
+  if (EN) DIAS.forEach(function (d) {
+    d.titulo = { 'Hoje': 'Today', 'Amanhã': 'Tomorrow', 'Sexta': 'Friday' }[d.titulo];
+    d.itens.forEach(function (it) { it[3] = { 'Consulta': 'Appointment', 'Retorno': 'Follow-up', 'Avaliação': 'Assessment' }[it[3]]; });
+  });
   var lista = $('[data-agenda-lista]'), tituloAgenda = $('[data-agenda-titulo]');
   var mostraDia = function (d) {
     tituloAgenda.textContent = DIAS[d].titulo;
@@ -40,7 +45,7 @@
 
   // ---------- Mobile: painel (toque numa barra mostra o dia; + registra pedido) ----------
   var valor = $('[data-painel-valor]'), rotulo = $('[data-painel-rotulo]'), pedidos = $('[data-painel-pedidos]');
-  var DIAS_SEMANA = ['Vendas seg', 'Vendas ter', 'Vendas qua', 'Vendas qui', 'Vendas sex', 'Vendas sáb', 'Vendas dom', 'Vendas hoje'];
+  var DIAS_SEMANA = EN ? ['Sales Mon', 'Sales Tue', 'Sales Wed', 'Sales Thu', 'Sales Fri', 'Sales Sat', 'Sales Sun', 'Sales today'] : ['Vendas seg', 'Vendas ter', 'Vendas qua', 'Vendas qui', 'Vendas sex', 'Vendas sáb', 'Vendas dom', 'Vendas hoje'];
   $$('.app_barras button').forEach(function (barra, i) {
     barra.addEventListener('click', function () {
       $$('.app_barras button').forEach(function (b) { b.classList.toggle('on', b === barra); });
@@ -56,7 +61,7 @@
 
   // ---------- Web: o menu troca a página; o botão responde ----------
   var site = $('[data-site]'), url = $('[data-site-url]'), toast = $('[data-site-toast]');
-  var ROTAS = ['seusite.com', 'seusite.com/planos', 'seusite.com/contato'];
+  var ROTAS = EN ? ['yoursite.com', 'yoursite.com/pricing', 'yoursite.com/contact'] : ['seusite.com', 'seusite.com/planos', 'seusite.com/contato'];
   $$('[data-pagina]').forEach(function (link) {
     link.addEventListener('click', function () {
       var n = link.getAttribute('data-pagina');
@@ -125,12 +130,12 @@
       var proximo = function () {
         if (i < campos.length) return digita(campos[i++], proximo);
         enviar.classList.add('ok');
-        enviar.textContent = 'Enviado ✓';
-        avisa('Mensagem enviada ✓');
+        enviar.textContent = EN ? 'Sent ✓' : 'Enviado ✓';
+        avisa(EN ? 'Message sent ✓' : 'Mensagem enviada ✓');
         timersForm.push(setTimeout(function () {
           campos.forEach(function (c) { c.classList.remove('cheio'); c.querySelector('span').textContent = ''; });
           enviar.classList.remove('ok');
-          enviar.textContent = 'Enviar mensagem →';
+          enviar.textContent = EN ? 'Send message →' : 'Enviar mensagem →';
           enviando = false;
         }, 2200));
       };
@@ -141,11 +146,11 @@
   // ---------- Desktop: cada aba de agente mostra outro trabalho ----------
   var AGENTES = [
     { tarefas: 12, lat: '212ms', linha: 'M0 50 L20 42 L40 46 L60 30 L80 35 L100 22 L120 27 L140 14 L160 21 L180 9 L200 15',
-      log: [['›', 'buscando leads sem resposta'], ['✓', '12 encontrados no CRM'], ['›', 'escrevendo um follow-up para cada'], ['✓', '9 enviados'], ['›', 'agendando retorno']] },
+      log: EN ? [['›', 'finding leads with no reply'], ['✓', '12 found in the CRM'], ['›', 'writing a follow-up for each'], ['✓', '9 sent'], ['›', 'scheduling callbacks']] : [['›', 'buscando leads sem resposta'], ['✓', '12 encontrados no CRM'], ['›', 'escrevendo um follow-up para cada'], ['✓', '9 enviados'], ['›', 'agendando retorno']] },
     { tarefas: 31, lat: '148ms', linha: 'M0 30 L20 34 L40 22 L60 28 L80 18 L100 24 L120 16 L140 20 L160 12 L180 18 L200 10',
-      log: [['›', 'lendo chamados abertos'], ['✓', '31 classificados por assunto'], ['›', 'respondendo dúvidas frequentes'], ['✓', '24 resolvidos sem fila'], ['›', 'passando 7 para o time']] },
+      log: EN ? [['›', 'reading open tickets'], ['✓', '31 sorted by topic'], ['›', 'answering common questions'], ['✓', '24 resolved, no queue'], ['›', 'handing 7 to the team']] : [['›', 'lendo chamados abertos'], ['✓', '31 classificados por assunto'], ['›', 'respondendo dúvidas frequentes'], ['✓', '24 resolvidos sem fila'], ['›', 'passando 7 para o time']] },
     { tarefas: 6, lat: '390ms', linha: 'M0 40 L20 40 L40 36 L60 44 L80 30 L100 32 L120 26 L140 30 L160 24 L180 28 L200 20',
-      log: [['›', 'conferindo boletos do mês'], ['✓', '6 vencendo esta semana'], ['›', 'gerando lembretes de pagamento'], ['✓', 'relatório pronto'], ['›', 'enviando para o financeiro']] }
+      log: EN ? [['›', "checking this month's invoices"], ['✓', '6 due this week'], ['›', 'creating payment reminders'], ['✓', 'report ready'], ['›', 'sending to finance']] : [['›', 'conferindo boletos do mês'], ['✓', '6 vencendo esta semana'], ['›', 'gerando lembretes de pagamento'], ['✓', 'relatório pronto'], ['›', 'enviando para o financeiro']] }
   ];
   var dkLog = $('[data-dk-log]');
   var mostraAgente = function (n) {
@@ -179,7 +184,7 @@
   var kanban = $('[data-kanban]');
   if (kanban) {
     var cols = $$('.kb_col', kanban);
-    var CARDS = [['Mercado Bom', 'R$ 4.200', 0], ['Studio Aurora', 'R$ 1.900', 0], ['Oficina Leve', 'R$ 2.750', 1], ['Clínica Vida', 'R$ 6.300', 1], ['Padaria Sol', 'R$ 980', 2]];
+    var CARDS = EN ? [['Good Market', '$4,200', 0], ['Aurora Studio', '$1,900', 0], ['Light Garage', '$2,750', 1], ['Vida Clinic', '$6,300', 1], ['Sun Bakery', '$980', 2]] : [['Mercado Bom', 'R$ 4.200', 0], ['Studio Aurora', 'R$ 1.900', 0], ['Oficina Leve', 'R$ 2.750', 1], ['Clínica Vida', 'R$ 6.300', 1], ['Padaria Sol', 'R$ 980', 2]];
     var conta = function () {
       cols.forEach(function (c) { c.querySelector('.kb_topo b').textContent = c.querySelectorAll('.kb_card').length; });
     };
@@ -231,6 +236,11 @@
     { r: 'O pedido 412 saiu para entrega hoje às 9h12. A previsão é até as 18h.', f: ['pedidos', 'transportadora'] },
     { r: 'Foram R$ 18,4 mil na semana, 12% acima da anterior. Sexta foi o melhor dia.', f: ['vendas', 'relatórios'] }
   ];
+  if (EN) RESPOSTAS = [
+    { r: 'Yes: 10am and 3:30pm are open. Want me to book one of them?', f: ['schedule', 'waitlist'] },
+    { r: 'Order 412 went out for delivery today at 9:12am. It should arrive by 6pm.', f: ['orders', 'carrier'] },
+    { r: 'You made $18.4k this week, 12% more than last week. Friday was the best day.', f: ['sales', 'reports'] }
+  ];
   var ocupado = false;
   var fala = function (texto, cliente) {
     var m = document.createElement('div');
@@ -249,11 +259,11 @@
       var digitando = fala('', false);
       digitando.classList.add('zap_msg--digitando');
       digitando.innerHTML = '<i></i><i></i><i></i>';
-      fontes.innerHTML = '<span>consultando ' + resp.f.join(' e ') + '…</span>';
+      fontes.innerHTML = '<span>' + (EN ? 'checking ' + resp.f.join(' and ') : 'consultando ' + resp.f.join(' e ')) + '…</span>';
       setTimeout(function () {
         zap.removeChild(digitando);
         fala(resp.r, false);
-        fontes.innerHTML = '<span><b>✓</b> ' + resp.f.join(' · ') + ' · 1,2s</span>';
+        fontes.innerHTML = '<span><b>✓</b> ' + resp.f.join(' · ') + (EN ? ' · 1.2s' : ' · 1,2s') + '</span>';
         ocupado = false;
       }, 1100);
     });

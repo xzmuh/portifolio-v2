@@ -59,7 +59,7 @@
 
   // texto "Vamos construir algo juntos?" centrado em W/2 (o quadro desloca a camada)
   function desenhaTexto() {
-    var lines = (W < 768 ? ['Vamos', 'construir algo', 'juntos?'] : ['Vamos construir algo juntos?'])
+    var lines = (document.documentElement.lang === 'en' ? (W < 768 ? ['Want to', 'build something', 'together?'] : ['Want to build something together?']) : (W < 768 ? ['Vamos', 'construir algo', 'juntos?'] : ['Vamos construir algo juntos?']))
       .map(function (l) { return l.toUpperCase(); });
     var t = prepara(camadaTexto);
     fonte(t, 100);

@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Cyberpunk · Murilo Gonzales</title>
+<meta name="description" content="How the cyberpunk version of Murilo's résumé was born and grew." />
+<link rel="icon" href="../../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&family=Pinyon+Script&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+<link href="../sobre.css?v=2" rel="stylesheet" />
+</head>
+<body data-tema="cyberpunk">
+<script>document.body.classList.add('js')</script>
+<div class="abertura" aria-hidden="true"><span>Cyberpunk</span></div>
+
+<header class="capa capa--larga">
+  <div class="grade" aria-hidden="true"></div>
+  <div class="container topo">
+    <a class="voltar" href="../../en.html#experiencias"><img src="../../images/mgt-icon.svg" alt="" /><span>Portfolio</span></a>
+    <a class="botao" href="../../experiencias/cyberpunk/" target="_blank" rel="noopener">Enter <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" /></svg></a>
+  </div>
+  <div class="container capa_grade">
+    <div>
+      <p class="chapeu">Cyberpunk version · behind the menu</p>
+      <h1 class="titulo"><span><span>Cyber</span></span><span><span><em class="hl">punk</em></span></span></h1>
+      <p class="lead surge">My résumé as the menu of a Cyberpunk game: implants, a skill tree, a project journal and a 3D career map.</p>
+    </div>
+    <figure class="palco">
+      <span class="palco_bloco palco_bloco--cima" aria-hidden="true"></span>
+      <span class="palco_bloco palco_bloco--baixo" aria-hidden="true"></span>
+      <div class="palco_moldura" style="aspect-ratio:1370 / 700"><img src="../../img/tema/exp-cyberpunk.webp" alt="The cyberware screen from the cyberpunk version" /></div>
+      <span class="palco_selo">Cyberpunk version</span>
+      <figcaption class="palco_script" aria-hidden="true"><span>jack</span><span>in</span><span>choom</span></figcaption>
+    </figure>
+  </div>
+</header>
+
+<section class="proposito">
+  <div class="grade" aria-hidden="true"></div>
+  <div class="container proposito_grade">
+    <div class="surge"><p class="parte_num">Why I built it</p><p class="proposito_texto">I love the cyberpunk aesthetic, and Cyberpunk 2077's menu already works like a résumé: the body has parts, each part gets implants and skills grow on a tree.</p></div>
+    <div class="surge"><p class="parte_num">The experience I wanted to create</p><p class="proposito_texto">Stepping into a game menu: the boot sequence, the neon, the glitch and the UI sounds, except the character is me and every implant shows how I work.</p></div>
+  </div>
+</section>
+
+<main>
+  <section class="parte">
+    <div class="grade" aria-hidden="true"></div>
+    <div class="container">
+      <div class="parte_cab surge">
+        <p class="parte_num"><b>01</b>The original idea</p>
+        <h2>Every implant, a <em class="hl">way</em> of working</h2>
+      </div>
+      <div class="parte_texto">
+        <div class="surge"><p>I started from the game's Cyberware screen: a glass body where each part is an area of my work, and every implant has an in-game name and a real meaning.</p><p>My <b>Debug Sandevistan</b> is how I track down bugs fast. My <b>Pixel-Perfect Optics</b> stand for my eye for every detail on screen. You can also put together a build for each role (Back end, Front end, or Product & AI) and see which implants each one uses.</p></div>
+      </div>
+    </div>
+  </section>
+  <section class="parte escuro">
+    <div class="grade" aria-hidden="true"></div>
+    <div class="container tempo">
+      <div class="tempo_lado"><div class="surge">
+        <p class="parte_num"><b>02</b>How it grew</p>
+        <h2>From one screen to a full <em class="hl">menu</em></h2>
+      </div></div>
+      <ol class="tempo_lista"><li><span class="tempo_quando">Start</span><h3>A 3D body, then images</h3><p>The first body was a 3D glass figure. It was hard to read, so I went back to images, with a close-up of each part and smooth transitions between them.</p></li><li><span class="tempo_quando">Skills</span><h3>A real skill tree</h3><p>My tech stack became a skill tree in the style of the game's 2.0 update: hold to unlock.</p></li><li><span class="tempo_quando">Projects and contact</span><h3>Journal and messages</h3><p>Projects laid out like the game's Journal, and a Contact screen where the message arrives with the sound of typing.</p></li><li><span class="tempo_quando">Story</span><h3>A career map</h3><p>A 3D city with a building for each company, and the character running between them with the anime's Sandevistan effect.</p></li><li><span class="tempo_quando">Entry</span><h3>Optics boot</h3><p>An access screen with glitches, an alarm sound and a button to boot up the neural network.</p></li></ol>
+    </div>
+  </section>
+
+  <section class="parte">
+    <div class="grade" aria-hidden="true"></div>
+    <div class="container">
+      <div class="parte_cab surge">
+        <p class="parte_num"><b>03</b>Technical evolution</p>
+        <h2>How the menu <em class="hl">works</em></h2>
+      </div>
+      <ol class="licoes"><li class="surge"><i>01</i><h3>No build step, straight in the browser</h3><p>Plain HTML, CSS and JavaScript, with three.js loaded through an import map. Each screen is a module and nothing needs compiling to run.</p></li><li class="surge"><i>02</i><h3>An entire city in 3D</h3><p>The Story map builds neighborhoods, buildings, a river, plazas of different shapes and an elevated highway with traffic. The route links the company buildings in career order.</p></li><li class="surge"><i>03</i><h3>Character and Sandevistan</h3><p>A VRM character runs the route with a camera that follows the curves, and the Sandevistan effect leaves a trail of colored afterimages, just like in the anime.</p></li><li class="surge"><i>04</i><h3>Game UI in CSS</h3><p>Angled cuts, glitch transitions between screens and crossfading body close-ups, aligned to the position of each part.</p></li><li class="surge"><i>05</i><h3>UI sound</h3><p>Web Audio so hover sounds never lag or cut each other off, a different ambient track per screen with fades, and synthesized keystrokes on the Contact screen.</p></li></ol>
+    </div>
+  </section>
+</main>
+
+<footer class="fim">
+  <div class="grade" aria-hidden="true"></div>
+  <div class="container">
+    <p class="fim_frase surge">Ready to <em class="hl">jack in</em>?</p>
+    <div class="fim_acoes surge"><a class="botao" href="../../experiencias/cyberpunk/" target="_blank" rel="noopener">Enter <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" /></svg></a><a class="botao botao--escuro" href="../../en.html#experiencias">Back to portfolio <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" /></svg></a></div>
+    <div class="fim_rodape"><span>Murilo Gonzales · Full Stack</span><a href="../../en.html#experiencias">← Back to portfolio</a></div>
+  </div>
+</footer>
+
+<script src="../sobre.js?v=2"></script>
+</body>
+</html>

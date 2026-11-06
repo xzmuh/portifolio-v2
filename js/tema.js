@@ -39,17 +39,18 @@
   // Sistemas: o log da API
   var log = document.querySelector('[data-log]');
   if (log) {
+    var EN = document.documentElement.lang === 'en';
     var LINHAS = [
       ['GET', '/clientes?page=3', '200 · 24ms'],
       ['POST', '/nfe/emitir', '201 · 38ms'],
-      ['EVT', 'pedido.criado → 3 filas', 'ok'],
+      ['EVT', EN ? 'order.created → 3 queues' : 'pedido.criado → 3 filas', 'ok'],
       ['PUT', '/agenda/412', '200 · 19ms'],
-      ['SQL', 'relatorio_fiscal 1.2M linhas', '41ms'],
+      ['SQL', EN ? 'tax_report 1.2M rows' : 'relatorio_fiscal 1.2M linhas', '41ms'],
       ['POST', '/leads', '201 · 22ms'],
-      ['WS', 'painel: 18 conectados', 'live'],
-      ['JOB', 'SPED gerado · 0 erros', 'ok'],
+      ['WS', EN ? 'dashboard: 18 connected' : 'painel: 18 conectados', 'live'],
+      ['JOB', EN ? 'SPED generated · 0 errors' : 'SPED gerado · 0 erros', 'ok'],
       ['S3', 'upload xml 2.4MB', '200'],
-      ['SES', 'e-mail de cobrança × 120', 'ok']
+      ['SES', EN ? 'billing email × 120' : 'e-mail de cobrança × 120', 'ok']
     ];
     var k = 0;
     var poe = function () {
@@ -200,7 +201,7 @@
     Array.prototype.forEach.call(projetos, function (el, i) { if (i >= 5) el.classList.add('projeto-extra'); });
     var maisProjetos = document.createElement('div');
     maisProjetos.className = 'projetos_mais';
-    maisProjetos.innerHTML = '<button class="botao" type="button">Ver mais projetos <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg></button>';
+    maisProjetos.innerHTML = '<button class="botao" type="button">' + (document.documentElement.lang === 'en' ? 'See more projects' : 'Ver mais projetos') + ' <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg></button>';
     var grade = document.querySelector('.flow-grid');
     grade.parentNode.insertBefore(maisProjetos, grade.nextSibling);
     maisProjetos.querySelector('button').addEventListener('click', function () {

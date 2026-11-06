@@ -711,8 +711,22 @@ body::-webkit-scrollbar {
   transition: transform 1.2s var(--suave);
 }
 
+/* a malha viva (js/malha.js) toma o lugar da foto quando há WebGL */
+.cena_malha {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.tem-malha .cena_escultura {
+  display: none;
+}
+
 .cena_dica {
   position: absolute;
+  z-index: 1;
   left: .8rem;
   bottom: .7rem;
   color: #8a8a8a;
@@ -3336,6 +3350,8 @@ body::-webkit-scrollbar {
   }
 
   .curriculo_lista li {
+    display: flex;
+    flex-direction: column;
     border: 1px solid rgba(255, 255, 255, .14);
     min-width: 0;
   }
@@ -3348,10 +3364,9 @@ body::-webkit-scrollbar {
       "num ir";
     align-content: start;
     gap: .6rem;
-    height: 100%;
+    flex: 1;
     padding: .75rem;
   }
-
   .curriculo_thumb { grid-area: thumb; filter: none; width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; }
   .curriculo_nome { grid-area: nome; }
   .curriculo_nome i { font-size: .62rem; }
@@ -3874,9 +3889,11 @@ body::-webkit-scrollbar {
   stroke: var(--tinta);
 }
 
-@media (max-width: 600px) {
+
+/* no celular o "Ler sobre" fica dentro do card, no pé, e não caído em cima da borda */
+@media (max-width: 700px) {
   .curriculo_ler {
-    margin-left: .9rem;
+    margin: 0 .75rem .8rem;
   }
 }
 
@@ -4339,24 +4356,6 @@ body::-webkit-scrollbar {
   background: var(--laranja);
   transform: scaleX(0);
   transform-origin: 0 50%;
-}
-
-.beauty_stack {
-  display: flex;
-  flex-wrap: wrap;
-  gap: .5rem;
-  margin: 1.6rem 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.beauty_stack li {
-  padding: .45rem .8rem;
-  border: 1px solid rgba(230, 227, 220, .2);
-  font-size: .72rem;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  color: rgba(230, 227, 220, .7);
 }
 
 @media (max-width: 991px) {

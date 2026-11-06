@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Beauty Exp. · Murilo Gonzales</title>
+<meta name="description" content="Beauty Exp.: the management system for aesthetic clinics built by Murilo, on the web and on mobile." />
+<link rel="icon" href="../../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&family=Pinyon+Script&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+<link href="../sobre.css?v=2" rel="stylesheet" />
+</head>
+<body data-tema="beauty">
+<script>document.body.classList.add('js')</script>
+<div class="abertura" aria-hidden="true"><span>Beauty</span></div>
+
+<header class="capa capa--larga">
+  <div class="grade" aria-hidden="true"></div>
+  <div class="container topo">
+    <a class="voltar" href="../../en.html#beauty"><img src="../../images/mgt-icon.svg" alt="" /><span>Portfolio</span></a>
+  </div>
+  <div class="container capa_grade">
+    <div>
+      <p class="chapeu">Product · SaaS for aesthetic clinics</p>
+      <h1 class="titulo"><span><span>Beauty</span></span><span><span><em class="hl">Exp.</em></span></span></h1>
+      <p class="lead surge">One system for the entire aesthetic clinic: scheduling, patients, protocols, before-and-after photos and finances, with AI that organizes patient records and suggests treatments. On desktop and mobile.</p>
+    </div>
+    <figure class="palco">
+      <span class="palco_bloco palco_bloco--cima" aria-hidden="true"></span>
+      <span class="palco_bloco palco_bloco--baixo" aria-hidden="true"></span>
+      <div class="palco_moldura" style="aspect-ratio:16 / 9"><img src="../../images/projects/beauty-pitch.jpg" alt="Today's schedule in Beauty Exp." /></div>
+      <span class="palco_selo">Web + app</span>
+      <figcaption class="palco_script" aria-hidden="true"><span>book</span><span>care</span><span>keep</span></figcaption>
+    </figure>
+  </div>
+</header>
+
+<section class="proposito">
+  <div class="grade" aria-hidden="true"></div>
+  <div class="container proposito_grade">
+    <div class="surge"><p class="parte_num">Why I built it</p><p class="proposito_texto">Practitioners spend years learning to care for skin, and then their day disappears into WhatsApp, spreadsheets, sticky notes for follow-ups and photos lost on their phone.</p></div>
+    <div class="surge"><p class="parte_num">The experience I wanted to create</p><p class="proposito_texto">Open the system and know exactly what to do: who to confirm, who to charge, which slots are open. The technology handles the routine; she takes care of people.</p></div>
+  </div>
+</section>
+
+<main>
+  <section class="parte">
+    <div class="grade" aria-hidden="true"></div>
+    <div class="container">
+      <div class="parte_cab surge">
+        <p class="parte_num"><b>01</b>The challenge</p>
+        <h2><em class="hl">Truly</em> simple</h2>
+      </div>
+      <div class="parte_texto"><p class="frase surge">Clinic software is usually one giant form. Beauty had to be the opposite.</p>
+        <div class="surge"><p>Every screen shows a summary and the next step with a clear button, like "Reschedule" or "Send invoice", instead of a generic form. Related screens share the same layout, so once you learn one, you know them all.</p><p>So no one gets lost, the system itself has video lessons for every task.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="parte escuro">
+    <div class="grade" aria-hidden="true"></div>
+    <div class="container tempo">
+      <div class="tempo_lado"><div class="surge">
+        <p class="parte_num"><b>02</b>A day at the clinic</p>
+        <h2>From booking to <em class="hl">results</em></h2>
+      </div></div>
+      <ol class="tempo_lista"><li><span class="tempo_quando">Morning</span><h3>What needs attention</h3><p>"My Day" lists who to confirm for tomorrow and who has a pending payment, with a button for each action.</p></li><li><span class="tempo_quando">Schedule</span><h3>Open slots show up on their own</h3><p>Gaps in the day become a shortcut to book, no hunting through the calendar.</p></li><li><span class="tempo_quando">New patient</span><h3>Write it your way</h3><p>Name, date of birth, phone and main complaint in one block of text: the AI splits it into fields and the practitioner just double-checks.</p></li><li><span class="tempo_quando">Appointment</span><h3>AI suggests the protocol</h3><p>Based on the complaint, protocols from the clinic's library appear ranked by fit, with sessions, intervals and duration.</p></li><li><span class="tempo_quando">Results</span><h3>Before and after, side by side</h3><p>Photos from every session are stored in the patient's record, with a slider to compare progress.</p></li><li><span class="tempo_quando">End of the month</span><h3>No spreadsheets</h3><p>Revenue received, pending and overdue, all on one dashboard.</p></li></ol>
+    </div>
+  </section>
+
+  <section class="parte">
+    <div class="grade" aria-hidden="true"></div>
+    <div class="container">
+      <div class="parte_cab surge">
+        <p class="parte_num"><b>03</b>Technical evolution</p>
+        <h2>What's <em class="hl">inside</em></h2>
+      </div>
+      <ol class="licoes"><li class="surge"><i>01</i><h3>Web and app with the same look</h3><p>React + Vite in the browser and React Native with Expo on mobile, sharing theme tokens generated from a single source and checks that every route exists on both.</p></li><li class="surge"><i>02</i><h3>NestJS API</h3><p>Back end with CQRS and JWT, a cloud Postgres database (Neon) and migrations applied on deploy.</p></li><li class="surge"><i>03</i><h3>AI where it saves typing</h3><p>Patient records built from free text and protocol suggestions based on the complaint, always confirmed by the practitioner.</p></li><li class="surge"><i>04</i><h3>A demo that never gets stale</h3><p>A sample clinic is generated with dates relative to today, so the schedule looks real in any presentation.</p></li><li class="surge"><i>05</i><h3>Video lessons</h3><p>Tutorials recorded straight from the system, with cursor and narration, for every everyday task.</p></li><li class="surge"><i>06</i><h3>A pitch built in code</h3><p>The pitch video was built in HTML and rendered frame by frame, with the real screens rebuilt.</p></li></ol>
+    </div>
+  </section>
+</main>
+
+<footer class="fim">
+  <div class="grade" aria-hidden="true"></div>
+  <div class="container">
+    <p class="fim_frase surge">You take care of <em class="hl">people</em>.</p>
+    <div class="fim_acoes surge"><a class="botao botao--escuro" href="../../en.html#beauty">Back to portfolio <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" /></svg></a></div>
+    <div class="fim_rodape"><span>Murilo Gonzales · Full Stack</span><a href="../../en.html#beauty">← Back to portfolio</a></div>
+  </div>
+</footer>
+
+<script src="../sobre.js?v=2"></script>
+</body>
+</html>

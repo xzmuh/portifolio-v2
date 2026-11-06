@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Alphereon · Murilo Gonzales</title>
+<meta name="description" content="How Alphereon grew from a minigame into a full space combat game." />
+<link rel="icon" href="../../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&family=Pinyon+Script&family=Saira+Condensed:wght@500;600&display=swap" rel="stylesheet" />
+<link href="../sobre.css?v=2" rel="stylesheet" />
+</head>
+<body data-tema="alphereon">
+<script>document.body.classList.add('js')</script>
+<div class="abertura" aria-hidden="true"><span>Alphereon</span></div>
+
+<header class="capa capa--larga">
+  <div class="grade" aria-hidden="true"></div>
+  <div class="container topo">
+    <a class="voltar" href="../../en.html#jogos"><img src="../../images/mgt-icon.svg" alt="" /><span>Portfolio</span></a>
+    <a class="botao" href="https://alphereon.pages.dev/" target="_blank" rel="noopener">Play <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" /></svg></a>
+  </div>
+  <div class="container capa_grade">
+    <div>
+      <p class="chapeu">Game · in development</p>
+      <h1 class="titulo"><span><span>Alphe</span></span><span><span><em class="hl">reon</em></span></span></h1>
+      <p class="lead surge">Space combat in the browser, with voxel ships, a campaign, survival mode and co-op for up to three pilots.</p>
+    </div>
+    <figure class="palco">
+      <span class="palco_bloco palco_bloco--cima" aria-hidden="true"></span>
+      <span class="palco_bloco palco_bloco--baixo" aria-hidden="true"></span>
+      <div class="palco_moldura" style="aspect-ratio:1200 / 630"><img src="../../img/tema/jogo-alphereon.webp" alt="An Alphereon ship" /></div>
+      <span class="palco_selo">In development</span>
+      <figcaption class="palco_script" aria-hidden="true"><span>build</span><span>test</span><span>repeat</span></figcaption>
+    </figure>
+  </div>
+</header>
+
+<section class="proposito">
+  <div class="grade" aria-hidden="true"></div>
+  <div class="container proposito_grade">
+    <div class="surge"><p class="parte_num">Why I built it</p><p class="proposito_texto">It started as a minigame hidden inside another project and grew into my lab for game design, enemy AI and multiplayer.</p></div>
+    <div class="surge"><p class="parte_num">The experience I wanted to create</p><p class="proposito_texto">The rush of console-style space combat running right in your browser, solo or with two friends, with nothing to install.</p></div>
+  </div>
+</section>
+
+<main>
+  <section class="parte">
+    <div class="grade" aria-hidden="true"></div>
+    <div class="container">
+      <div class="parte_cab surge">
+        <p class="parte_num"><b>01</b>The original idea</p>
+        <h2>Take off from the Moon and <em class="hl">shoot</em></h2>
+      </div>
+      <div class="parte_texto">
+        <div class="surge"><p>The first version fit in one sentence: take off from the Moon and shoot straight ahead down a corridor. A few minutes of gameplay.</p></div>
+      </div>
+    </div>
+  </section>
+  <section class="parte escuro">
+    <div class="grade" aria-hidden="true"></div>
+    <div class="container tempo">
+      <div class="tempo_lado"><div class="surge">
+        <p class="parte_num"><b>02</b>How it grew</p>
+        <h2>From a corridor to a game you play <em class="hl">together</em></h2>
+      </div></div>
+      <ol class="tempo_lista"><li><span class="tempo_quando">Oct 15</span><h3>The Moon corridor</h3><p>The hidden minigame: take off and shoot straight ahead.</p></li><li><span class="tempo_quando">Oct 16</span><h3>Real space</h3><p>An open arena, a chase camera locked to the ship, layered explosions, varied enemies, the mothership, power-ups and the cockpit.</p></li><li><span class="tempo_quando">Oct 20</span><h3>A game of its own</h3><p>A name, a Destiny-style orbit menu, a campaign, a hangar, ships built cube by cube and maps with their own mechanics.</p></li><li><span class="tempo_quando">Oct 21</span><h3>Made to play together</h3><p>Three-pilot co-op, multi-phase bosses, weapons with personality, pilot profiles with medals, and music.</p></li><li><span class="tempo_quando">Later</span><h3>Enemies that think</h3><p>Enemies stopped being targets and became pilots, with temperament, group tactics and a fight to get on your tail.</p></li></ol>
+    </div>
+  </section>
+
+  <section class="parte">
+    <div class="grade" aria-hidden="true"></div>
+    <div class="container">
+      <div class="parte_cab surge">
+        <p class="parte_num"><b>03</b>Technical evolution</p>
+        <h2>What's inside the <em class="hl">engine</em></h2>
+      </div>
+      <ol class="licoes"><li class="surge"><i>01</i><h3>Ships built in code</h3><p>Each ship is a symmetrical cube grid built from geometry and turned into two meshes: the hull, with only outer faces and per-vertex ambient occlusion, and the glowing lit parts.</p></li><li class="surge"><i>02</i><h3>Multiplayer without a game server</h3><p>Co-op connects browsers directly to each other over WebRTC. One player hosts the match and the others sync to their state.</p></li><li class="surge"><i>03</i><h3>Enemies that think</h3><p>Each ship runs its own cycle of moving in, passing, breaking off and repositioning, while keeping track of how many are already fighting. Temperament only tweaks the numbers in that cycle, so you get variety without breaking the game.</p></li><li class="surge"><i>04</i><h3>Destructible scenery</h3><p>Debris, satellites and hives are made of plates that heat up, spin loose and burst when they take hits.</p></li><li class="surge"><i>05</i><h3>Flight controls</h3><p>Gamepad support with a response curve that ramps up at full tilt, aim assist that tracks targets, and rumble.</p></li><li class="surge"><i>06</i><h3>Light enough for the browser</h3><p>On-demand sound loading with a volume limiter, graphics presets and progress saved right in the browser.</p></li></ol>
+    </div>
+  </section>
+</main>
+
+<footer class="fim">
+  <div class="grade" aria-hidden="true"></div>
+  <div class="container">
+    <p class="fim_frase surge">Ready for <em class="hl">takeoff</em>?</p>
+    <div class="fim_acoes surge"><a class="botao" href="https://alphereon.pages.dev/" target="_blank" rel="noopener">Play <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" /></svg></a><a class="botao botao--escuro" href="../../en.html#jogos">Back to portfolio <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" /></svg></a></div>
+    <div class="fim_rodape"><span>Murilo Gonzales · Full Stack</span><a href="../../en.html#jogos">← Back to portfolio</a></div>
+  </div>
+</footer>
+
+<script src="../sobre.js?v=2"></script>
+</body>
+</html>
